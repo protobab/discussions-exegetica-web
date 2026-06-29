@@ -1,0 +1,16 @@
+name = "discussions-exegetica"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "discussions-exegetica-db"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+
+[vars]
+ENVIRONMENT = "production"
+SITE_URL = "https://discussionsexegetica.com"
