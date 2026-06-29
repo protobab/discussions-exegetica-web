@@ -6,7 +6,6 @@ A global biblical discussion platform for seekers and believers — built on Rea
 **Live site:** https://discussionsexegetica.com
 
 ---
-
 ## 🏗️ Tech Stack
 
 | Layer       | Technology                      |
