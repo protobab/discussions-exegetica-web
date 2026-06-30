@@ -1,6 +1,6 @@
 // functions/api/admin/daily-words.js
 
-const ADMIN_USERS = ['protobab']
+const ADMIN_USERS = ['eki']
 
 async function isAdmin(request, env) {
   const token = request.headers.get('Authorization')?.replace('Bearer ', '')
