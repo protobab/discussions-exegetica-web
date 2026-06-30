@@ -2,6 +2,7 @@ import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '../lib/auth.jsx'
 import { C, F } from '../lib/tokens.js'
 import { Logo } from './ui.jsx'
+import NotificationBell from './NotificationBell.jsx'
 
 export default function Layout() {
   const { user, logout } = useAuth()
@@ -32,7 +33,7 @@ export default function Layout() {
         </Link>
 
         <div style={{ display: 'flex', gap: 2 }}>
-          {[['Home','/'],['Forum','/forum'],['Daily Word','/daily-word']].map(([l,t]) => (
+          {[['Home','/'],['Forum','/forum'],['Study Groups','/groups'],['Daily Word','/daily-word']].map(([l,t]) => (
             <Link key={l} to={t} style={{
               color: 'rgba(255,255,255,0.75)', fontFamily: F.body,
               fontSize: 13.5, fontWeight: 500, padding: '6px 12px', borderRadius: 6
@@ -40,9 +41,10 @@ export default function Layout() {
           ))}
         </div>
 
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
           {user ? (
             <>
+              <NotificationBell />
               <span style={{ color: C.gold, fontFamily: F.body, fontSize: 13, fontWeight: 600 }}>
                 {user.display_name}
               </span>

@@ -7,6 +7,8 @@ import ThreadPage from './pages/ThreadPage.jsx'
 import NewThreadPage from './pages/NewThreadPage.jsx'
 import DailyWordPage from './pages/DailyWordPage.jsx'
 import AdminPage from './pages/AdminPage.jsx'
+import GroupsPage from './pages/GroupsPage.jsx'
+import GroupDetailPage from './pages/GroupDetailPage.jsx'
 import { RegisterPage, LoginPage } from './pages/AuthPages.jsx'
 
 export default function App() {
@@ -22,6 +24,8 @@ export default function App() {
             <Route path="new-thread" element={<NewThreadPage />} />
             <Route path="daily-word" element={<DailyWordPage />} />
             <Route path="admin" element={<AdminPage />} />
+            <Route path="groups" element={<GroupsPage />} />
+            <Route path="groups/:id" element={<GroupDetailPage />} />
             <Route path="register" element={<RegisterPage />} />
             <Route path="login" element={<LoginPage />} />
           </Route>

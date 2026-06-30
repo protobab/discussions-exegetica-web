@@ -29,6 +29,14 @@ export async function onRequestPost({ env, request, params }) {
 
   await env.DB.prepare(`UPDATE users SET reputation = reputation + 2 WHERE id = ?`).bind(session.user_id).run()
 
+  // Notify the thread author (unless they're replying to themselves)
+  const thread = await env.DB.prepare(`SELECT author_id, title FROM threads WHERE id = ?`).bind(params.id).first()
+  if (thread && thread.author_id !== session.user_id) {
+    await env.DB.prepare(
+      `INSERT INTO notifications (user_id, type, thread_id, message) VALUES (?, 'reply', ?, ?)`
+    ).bind(thread.author_id, params.id, `${session.username} replied to "${thread.title}"`).run()
+  }
+
   return json({ ok: true }, 201)
 }
 
