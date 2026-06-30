@@ -9,6 +9,10 @@ import DailyWordPage from './pages/DailyWordPage.jsx'
 import AdminPage from './pages/AdminPage.jsx'
 import GroupsPage from './pages/GroupsPage.jsx'
 import GroupDetailPage from './pages/GroupDetailPage.jsx'
+import ArmchairPage from './pages/ArmchairPage.jsx'
+import ArmchairSessionPage from './pages/ArmchairSessionPage.jsx'
+import ArmchairPostPage from './pages/ArmchairPostPage.jsx'
+import ArmchairAdminPage from './pages/ArmchairAdminPage.jsx'
 import { RegisterPage, LoginPage } from './pages/AuthPages.jsx'
 
 export default function App() {
@@ -26,6 +30,10 @@ export default function App() {
             <Route path="admin" element={<AdminPage />} />
             <Route path="groups" element={<GroupsPage />} />
             <Route path="groups/:id" element={<GroupDetailPage />} />
+            <Route path="armchair" element={<ArmchairPage />} />
+            <Route path="armchair/session/:id" element={<ArmchairSessionPage />} />
+            <Route path="armchair/post/:id" element={<ArmchairPostPage />} />
+            <Route path="armchair/admin" element={<ArmchairAdminPage />} />
             <Route path="register" element={<RegisterPage />} />
             <Route path="login" element={<LoginPage />} />
           </Route>

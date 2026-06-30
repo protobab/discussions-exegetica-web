@@ -65,6 +65,16 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* ARMCHAIR PROMO */}
+      <Link to="/armchair" style={{
+        display: 'block', background: '#fff', borderBottom: `1px solid ${C.border}`,
+        padding: '16px 32px', textAlign: 'center'
+      }}>
+        <span style={{ fontFamily: F.body, fontSize: 13.5, color: C.navy }}>
+          🎙️ <strong style={{ color: C.gold }}>The Armchair</strong> — live conversations with guests, recordings, and reflections in writing →
+        </span>
+      </Link>
+
       {/* DAILY WORD BANNER */}
       {dailyWord && (
         <div style={{
