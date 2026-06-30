@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { C, F, API } from '../lib/tokens.js'
 import { Card, Avatar, BadgeTag, Btn, Spinner } from '../components/ui.jsx'
 import { useAuth } from '../lib/auth.jsx'
+import { usePageTitle } from '../lib/usePageTitle.js'
 
 export default function ThreadPage() {
   const { id } = useParams()
@@ -15,6 +16,8 @@ export default function ThreadPage() {
   const [body, setBody]       = useState('')
   const [posting, setPosting] = useState(false)
   const [error, setError]     = useState('')
+
+  usePageTitle(thread?.title)
 
   useEffect(() => {
     // fetch thread
@@ -67,11 +70,14 @@ export default function ThreadPage() {
 
       {/* Thread body */}
       <Card style={{ marginBottom:20 }}>
-        <span style={{
-          background:C.mist, color:C.navyLight, borderRadius:6,
-          padding:'2px 9px', fontSize:11, fontFamily:F.body, fontWeight:600,
-          display:'inline-block', marginBottom:14
-        }}>{thread.cat_label}</span>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:12 }}>
+          <span style={{
+            background:C.mist, color:C.navyLight, borderRadius:6,
+            padding:'2px 9px', fontSize:11, fontFamily:F.body, fontWeight:600,
+            display:'inline-block', marginBottom:14
+          }}>{thread.cat_label}</span>
+          <ShareButton title={thread.title} />
+        </div>
 
         <h1 style={{ fontFamily:F.display, fontSize:24, fontWeight:700, color:C.navy, margin:'0 0 16px', lineHeight:1.3 }}>
           {thread.title}
@@ -154,5 +160,30 @@ export default function ThreadPage() {
         )}
       </div>
     </div>
+  )
+}
+
+function ShareButton({ title }) {
+  const [copied, setCopied] = useState(false)
+
+  const share = async () => {
+    const url = window.location.href
+    if (navigator.share) {
+      try { await navigator.share({ title, url }) } catch {}
+    } else {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }
+
+  return (
+    <button onClick={share} style={{
+      background:'none', border:`1px solid ${C.border}`, borderRadius:8,
+      padding:'6px 12px', fontFamily:F.body, fontSize:12.5, color:C.muted,
+      cursor:'pointer', whiteSpace:'nowrap', flexShrink:0
+    }}>
+      {copied ? '✓ Copied!' : '🔗 Share'}
+    </button>
   )
 }

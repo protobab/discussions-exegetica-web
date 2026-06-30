@@ -17,51 +17,55 @@ export default function Layout() {
         button{cursor:pointer}
         ::-webkit-scrollbar{width:6px}
         ::-webkit-scrollbar-thumb{background:${C.gold}88;border-radius:3px}
+        @media (max-width: 560px) {
+          .de-username { display: none; }
+          .de-nav-links a { padding: 6px 8px !important; font-size: 12px !important; }
+        }
       `}</style>
 
-      <nav style={{
-        background: C.navy, height: 60, padding: '0 24px',
+      <nav className="de-nav" style={{
+        background: C.navy, minHeight: 60, padding: '8px 16px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         position: 'sticky', top: 0, zIndex: 100,
-        boxShadow: '0 2px 12px rgba(0,0,0,0.18)'
+        boxShadow: '0 2px 12px rgba(0,0,0,0.18)', flexWrap: 'wrap', gap: 8
       }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Logo size={30} />
-          <span style={{ fontFamily: F.display, fontSize: 17, fontWeight: 700, color: '#fff' }}>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Logo size={28} />
+          <span style={{ fontFamily: F.display, fontSize: 16, fontWeight: 700, color: '#fff', whiteSpace: 'nowrap' }}>
             Discussions <span style={{ color: C.gold }}>Exegetica</span>
           </span>
         </Link>
 
-        <div style={{ display: 'flex', gap: 2 }}>
-          {[['Home','/'],['Forum','/forum'],['Study Groups','/groups'],['Daily Word','/daily-word']].map(([l,t]) => (
+        <div className="de-nav-links" style={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+          {[['Forum','/forum'],['Groups','/groups'],['Daily Word','/daily-word']].map(([l,t]) => (
             <Link key={l} to={t} style={{
               color: 'rgba(255,255,255,0.75)', fontFamily: F.body,
-              fontSize: 13.5, fontWeight: 500, padding: '6px 12px', borderRadius: 6
+              fontSize: 13, fontWeight: 500, padding: '6px 10px', borderRadius: 6, whiteSpace: 'nowrap'
             }}>{l}</Link>
           ))}
         </div>
 
-        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
           {user ? (
             <>
               <NotificationBell />
-              <span style={{ color: C.gold, fontFamily: F.body, fontSize: 13, fontWeight: 600 }}>
+              <span className="de-username" style={{ color: C.gold, fontFamily: F.body, fontSize: 13, fontWeight: 600 }}>
                 {user.display_name}
               </span>
               <button onClick={() => { logout(); navigate('/') }} style={{
                 background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
-                color: '#fff', borderRadius: 7, padding: '6px 12px',
-                fontFamily: F.body, fontSize: 12.5
+                color: '#fff', borderRadius: 7, padding: '6px 10px',
+                fontFamily: F.body, fontSize: 12
               }}>Sign out</button>
             </>
           ) : (
             <>
-              <Link to="/login" style={{ color: 'rgba(255,255,255,0.75)', fontFamily: F.body, fontSize: 13.5, padding: '6px 12px' }}>
+              <Link to="/login" style={{ color: 'rgba(255,255,255,0.75)', fontFamily: F.body, fontSize: 13, padding: '6px 10px' }}>
                 Sign in
               </Link>
               <Link to="/register" style={{
                 background: C.gold, color: C.navy, borderRadius: 8,
-                padding: '7px 16px', fontFamily: F.body, fontSize: 13, fontWeight: 700
+                padding: '7px 14px', fontFamily: F.body, fontSize: 12.5, fontWeight: 700, whiteSpace: 'nowrap'
               }}>Join Free</Link>
             </>
           )}

@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { C, F, API } from '../lib/tokens.js'
 import { Card, Avatar, BadgeTag, CategoryPill, Spinner, Btn } from '../components/ui.jsx'
 import { useAuth } from '../lib/auth.jsx'
+import { usePageTitle } from '../lib/usePageTitle.js'
 
 const ALL_CATS = [
   { slug:'all',      label:'All Topics',     icon:'✦' },
@@ -21,6 +22,7 @@ export default function ForumPage() {
   const [search, setSearch]   = useState('')
   const navigate = useNavigate()
   const { user } = useAuth()
+  usePageTitle('Forum')
 
   useEffect(() => {
     setLoading(true)
