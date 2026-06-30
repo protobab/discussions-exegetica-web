@@ -5,7 +5,7 @@ import { Btn, Logo } from '../components/ui.jsx'
 import { useAuth } from '../lib/auth.jsx'
 
 // Only these usernames can access the admin panel
-const ADMIN_USERS = ['protobab']
+const ADMIN_USERS = ['eki']
 
 export default function AdminPage() {
   const { user } = useAuth()
