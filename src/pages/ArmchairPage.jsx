@@ -4,6 +4,7 @@ import { C, F, API } from '../lib/tokens.js'
 import { Card, Avatar, Spinner, Btn } from '../components/ui.jsx'
 import { useAuth } from '../lib/auth.jsx'
 import { usePageTitle } from '../lib/usePageTitle.js'
+import AmbientPlayer from '../components/AmbientPlayer.jsx'
 
 const FALLBACK_COVER = 'https://images.unsplash.com/photo-1490127252417-7c393f993ee4?w=800&q=60'
 
@@ -45,7 +46,9 @@ export default function ArmchairPage() {
 
         {/* FEATURED SESSION */}
         {featured ? (
-          <Card style={{ padding: 0, overflow: 'hidden', marginBottom: 36 }}>
+          <>
+            {featured.status !== 'live' && <AmbientPlayer />}
+            <Card style={{ padding: 0, overflow: 'hidden', marginBottom: 36 }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.1fr) minmax(0,1fr)' }} className="armchair-featured-grid">
               <div style={{
                 backgroundImage: `url(${featured.cover_image || FALLBACK_COVER})`,
@@ -85,10 +88,14 @@ export default function ArmchairPage() {
               </div>
             </div>
           </Card>
+          </>
         ) : (
-          <Card style={{ textAlign: 'center', padding: '36px', marginBottom: 36 }}>
-            <p style={{ fontFamily: F.body, color: C.muted }}>No live session scheduled right now — check back soon, or explore past recordings below.</p>
-          </Card>
+          <>
+            <AmbientPlayer />
+            <Card style={{ textAlign: 'center', padding: '36px', marginBottom: 36 }}>
+              <p style={{ fontFamily: F.body, color: C.muted }}>No live session scheduled right now — check back soon, or explore past recordings below.</p>
+            </Card>
+          </>
         )}
 
         {/* PAST RECORDINGS */}

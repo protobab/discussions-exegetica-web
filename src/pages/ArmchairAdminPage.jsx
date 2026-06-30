@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { C, F, API } from '../lib/tokens.js'
 import { Btn, Logo } from '../components/ui.jsx'
 import { useAuth } from '../lib/auth.jsx'
+import ImagePicker from '../components/ImagePicker.jsx'
 
 const ADMIN_USERS = ['eki']
 
@@ -85,8 +86,8 @@ function SessionsTab({ token }) {
         <Field label="Session title *" value={form.title} onChange={set('title')} placeholder="e.g. The Heart of the Gospel" />
         <Field label="Date & time *" type="datetime-local" value={form.scheduled_at} onChange={set('scheduled_at')} />
         <Field label="Guest name" value={form.guest_name} onChange={set('guest_name')} placeholder="Who's joining you?" />
-        <Field label="Cover image URL" value={form.cover_image} onChange={set('cover_image')} placeholder="https://…" />
       </Grid2>
+      <ImagePicker currentImage={form.cover_image} onSelect={url => setForm(f => ({ ...f, cover_image: url }))} />
       <TextField label="Description" value={form.description} onChange={set('description')} placeholder="What will this conversation cover?" />
       <TextField label="Guest bio" value={form.guest_bio} onChange={set('guest_bio')} placeholder="A short bio for the guest" />
 
@@ -140,7 +141,7 @@ function PostsTab({ token }) {
       <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:C.navy, marginBottom:18 }}>Write a Post</h2>
       {status && <StatusBox status={status} />}
       <Field label="Title *" value={form.title} onChange={set('title')} placeholder="Post title" />
-      <Field label="Cover image URL" value={form.cover_image} onChange={set('cover_image')} placeholder="https://…" />
+      <ImagePicker currentImage={form.cover_image} onSelect={url => setForm(f => ({ ...f, cover_image: url }))} />
       <TextField label="Excerpt (short summary)" value={form.excerpt} onChange={set('excerpt')} placeholder="One or two sentences shown on the feed…" rows={2} />
       <TextField label="Full post *" value={form.body} onChange={set('body')} placeholder="Write your reflection…" rows={10} />
       <Btn variant="gold" onClick={publish} disabled={loading} style={{ marginTop: 8 }}>
