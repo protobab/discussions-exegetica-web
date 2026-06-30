@@ -4,7 +4,7 @@
 
 export async function onRequestGet({ env, params, request, next }) {
   const userAgent = request.headers.get('User-Agent') || ''
-  const isCrawler = /facebookexternalhit|Twitterbot|WhatsApp|LinkedInBot|Slackbot|TelegramBot|Discordbot|Googlebot|bingbot/i.test(userAgent)
+  const isCrawler = /facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|Slackbot|TelegramBot|Discordbot|Googlebot|bingbot|SkypeUriPreview|vkShare|W3C_Validator|redditbot|Pinterest|Applebot/i.test(userAgent)
 
   // For regular users, just serve the normal React app
   if (!isCrawler) return next()
