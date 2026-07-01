@@ -54,13 +54,11 @@ function SessionsTab({ token }) {
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }))
 
   const loadSessions = async () => {
-    const res = await fetch(`${API}/armchair/feed`)
+    const res = await fetch(`${API}/armchair/sessions`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
     const data = await res.json()
-    // Combine featured + past sessions into one list
-    const all = []
-    if (data.featured) all.push(data.featured)
-    if (data.pastSessions) all.push(...data.pastSessions)
-    setSessions(all)
+    setSessions(data.sessions || [])
   }
 
   useEffect(() => { loadSessions() }, [])
