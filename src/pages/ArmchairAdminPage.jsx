@@ -48,9 +48,22 @@ function SessionsTab({ token }) {
   const [form, setForm] = useState({ title:'', description:'', guest_name:'', guest_bio:'', cover_image:'', scheduled_at:'' })
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(false)
-  const [createdSession, setCreatedSession] = useState(null)
+  const [sessions, setSessions] = useState([])
+  const [showForm, setShowForm] = useState(false)
 
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }))
+
+  const loadSessions = async () => {
+    const res = await fetch(`${API}/armchair/feed`)
+    const data = await res.json()
+    // Combine featured + past sessions into one list
+    const all = []
+    if (data.featured) all.push(data.featured)
+    if (data.pastSessions) all.push(...data.pastSessions)
+    setSessions(all)
+  }
+
+  useEffect(() => { loadSessions() }, [])
 
   const create = async () => {
     if (!form.title.trim() || !form.scheduled_at) return setStatus('❌ Title and date/time required')
@@ -62,54 +75,103 @@ function SessionsTab({ token }) {
     const data = await res.json()
     if (data.id) {
       setStatus('✅ Session scheduled!')
-      setCreatedSession(data)
       setForm({ title:'', description:'', guest_name:'', guest_bio:'', cover_image:'', scheduled_at:'' })
+      setShowForm(false)
+      loadSessions()
     } else setStatus(`❌ ${data.error}`)
     setLoading(false)
   }
 
-  const setSessionStatus = async (session_id, newStatus) => {
+  const updateStatus = async (session_id, newStatus) => {
     await fetch(`${API}/armchair/manage`, {
       method:'PUT', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
       body: JSON.stringify({ session_id, status: newStatus })
     })
-    setStatus(`✅ Session marked as ${newStatus}`)
+    setStatus(`✅ Session marked as "${newStatus}"`)
+    loadSessions()
   }
+
+  const STATUS_COLORS = { scheduled: C.gold, live: '#EF4444', ended: C.muted }
+  const STATUS_LABELS = { scheduled: '📅 Scheduled', live: '🔴 Live', ended: '✅ Ended' }
 
   return (
     <div style={{ background:'#fff', borderRadius:14, padding:28, border:`1px solid ${C.border}` }}>
-      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:C.navy, marginBottom:18 }}>Schedule a Live Session</h2>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:18 }}>
+        <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:C.navy }}>Live Sessions</h2>
+        <Btn variant="gold" onClick={() => setShowForm(s=>!s)}>
+          {showForm ? 'Cancel' : '+ Schedule New Session'}
+        </Btn>
+      </div>
 
       {status && <StatusBox status={status} />}
 
-      <Grid2>
-        <Field label="Session title *" value={form.title} onChange={set('title')} placeholder="e.g. The Heart of the Gospel" />
-        <Field label="Date & time *" type="datetime-local" value={form.scheduled_at} onChange={set('scheduled_at')} />
-        <Field label="Guest name" value={form.guest_name} onChange={set('guest_name')} placeholder="Who's joining you?" />
-      </Grid2>
-      <ImagePicker currentImage={form.cover_image} onSelect={url => setForm(f => ({ ...f, cover_image: url }))} />
-      <TextField label="Description" value={form.description} onChange={set('description')} placeholder="What will this conversation cover?" />
-      <TextField label="Guest bio" value={form.guest_bio} onChange={set('guest_bio')} placeholder="A short bio for the guest" />
-
-      <Btn variant="gold" onClick={create} disabled={loading} style={{ marginTop: 8 }}>
-        {loading ? 'Scheduling…' : 'Schedule Session'}
-      </Btn>
-
-      {createdSession && (
-        <div style={{ marginTop: 20, padding: '16px 18px', background: C.parchment, borderRadius: 10 }}>
-          <p style={{ fontFamily:F.body, fontSize:13.5, color:C.text, marginBottom: 10 }}>
-            Session created. Use these controls when you're ready to start:
-          </p>
-          <div style={{ display:'flex', gap:8 }}>
-            <Btn variant="primary" onClick={() => setSessionStatus(createdSession.id, 'live')}>🔴 Go Live</Btn>
-            <Btn variant="outline" onClick={() => setSessionStatus(createdSession.id, 'ended')}>End Session</Btn>
+      {/* Existing sessions */}
+      {sessions.length > 0 && (
+        <div style={{ marginBottom: showForm ? 24 : 0 }}>
+          <h3 style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:C.muted, textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:12 }}>
+            All Sessions
+          </h3>
+          <div style={{ display:'grid', gap:10 }}>
+            {sessions.map(s => (
+              <div key={s.id} style={{
+                padding:'14px 16px', background:C.parchment, borderRadius:10,
+                border:`1px solid ${C.border}`, display:'flex', alignItems:'center',
+                justifyContent:'space-between', gap:12, flexWrap:'wrap'
+              }}>
+                <div>
+                  <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
+                    <span style={{
+                      background: STATUS_COLORS[s.status] + '22',
+                      color: STATUS_COLORS[s.status],
+                      border: `1px solid ${STATUS_COLORS[s.status]}55`,
+                      borderRadius:4, padding:'1px 8px', fontSize:11,
+                      fontFamily:F.body, fontWeight:700
+                    }}>{STATUS_LABELS[s.status]}</span>
+                  </div>
+                  <p style={{ fontFamily:F.display, fontSize:15, fontWeight:700, color:C.navy, marginBottom:2 }}>{s.title}</p>
+                  {s.guest_name && <p style={{ fontFamily:F.body, fontSize:12, color:C.muted }}>with {s.guest_name}</p>}
+                </div>
+                <div style={{ display:'flex', gap:6 }}>
+                  {s.status === 'scheduled' && (
+                    <Btn variant="primary" onClick={() => updateStatus(s.id, 'live')}>🔴 Go Live</Btn>
+                  )}
+                  {s.status === 'live' && (
+                    <Btn variant="outline" onClick={() => updateStatus(s.id, 'ended')}>⏹ End Session</Btn>
+                  )}
+                  {s.status === 'ended' && (
+                    <span style={{ fontFamily:F.body, fontSize:12, color:C.muted, padding:'8px 0' }}>Session complete</span>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}
 
-      <p style={{ fontFamily:F.body, fontSize:12.5, color:C.muted, marginTop:18, lineHeight:1.6 }}>
-        Tip: stream your video via Zoom, Google Meet, or YouTube Live in a separate tab/app, and share that link with guests directly. This page powers the live chat and Q&A that runs alongside it on the site.
-      </p>
+      {/* Create new session form */}
+      {showForm && (
+        <div style={{ borderTop: sessions.length > 0 ? `1px solid ${C.border}` : 'none', paddingTop: sessions.length > 0 ? 24 : 0 }}>
+          <h3 style={{ fontFamily:F.display, fontSize:16, fontWeight:700, color:C.navy, marginBottom:16 }}>New Session</h3>
+          <Grid2>
+            <Field label="Session title *" value={form.title} onChange={set('title')} placeholder="e.g. The Heart of the Gospel" />
+            <Field label="Date & time *" type="datetime-local" value={form.scheduled_at} onChange={set('scheduled_at')} />
+            <Field label="Guest name" value={form.guest_name} onChange={set('guest_name')} placeholder="Who's joining you?" />
+          </Grid2>
+          <ImagePicker currentImage={form.cover_image} onSelect={url => setForm(f => ({ ...f, cover_image: url }))} />
+          <TextField label="Description" value={form.description} onChange={set('description')} placeholder="What will this conversation cover?" />
+          <TextField label="Guest bio" value={form.guest_bio} onChange={set('guest_bio')} placeholder="A short bio for the guest" />
+          <Btn variant="gold" onClick={create} disabled={loading} style={{ marginTop: 8 }}>
+            {loading ? 'Scheduling…' : 'Schedule Session'}
+          </Btn>
+          <p style={{ fontFamily:F.body, fontSize:12, color:C.muted, marginTop:14, lineHeight:1.6 }}>
+            Tip: stream your video via Zoom, Google Meet, or YouTube Live in a separate tab. This page powers the live chat and Q&amp;A that runs alongside it on the site.
+          </p>
+        </div>
+      )}
+
+      {sessions.length === 0 && !showForm && (
+        <p style={{ fontFamily:F.body, fontSize:14, color:C.muted }}>No sessions yet. Click "Schedule New Session" to create your first one.</p>
+      )}
     </div>
   )
 }
