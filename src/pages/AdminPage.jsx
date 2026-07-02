@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { C, F, API, ADMIN_USERS } from '../lib/tokens.js'
 import { Logo, Btn, StatusMsg, Field, TextArea } from '../components/ui.jsx'
 import { useAuth } from '../lib/auth.jsx'
@@ -46,6 +47,7 @@ function SessionsTab({ token }) {
   const [msg, setMsg] = useState('')
   const [loading, setLoading] = useState(false)
   const set = k => e => setForm(f=>({...f,[k]:e.target.value}))
+  const navigate = useNavigate()
 
   const loadSessions = () => {
     fetch(`${API}/armchair/manage`, { headers:{ Authorization:`Bearer ${token}` } })
@@ -67,6 +69,10 @@ function SessionsTab({ token }) {
     await fetch(`${API}/armchair/manage`, { method:'PUT', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`}, body:JSON.stringify({ session_id, status }) })
     setMsg(`✅ Session marked as "${status}"`)
     loadSessions()
+    // Navigate straight to the live session so you can broadcast immediately
+    if (status === 'live') {
+      setTimeout(() => navigate(`/armchair/session/${session_id}`), 800)
+    }
   }
 
   const STATUS_COLOR = { scheduled:C.gold, live:'#EF4444', ended:C.muted }
@@ -93,10 +99,13 @@ function SessionsTab({ token }) {
                   <p style={{ fontFamily:F.display, fontSize:14.5, fontWeight:700, color:C.navy, marginBottom:2 }}>{s.title}</p>
                   {s.guest_name && <p style={{ fontFamily:F.body, fontSize:12, color:C.muted }}>with {s.guest_name}</p>}
                 </div>
-                <div style={{ display:'flex', gap:7 }}>
+                <div style={{ display:'flex', gap:7, alignItems:'center' }}>
                   {s.status === 'scheduled' && <Btn variant="primary" onClick={()=>updateStatus(s.id,'live')}>🔴 Go Live</Btn>}
                   {s.status === 'live'      && <Btn variant="outline" onClick={()=>updateStatus(s.id,'ended')}>⏹ End Session</Btn>}
                   {s.status === 'ended'     && <span style={{ fontFamily:F.body, fontSize:12, color:C.muted }}>Complete</span>}
+                  <button onClick={()=>navigate(`/armchair/session/${s.id}`)} style={{ background:'none', border:'none', color:C.gold, fontFamily:F.body, fontSize:12.5, fontWeight:600, cursor:'pointer', padding:0 }}>
+                    Open session →
+                  </button>
                 </div>
               </div>
             ))}
