@@ -17,3 +17,4 @@ bucket_name = "de-recordings"
 
 [vars]
 SITE_URL = "https://discussionsexegetica.com"
+
