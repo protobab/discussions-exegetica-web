@@ -89,26 +89,22 @@ export default function ArmchairSessionPage() {
 
       {/* HOST BROADCASTER CONTROLS */}
       {isHost && isLive && (
-        <HostBroadcaster
-          sessionId={id}
-          token={token}
-          onEnd={() => {
-            // Reload session after recording saved
-            setTimeout(load, 1500)
-          }}
-        />
-      )}
-
-      {/* HOST WARNING — shown before broadcasting starts */}
-      {isHost && isLive && (
-        <div style={{ background:'#FEF3C7', border:'1px solid #FCD34D', borderRadius:10, padding:'10px 16px', marginBottom:16, fontFamily:F.body, fontSize:13, color:'#92400E' }}>
-          ⚠️ <strong>Important:</strong> Always end your session using the <strong>"End Session & Save Recording"</strong> button above — not from the admin panel. This ensures your recording is saved before the session closes.
-        </div>
+        <>
+          <HostBroadcaster
+            sessionId={id}
+            token={token}
+            zoomLink={session.zoom_link || ''}
+            onEnd={() => setTimeout(load, 1500)}
+          />
+          <div style={{ background:'#FEF3C7', border:'1px solid #FCD34D', borderRadius:10, padding:'10px 16px', marginBottom:16, fontFamily:F.body, fontSize:13, color:'#92400E' }}>
+            ⚠️ Always end your session using the <strong>"End Session & Save Recording"</strong> button above — not from the admin panel. This saves your recording before closing.
+          </div>
+        </>
       )}
 
       {/* LISTENER AUDIO RECEIVER */}
       {!isHost && isLive && (
-        <ListenerReceiver sessionId={id} roomId={session.room_id} />
+        <ListenerReceiver sessionId={id} zoomLink={session.zoom_link || ''} />
       )}
 
       {/* RECORDING PLAYBACK */}

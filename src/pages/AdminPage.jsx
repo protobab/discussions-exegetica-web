@@ -43,7 +43,7 @@ function Center({ children }) {
 function SessionsTab({ token }) {
   const [sessions, setSessions] = useState([])
   const [showForm, setShowForm] = useState(false)
-  const [form, setForm] = useState({ title:'', description:'', guest_name:'', guest_bio:'', cover_image:'', scheduled_at:'' })
+  const [form, setForm] = useState({ title:'', description:'', guest_name:'', guest_bio:'', cover_image:'', scheduled_at:'', zoom_link:'' })
   const [msg, setMsg] = useState('')
   const [loading, setLoading] = useState(false)
   const set = k => e => setForm(f=>({...f,[k]:e.target.value}))
@@ -60,7 +60,7 @@ function SessionsTab({ token }) {
     setLoading(true); setMsg('')
     const res = await fetch(`${API}/armchair/manage?type=session`, { method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`}, body:JSON.stringify(form) })
     const data = await res.json()
-    if (data.id) { setMsg('✅ Session scheduled!'); setShowForm(false); setForm({ title:'', description:'', guest_name:'', guest_bio:'', cover_image:'', scheduled_at:'' }); loadSessions() }
+    if (data.id) { setMsg('✅ Session scheduled!'); setShowForm(false); setForm({ title:'', description:'', guest_name:'', guest_bio:'', cover_image:'', scheduled_at:'', zoom_link:'' }); loadSessions() }
     else setMsg(`❌ ${data.error}`)
     setLoading(false)
   }
@@ -125,6 +125,7 @@ function SessionsTab({ token }) {
             <Field label="Title *" value={form.title} onChange={set('title')} placeholder="e.g. The Heart of the Gospel"/>
             <Field label="Date & time *" type="datetime-local" value={form.scheduled_at} onChange={set('scheduled_at')}/>
             <Field label="Guest name" value={form.guest_name} onChange={set('guest_name')} placeholder="Who's joining you?"/>
+            <Field label="Zoom / video link (optional)" value={form.zoom_link} onChange={set('zoom_link')} placeholder="https://zoom.us/j/..."/>
           </div>
           <ImagePicker currentImage={form.cover_image} onSelect={url=>setForm(f=>({...f,cover_image:url}))}/>
           <TextArea label="Description" value={form.description} onChange={set('description')} placeholder="What will this conversation cover?"/>

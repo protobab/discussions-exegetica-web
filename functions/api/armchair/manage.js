@@ -10,7 +10,7 @@ async function adminSession(request, env) {
 export async function onRequestGet({ env, request }) {
   if (!(await adminSession(request, env))) return json({ error: 'Unauthorised' }, 401)
   const { results } = await env.DB.prepare(
-    `SELECT id, title, guest_name, status, scheduled_at, cover_image, recording_url FROM armchair_sessions ORDER BY scheduled_at DESC`
+    `SELECT id, title, guest_name, status, scheduled_at, cover_image, recording_url, zoom_link FROM armchair_sessions ORDER BY scheduled_at DESC`
   ).all()
   return json({ sessions: results })
 }
@@ -31,10 +31,10 @@ export async function onRequestPost({ env, request }) {
   }
 
   if (type === 'session') {
-    const { title, description, guest_name, guest_bio, cover_image, scheduled_at } = body
+    const { title, description, guest_name, guest_bio, cover_image, scheduled_at, zoom_link } = body
     if (!title?.trim() || !scheduled_at) return json({ error: 'Title and date required' }, 400)
     const room_id = 'room_' + crypto.randomUUID().replace(/-/g,'').slice(0,10)
-    const r = await env.DB.prepare(`INSERT INTO armchair_sessions (title, description, guest_name, guest_bio, cover_image, scheduled_at, room_id, host_id) VALUES (?,?,?,?,?,?,?,?)`).bind(title.trim(), description?.trim()||'', guest_name?.trim()||'', guest_bio?.trim()||'', cover_image?.trim()||'', scheduled_at, room_id, admin.user_id).run()
+    const r = await env.DB.prepare(`INSERT INTO armchair_sessions (title, description, guest_name, guest_bio, cover_image, scheduled_at, room_id, zoom_link, host_id) VALUES (?,?,?,?,?,?,?,?,?)`).bind(title.trim(), description?.trim()||'', guest_name?.trim()||'', guest_bio?.trim()||'', cover_image?.trim()||'', scheduled_at, room_id, zoom_link?.trim()||'', admin.user_id).run()
     return json({ id: r.meta.last_row_id, room_id }, 201)
   }
 
