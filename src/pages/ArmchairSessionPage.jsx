@@ -89,7 +89,21 @@ export default function ArmchairSessionPage() {
 
       {/* HOST BROADCASTER CONTROLS */}
       {isHost && isLive && (
-        <HostBroadcaster sessionId={id} token={token} onEnd={() => { load() }} />
+        <HostBroadcaster
+          sessionId={id}
+          token={token}
+          onEnd={() => {
+            // Reload session after recording saved
+            setTimeout(load, 1500)
+          }}
+        />
+      )}
+
+      {/* HOST WARNING — shown before broadcasting starts */}
+      {isHost && isLive && (
+        <div style={{ background:'#FEF3C7', border:'1px solid #FCD34D', borderRadius:10, padding:'10px 16px', marginBottom:16, fontFamily:F.body, fontSize:13, color:'#92400E' }}>
+          ⚠️ <strong>Important:</strong> Always end your session using the <strong>"End Session & Save Recording"</strong> button above — not from the admin panel. This ensures your recording is saved before the session closes.
+        </div>
       )}
 
       {/* LISTENER AUDIO RECEIVER */}
@@ -98,15 +112,23 @@ export default function ArmchairSessionPage() {
       )}
 
       {/* RECORDING PLAYBACK */}
-      {isEnded && session.recording_url && (
-        <div style={{ marginBottom:20, borderRadius:12, overflow:'hidden', background:'#000' }}>
-          <audio controls style={{ width:'100%', display:'block' }} src={session.recording_url}/>
-          <p style={{ fontFamily:F.body, fontSize:11.5, color:'rgba(255,255,255,0.5)', padding:'6px 14px' }}>Recording from this session</p>
-        </div>
-      )}
-      {isEnded && session.recording_key && !session.recording_url && (
+      {isEnded && (
         <div style={{ marginBottom:20 }}>
-          <audio controls style={{ width:'100%', display:'block', borderRadius:10 }} src={`${API}/armchair/recordings/${session.recording_key.replace('recordings/','')}`}/>
+          {session.recording_url ? (
+            <div style={{ borderRadius:12, overflow:'hidden', background:'#1a1a2e', padding:'4px 0' }}>
+              <audio controls style={{ width:'100%', display:'block' }} src={session.recording_url}/>
+              <p style={{ fontFamily:F.body, fontSize:11.5, color:'rgba(255,255,255,0.45)', padding:'4px 14px 8px' }}>Recording from this session</p>
+            </div>
+          ) : session.recording_key ? (
+            <div style={{ borderRadius:12, overflow:'hidden', background:'#1a1a2e', padding:'4px 0' }}>
+              <audio controls style={{ width:'100%', display:'block' }} src={`${API}/armchair/recordings/${session.recording_key.replace('recordings/','')}`}/>
+              <p style={{ fontFamily:F.body, fontSize:11.5, color:'rgba(255,255,255,0.45)', padding:'4px 14px 8px' }}>Recording from this session</p>
+            </div>
+          ) : (
+            <div style={{ background:C.mist, borderRadius:10, padding:'14px 18px', fontFamily:F.body, fontSize:13.5, color:C.muted }}>
+              No recording available for this session. If you were broadcasting, the recording may not have been saved — next time use the <strong>"End Session & Save Recording"</strong> button in the broadcaster controls on this page.
+            </div>
+          )}
         </div>
       )}
 
