@@ -102,32 +102,54 @@ export function HostBroadcaster({ sessionId, token, onEnd }) {
 
   const endBroadcast = async () => {
     clearInterval(pollRef.current)
-    setStatus('ended')
+    setStatus('uploading')
 
-    // Stop recording
-    if (recorderRef.current && recorderRef.current.state !== 'inactive') {
+    // Stop recorder and wait for it to finish collecting all chunks
+    await new Promise(resolve => {
+      if (!recorderRef.current || recorderRef.current.state === 'inactive') {
+        resolve()
+        return
+      }
+      recorderRef.current.onstop = resolve
       recorderRef.current.stop()
-      await new Promise(r => setTimeout(r, 500)) // wait for final chunk
-    }
+    })
 
-    // Close all peer connections
+    // Give browser 300ms to fire final ondataavailable
+    await new Promise(r => setTimeout(r, 300))
+
+    // Close all peer connections and mic
     Object.values(peersRef.current).forEach(pc => pc.close())
     streamRef.current?.getTracks().forEach(t => t.stop())
 
     // Upload recording to R2
     if (chunksRef.current.length > 0) {
       const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
-      setStatus('uploading')
       try {
-        await fetch(`${API}/armchair/recordings/upload?session_id=${sessionId}`, {
+        const res = await fetch(`${API}/armchair/recordings/upload?session_id=${sessionId}`, {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'audio/webm' },
           body: blob
         })
-        setStatus('saved')
-      } catch {
-        setStatus('ended')
+        const data = await res.json()
+        if (data.ok) {
+          setStatus('saved')
+        } else {
+          setStatus('error')
+          console.error('Upload failed:', data.error)
+        }
+      } catch (e) {
+        setStatus('error')
+        console.error('Upload error:', e)
       }
+    } else {
+      // No chunks recorded — session was too short or mic never started
+      setStatus('ended')
+      // Still mark session as ended in DB
+      await fetch(`${API}/armchair/manage`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ session_id: sessionId, status: 'ended' })
+      })
     }
 
     onEnd?.()
@@ -163,10 +185,16 @@ export function HostBroadcaster({ sessionId, token, onEnd }) {
         </div>
       )}
       {status === 'uploading' && (
-        <p style={{ fontFamily: F.body, fontSize: 13, color: C.muted }}>⏫ Saving recording to library…</p>
+        <p style={{ fontFamily: F.body, fontSize: 13, color: C.muted }}>⏫ Saving recording… please wait, do not close this page.</p>
       )}
       {status === 'saved' && (
         <p style={{ fontFamily: F.body, fontSize: 13, color: '#15803D', fontWeight: 600 }}>✅ Session ended and recording saved to the library.</p>
+      )}
+      {status === 'ended' && (
+        <p style={{ fontFamily: F.body, fontSize: 13, color: C.muted }}>Session ended. No recording was captured (microphone may not have been active).</p>
+      )}
+      {status === 'error' && (
+        <p style={{ fontFamily: F.body, fontSize: 13, color: '#DC2626', fontWeight: 600 }}>❌ Recording upload failed. Please check your connection and try again, or contact support.</p>
       )}
 
       <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
