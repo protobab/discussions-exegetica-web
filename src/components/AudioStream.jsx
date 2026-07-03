@@ -84,11 +84,17 @@ export function HostBroadcaster({ sessionId, token, zoomLink, onEnd }) {
 
       // When a listener connects, send them the audio stream
       peer.on('call', call => {
+        // Answer with our stream regardless of what the listener sent
         call.answer(stream)
         const id = call.peer
         connectionsRef.current[id] = call
         setListenerCount(Object.keys(connectionsRef.current).length)
         call.on('close', () => {
+          delete connectionsRef.current[id]
+          setListenerCount(Object.keys(connectionsRef.current).length)
+        })
+        call.on('error', err => {
+          console.warn('Listener connection error:', err)
           delete connectionsRef.current[id]
           setListenerCount(Object.keys(connectionsRef.current).length)
         })
@@ -277,11 +283,12 @@ export function ListenerReceiver({ sessionId, zoomLink }) {
           if (!peerRef.current) return
 
           try {
-            // Call host with empty stream — host sends back their audio
-            const call = peer.call(`host-${sessionId}`, new MediaStream())
+            // Firefox fix: don't pass empty MediaStream — pass null instead
+            // PeerJS will handle one-way audio via the stream event
+            const call = peer.call(`host-${sessionId}`, null)
 
             if (!call) {
-              setErrorMsg('Could not reach host audio. Make sure the host has started broadcasting.')
+              setErrorMsg('Could not reach host audio. Make sure the host has started broadcasting first.')
               setStatus('failed')
               return
             }
@@ -299,7 +306,7 @@ export function ListenerReceiver({ sessionId, zoomLink }) {
 
             call.on('error', err => {
               console.error('Call error:', err)
-              setErrorMsg('Audio call failed — please retry.')
+              setErrorMsg(`Audio call failed (${err.type || err.message}) — please retry.`)
               setStatus('failed')
             })
 
@@ -309,15 +316,15 @@ export function ListenerReceiver({ sessionId, zoomLink }) {
 
             // Timeout if no stream received in 25 seconds
             setTimeout(() => {
-              if (!streamReceived && status !== 'connected') {
-                setErrorMsg('No audio received after 25 seconds. The host may not have started their microphone yet.')
+              if (!streamReceived) {
+                setErrorMsg('No audio received after 25 seconds. Make sure the host has clicked "Start Native Audio" first.')
                 setStatus('failed')
               }
             }, 25000)
 
           } catch (e) {
-            console.error('Call setup error:', e)
-            setErrorMsg('Failed to initiate audio call — please retry.')
+            console.error('Call setup error:', e.message)
+            setErrorMsg(`Failed to initiate audio call: ${e.message} — please try Chrome if this persists.`)
             setStatus('failed')
           }
         }, 1500)
