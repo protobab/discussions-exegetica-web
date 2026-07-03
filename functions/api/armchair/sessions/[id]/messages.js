@@ -3,7 +3,7 @@ import { getSession, json } from '../../../../_shared.js'
 
 export async function onRequestGet({ env, params }) {
   const { results } = await env.DB.prepare(`SELECT m.id, m.body, m.is_question, m.flag_count, m.created_at, u.username, u.display_name, u.avatar_color, u.badge FROM armchair_messages m JOIN users u ON m.user_id = u.id WHERE m.session_id = ? AND m.is_hidden = 0 ORDER BY m.created_at ASC LIMIT 300`).bind(params.id).all()
-  const session = await env.DB.prepare(`SELECT id, title, status, guest_name, description, cover_image, room_id, recording_url, listener_count FROM armchair_sessions WHERE id = ?`).bind(params.id).first()
+  const session = await env.DB.prepare(`SELECT id, title, status, guest_name, description, cover_image, room_id, recording_url, recording_key, zoom_link, listener_count FROM armchair_sessions WHERE id = ?`).bind(params.id).first()
   return json({ messages: results, session })
 }
 

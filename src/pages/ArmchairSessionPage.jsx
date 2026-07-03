@@ -87,6 +87,18 @@ export default function ArmchairSessionPage() {
         </div>
       </div>
 
+      {/* ZOOM LINK BANNER */}
+      {session.zoom_link && isLive && (
+        <div style={{ background: C.navyLight, borderRadius: 10, padding: '12px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+          <span style={{ fontFamily: F.body, fontSize: 13.5, color: '#fff' }}>
+            📹 <strong>Video session available</strong> — join via Zoom or video link
+          </span>
+          <a href={session.zoom_link} target="_blank" rel="noreferrer" style={{ background: C.gold, color: C.navy, borderRadius: 8, padding: '8px 18px', fontFamily: F.body, fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap' }}>
+            Join Video →
+          </a>
+        </div>
+      )}
+
       {/* HOST BROADCASTER CONTROLS */}
       {isHost && isLive && (
         <>
@@ -161,8 +173,8 @@ export default function ArmchairSessionPage() {
         <div style={{ borderTop:`1px solid ${C.border}`, padding:'12px 16px' }}>
           {!user
             ? <p style={{ fontFamily:F.body, fontSize:13, color:C.muted }}><Link to="/login" style={{ color:C.gold, fontWeight:600 }}>Sign in</Link> to join the conversation.</p>
-            : !isLive
-            ? <p style={{ fontFamily:F.body, fontSize:13, color:C.muted }}>{isEnded ? 'This session has ended.' : 'Chat will open once the session goes live.'}</p>
+            : isEnded
+            ? <p style={{ fontFamily:F.body, fontSize:13, color:C.muted }}>This session has ended.</p>
             : (
               <>
                 <div style={{ display:'flex', gap:8 }}>
