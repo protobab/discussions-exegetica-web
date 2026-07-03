@@ -63,7 +63,8 @@ export function HostBroadcaster({ sessionId, token, zoomLink, onEnd }) {
       const iceServers = await getIceServers(null) // add Metered key here once you have it
 
       const peer = new Peer(`host-${sessionId}`, {
-        config: { iceServers }
+        config: { iceServers },
+        debug: 0
       })
       peerRef.current = peer
 
@@ -94,11 +95,14 @@ export function HostBroadcaster({ sessionId, token, zoomLink, onEnd }) {
       })
 
       peer.on('error', err => {
-        console.error('PeerJS error:', err)
+        console.error('PeerJS host error:', err.type, err)
         if (err.type === 'unavailable-id') {
-          // Host peer ID already taken — destroy and recreate
+          // Previous session's peer ID still registered — wait and retry
           peer.destroy()
-          setTimeout(startBroadcast, 1000)
+          setTimeout(startBroadcast, 3000)
+        } else {
+          setStatus('idle')
+          alert(`Broadcast error (${err.type}): ${err.message || 'Please try again.'}`)
         }
       })
 
@@ -224,63 +228,123 @@ export function HostBroadcaster({ sessionId, token, zoomLink, onEnd }) {
 // ── Listener Receiver ─────────────────────────────────────────
 export function ListenerReceiver({ sessionId, zoomLink }) {
   const [status, setStatus] = useState('idle')
+  const [errorMsg, setErrorMsg] = useState('')
   const peerRef = useRef(null)
   const audioRef = useRef(null)
-  const listenerId = useRef('l-' + Math.random().toString(36).slice(2, 9))
+  const listenerId = useRef('l-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7))
 
   const connect = async () => {
     setStatus('connecting')
+    setErrorMsg('')
+
+    // Destroy any previous peer cleanly
+    if (peerRef.current) {
+      peerRef.current.destroy()
+      peerRef.current = null
+      await new Promise(r => setTimeout(r, 500))
+    }
+
     try {
       const Peer = await loadPeerJS()
       const iceServers = await getIceServers(null)
 
-      const peer = new Peer(listenerId.current, { config: { iceServers } })
+      // Use a unique ID each time to avoid collisions
+      const peer = new Peer(listenerId.current + '-' + Date.now(), {
+        config: { iceServers },
+        debug: 0
+      })
       peerRef.current = peer
 
-      peer.on('open', () => {
-        // Call the host
-        const call = peer.call(`host-${sessionId}`, new MediaStream())
-        call.on('stream', remoteStream => {
-          if (audioRef.current) {
-            audioRef.current.srcObject = remoteStream
-            audioRef.current.play().catch(() => {})
-            setStatus('connected')
-          }
-        })
-        call.on('error', err => {
-          console.error('Call error:', err)
-          setStatus('failed')
-        })
-        call.on('close', () => setStatus('idle'))
-
-        // Timeout if no stream in 20s
-        setTimeout(() => {
-          if (status !== 'connected') setStatus('failed')
-        }, 20000)
-      })
-
       peer.on('error', err => {
-        console.error('Listener peer error:', err)
+        console.error('Listener peer error type:', err.type, err)
+        peerRef.current = null
+
+        if (err.type === 'peer-unavailable') {
+          setErrorMsg('Host audio not available yet — the host may still be setting up. Please wait a moment and retry.')
+        } else if (err.type === 'network' || err.type === 'disconnected') {
+          setErrorMsg('Network connection lost. Please check your internet and retry.')
+        } else if (err.type === 'server-error') {
+          setErrorMsg('Could not reach the audio server. Please retry in a few seconds.')
+        } else {
+          setErrorMsg(`Connection error (${err.type}) — please retry.`)
+        }
         setStatus('failed')
       })
 
+      peer.on('open', () => {
+        // Small delay to ensure host peer is fully registered
+        setTimeout(() => {
+          if (!peerRef.current) return
+
+          try {
+            // Call host with empty stream — host sends back their audio
+            const call = peer.call(`host-${sessionId}`, new MediaStream())
+
+            if (!call) {
+              setErrorMsg('Could not reach host audio. Make sure the host has started broadcasting.')
+              setStatus('failed')
+              return
+            }
+
+            let streamReceived = false
+
+            call.on('stream', remoteStream => {
+              streamReceived = true
+              if (audioRef.current) {
+                audioRef.current.srcObject = remoteStream
+                audioRef.current.play().catch(e => console.warn('Audio play error:', e))
+                setStatus('connected')
+              }
+            })
+
+            call.on('error', err => {
+              console.error('Call error:', err)
+              setErrorMsg('Audio call failed — please retry.')
+              setStatus('failed')
+            })
+
+            call.on('close', () => {
+              if (status === 'connected') setStatus('idle')
+            })
+
+            // Timeout if no stream received in 25 seconds
+            setTimeout(() => {
+              if (!streamReceived && status !== 'connected') {
+                setErrorMsg('No audio received after 25 seconds. The host may not have started their microphone yet.')
+                setStatus('failed')
+              }
+            }, 25000)
+
+          } catch (e) {
+            console.error('Call setup error:', e)
+            setErrorMsg('Failed to initiate audio call — please retry.')
+            setStatus('failed')
+          }
+        }, 1500)
+      })
+
     } catch (e) {
-      console.error('Listener error:', e)
+      console.error('Listener init error:', e)
+      setErrorMsg('Failed to load audio system — please refresh the page and try again.')
       setStatus('failed')
     }
   }
 
   const disconnect = () => {
     peerRef.current?.destroy()
+    peerRef.current = null
     if (audioRef.current) audioRef.current.srcObject = null
     setStatus('idle')
+    setErrorMsg('')
   }
 
-  useEffect(() => () => peerRef.current?.destroy(), [])
+  useEffect(() => () => {
+    peerRef.current?.destroy()
+  }, [])
 
   return (
     <div style={{ background: C.mist, borderRadius: 10, padding: '14px 16px', marginBottom: 16 }}>
-      <audio ref={audioRef} autoPlay style={{ width: '100%', marginBottom: status === 'connected' ? 8 : 0, display: status === 'connected' ? 'block' : 'none' }}/>
+      <audio ref={audioRef} autoPlay style={{ width: '100%', marginBottom: 8, display: status === 'connected' ? 'block' : 'none' }}/>
 
       {status === 'idle' && (
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
@@ -295,26 +359,32 @@ export function ListenerReceiver({ sessionId, zoomLink }) {
       )}
 
       {status === 'connecting' && (
-        <p style={{ fontFamily: F.body, fontSize: 13, color: C.muted }}>Connecting… (may take 10–20 seconds)</p>
+        <p style={{ fontFamily: F.body, fontSize: 13, color: C.muted }}>
+          Connecting to live audio… (this may take up to 30 seconds)
+        </p>
       )}
 
       {status === 'connected' && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontFamily: F.body, fontSize: 12.5, color: '#15803D', fontWeight: 600 }}>🎧 Connected — listening live</span>
-          <button onClick={disconnect} style={{ background: 'none', border: 'none', color: C.muted, fontSize: 12, cursor: 'pointer', fontFamily: F.body }}>Disconnect</button>
+          <span style={{ fontFamily: F.body, fontSize: 12.5, color: '#15803D', fontWeight: 600 }}>
+            🎧 Connected — listening live
+          </span>
+          <button onClick={disconnect} style={{ background: 'none', border: 'none', color: C.muted, fontSize: 12, cursor: 'pointer', fontFamily: F.body }}>
+            Disconnect
+          </button>
         </div>
       )}
 
       {status === 'failed' && (
         <div>
-          <p style={{ fontFamily: F.body, fontSize: 13, color: '#DC2626', marginBottom: 8 }}>
-            Could not connect to the live audio. The host may not have started streaming yet.
+          <p style={{ fontFamily: F.body, fontSize: 13, color: '#DC2626', marginBottom: 10 }}>
+            {errorMsg || 'Could not connect to live audio.'}
           </p>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <Btn variant="outline" onClick={connect}>Retry</Btn>
             {zoomLink && (
               <a href={zoomLink} target="_blank" rel="noreferrer">
-                <Btn variant="ghost">📹 Try Video Link Instead</Btn>
+                <Btn variant="ghost">📹 Try Video Instead</Btn>
               </a>
             )}
           </div>
