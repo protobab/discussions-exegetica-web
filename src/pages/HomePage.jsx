@@ -8,12 +8,17 @@ export default function HomePage() {
   usePageTitle(null)
   const [dailyWord, setDailyWord] = useState(null)
   const [threads, setThreads] = useState([])
+  const [armchair, setArmchair] = useState(null)
   const navigate = useNavigate()
 
   useEffect(() => {
     fetch(`${API}/daily-word`).then(r=>r.json()).then(d=>setDailyWord(d.word)).catch(()=>{})
     fetch(`${API}/threads`).then(r=>r.json()).then(d=>setThreads(d.threads||[])).catch(()=>{})
+    fetch(`${API}/armchair/feed`).then(r=>r.json()).then(d=>setArmchair(d)).catch(()=>{})
   }, [])
+
+  const isLive = armchair?.featured?.status === 'live'
+  const hasArmchair = armchair?.featured || (armchair?.pastSessions?.length > 0) || (armchair?.posts?.length > 0)
 
   return (
     <div>
@@ -35,11 +40,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ARMCHAIR PROMO */}
-      <Link to="/armchair" style={{ display:'block', background:'#fff', borderBottom:`1px solid ${C.border}`, padding:'14px 24px', textAlign:'center' }}>
-        <span style={{ fontFamily:F.body, fontSize:13.5, color:C.navy }}>🎙️ <strong style={{ color:C.gold }}>The Armchair</strong> — live conversations with guests, recordings, and reflections in writing →</span>
-      </Link>
-
       {/* DAILY WORD */}
       {dailyWord && (
         <div style={{ background:C.gold, padding:'15px 24px', display:'flex', alignItems:'center', justifyContent:'center', gap:14, flexWrap:'wrap', textAlign:'center' }}>
@@ -48,6 +48,82 @@ export default function HomePage() {
           <span style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:C.navyLight }}>— {dailyWord.verse_ref}</span>
         </div>
       )}
+
+      {/* THE ARMCHAIR — prominent feature section */}
+      <div style={{
+        position: 'relative', overflow: 'hidden',
+        backgroundImage: `linear-gradient(rgba(27,42,74,0.82), rgba(27,42,74,0.92)), url(/ambient/bg-loop.jpg)`,
+        backgroundSize: 'cover', backgroundPosition: 'center',
+        padding: '56px 24px',
+      }}>
+        <div style={{ maxWidth: 980, margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.1fr) minmax(0,1fr)', gap: 40, alignItems: 'center' }} className="armchair-home-grid">
+
+            {/* Left — text */}
+            <div>
+              <p style={{ fontFamily:F.body, fontSize:11, fontWeight:700, color:C.gold, letterSpacing:'0.16em', textTransform:'uppercase', marginBottom:12 }}>
+                🎙 The Armchair
+              </p>
+              <h2 style={{ fontFamily:F.display, fontSize:'clamp(24px,3.5vw,38px)', fontWeight:900, color:'#fff', marginBottom:14, lineHeight:1.2 }}>
+                Live conversations,<br/>ambient music &amp; reflections.
+              </h2>
+              <p style={{ fontFamily:F.body, fontSize:15.5, color:'rgba(255,255,255,0.7)', lineHeight:1.75, marginBottom:24, maxWidth:420 }}>
+                Join Eki and guests for live audio armchair discussions on faith, Scripture and life. Past sessions are recorded and available to listen back. Written reflections published between sessions.
+              </p>
+
+              {/* Live badge if session active */}
+              {isLive && (
+                <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:20, background:'rgba(239,68,68,0.15)', border:'1px solid rgba(239,68,68,0.4)', borderRadius:10, padding:'10px 16px', width:'fit-content' }}>
+                  <span style={{ width:10, height:10, borderRadius:'50%', background:'#EF4444', display:'inline-block', animation:'pulse 1.2s infinite' }}/>
+                  <span style={{ fontFamily:F.body, fontSize:13.5, fontWeight:700, color:'#fff' }}>Live now — {armchair.featured.title}</span>
+                </div>
+              )}
+
+              <div style={{ display:'flex', gap:12, flexWrap:'wrap' }}>
+                <Link to="/armchair" style={{
+                  background: C.gold, color: C.navy, borderRadius:10,
+                  padding:'12px 24px', fontFamily:F.body, fontSize:14.5, fontWeight:700
+                }}>
+                  {isLive ? '🎧 Join Live Now →' : 'Enter The Armchair →'}
+                </Link>
+                {armchair?.pastSessions?.length > 0 && !isLive && (
+                  <Link to="/armchair" style={{
+                    background:'rgba(255,255,255,0.1)', color:'#fff',
+                    border:'1px solid rgba(255,255,255,0.2)', borderRadius:10,
+                    padding:'12px 24px', fontFamily:F.body, fontSize:14, fontWeight:600
+                  }}>
+                    Browse recordings
+                  </Link>
+                )}
+              </div>
+            </div>
+
+            {/* Right — preview cards */}
+            <div style={{ display:'grid', gap:12 }}>
+              {armchair?.posts?.slice(0,2).map(p => (
+                <Link key={p.id} to="/armchair" style={{
+                  display:'grid', gridTemplateColumns:'80px 1fr', gap:12,
+                  background:'rgba(255,255,255,0.07)', border:'1px solid rgba(255,255,255,0.12)',
+                  borderRadius:12, overflow:'hidden', textDecoration:'none'
+                }}>
+                  <div style={{ backgroundImage:`url(${p.cover_image||'https://images.unsplash.com/photo-1490127252417-7c393f993ee4?w=200&q=50'})`, backgroundSize:'cover', backgroundPosition:'center' }}/>
+                  <div style={{ padding:'12px 12px 12px 0' }}>
+                    <p style={{ fontFamily:F.display, fontSize:13.5, fontWeight:700, color:'#fff', margin:'0 0 4px', lineHeight:1.3 }}>{p.title}</p>
+                    {p.excerpt && <p style={{ fontFamily:F.body, fontSize:12, color:'rgba(255,255,255,0.55)', margin:0, lineHeight:1.5 }}>{p.excerpt.slice(0,70)}…</p>}
+                  </div>
+                </Link>
+              ))}
+              {(!armchair?.posts?.length) && (
+                <div style={{ background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:12, padding:'20px', textAlign:'center' }}>
+                  <p style={{ fontFamily:F.body, fontSize:13.5, color:'rgba(255,255,255,0.5)', marginBottom:12 }}>🎵 Ambient worship music playing now</p>
+                  <Link to="/armchair" style={{ color:C.gold, fontFamily:F.body, fontSize:13, fontWeight:600 }}>Enter the Armchair →</Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        <style>{`@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}`}</style>
+      </div>
 
       {/* ACTIVE DISCUSSIONS */}
       <div style={{ maxWidth:860, margin:'48px auto', padding:'0 20px' }}>
@@ -77,10 +153,14 @@ export default function HomePage() {
 
       {/* CTA */}
       <div style={{ textAlign:'center', padding:'56px 24px' }}>
-        <h2 style={{ fontFamily:F.display, fontSize:26, fontWeight:700, color:C.navy, margin:'0 0 10px' }}>Ready to join the Circle?</h2>
+        <h2 style={{ fontFamily:F.display, fontSize:26, fontWeight:700, color:C.navy, margin:'0 0 10px' }}>Ready to join?</h2>
         <p style={{ fontFamily:F.body, fontSize:14.5, color:C.muted, margin:'0 0 24px' }}>Free to join. Open to all — whether you've read the Bible for decades or never opened one.</p>
         <Link to="/register" style={{ background:C.navy, color:'#fff', borderRadius:10, padding:'13px 30px', fontFamily:F.body, fontSize:15, fontWeight:700 }}>Create your free account</Link>
       </div>
+
+      <style>{`
+        @media(max-width:700px){ .armchair-home-grid{ grid-template-columns:1fr !important; } }
+      `}</style>
     </div>
   )
 }
