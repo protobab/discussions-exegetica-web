@@ -9,6 +9,7 @@ import DailyWordPage from './pages/DailyWordPage.jsx'
 import ArmchairPage from './pages/ArmchairPage.jsx'
 import ArmchairSessionPage from './pages/ArmchairSessionPage.jsx'
 import ArmchairPostPage from './pages/ArmchairPostPage.jsx'
+import AdminPage from './pages/AdminPage.jsx'
 import BibleStudyPage from './pages/BibleStudyPage.jsx'
 
 export default function App() {
