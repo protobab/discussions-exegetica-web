@@ -3,7 +3,23 @@
 // Called by a Cloudflare Cron Trigger (set in wrangler.toml)
 // Can also be triggered manually by admin via POST request
 
-import { getSession, json, ADMIN_USERS } from '../../_shared.js'
+
+
+// ── Shared helpers (inlined — Cloudflare Pages does not support relative imports) ──
+async function getSession(request, env) {
+  const token = request.headers.get('Authorization')?.replace('Bearer ', '')
+  if (!token) return null
+  try { return JSON.parse(await env.SESSIONS.get(`s:${token}`)) } catch { return null }
+}
+
+function json(data, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+  })
+}
+
+const ADMIN_USERS = ['eki']
 
 // ── Topic pools — rotated weekly to keep content fresh ───────
 

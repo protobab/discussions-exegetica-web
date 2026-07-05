@@ -26,7 +26,7 @@ export default function Layout() {
         </Link>
 
         <div className="de-nav-links" style={{ display:'flex', gap:2 }}>
-          {[['Forum','/forum'],['Groups','/groups'],['Armchair','/armchair'],['Daily Word','/daily-word']].map(([l,t])=>(
+          {[['Forum','/forum'],['Groups','/groups'],['Bible','/bible'],['Armchair','/armchair'],['Daily Word','/daily-word']].map(([l,t])=>(
             <Link key={l} to={t} style={{ color:'rgba(255,255,255,0.78)', fontFamily:F.body, fontSize:13, fontWeight:500, padding:'6px 10px', borderRadius:6, whiteSpace:'nowrap' }}>{l}</Link>
           ))}
         </div>
