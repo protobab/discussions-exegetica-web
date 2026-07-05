@@ -22,13 +22,14 @@ export default function AdminPage() {
         <h1 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:C.navy }}>Admin Panel</h1>
       </div>
       <div style={{ display:'flex', gap:7, marginBottom:26, flexWrap:'wrap' }}>
-        {[['sessions','Live Sessions'],['posts','Blog Posts'],['daily','Daily Word'],['moderation','Moderation']].map(([k,l])=>(
+        {[['sessions','Live Sessions'],['posts','Blog Posts'],['daily','Daily Word'],['auto','Auto Content'],['moderation','Moderation']].map(([k,l])=>(
           <button key={k} onClick={()=>setTab(k)} style={{ background:tab===k?C.navy:'#fff', color:tab===k?'#fff':C.muted, border:`1.5px solid ${tab===k?C.navy:C.border}`, borderRadius:8, padding:'8px 16px', fontFamily:F.body, fontSize:13, fontWeight:600, cursor:'pointer' }}>{l}</button>
         ))}
       </div>
       {tab === 'sessions'    && <SessionsTab token={token}/>}
       {tab === 'posts'       && <PostsTab token={token}/>}
       {tab === 'daily'       && <DailyWordTab token={token}/>}
+      {tab === 'auto'        && <AutoContentTab token={token}/>}
       {tab === 'moderation'  && <ModerationTab token={token}/>}
     </div>
   )
@@ -271,6 +272,102 @@ function ModerationTab({ token }) {
             ))}
           </div>
       }
+    </Panel>
+  )
+}
+
+// ── Auto Content ─────────────────────────────────────────────
+
+function AutoContentTab({ token }) {
+  const [count, setCount] = useState(3)
+  const [category, setCategory] = useState('')
+  const [msg, setMsg] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [results, setResults] = useState([])
+
+  const CATS = [
+    { slug:'', label:'Mix of all categories' },
+    { slug:'exegesis', label:'Deep Dive' },
+    { slug:'seekers', label:"Seekers' Corner" },
+    { slug:'prayer', label:'Prayer & Life' },
+    { slug:'theology', label:'Theology' },
+    { slug:'prophecy', label:'Prophecy' },
+  ]
+
+  const generate = async () => {
+    setLoading(true); setMsg(''); setResults([])
+    try {
+      const res = await fetch(`/api/admin/auto-content`, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json', Authorization:`Bearer ${token}` },
+        body: JSON.stringify({ count, category: category || null })
+      })
+      const data = await res.json()
+      if (data.ok) {
+        setMsg(`✅ Generated ${data.generated} new discussion${data.generated !== 1 ? 's' : ''}`)
+        setResults(data.threads || [])
+      } else {
+        setMsg(`❌ ${data.error}`)
+      }
+    } catch (e) {
+      setMsg(`❌ ${e.message}`)
+    }
+    setLoading(false)
+  }
+
+  return (
+    <Panel>
+      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:C.navy, marginBottom:6 }}>Auto Content Engine</h2>
+      <p style={{ fontFamily:F.body, fontSize:13.5, color:C.muted, marginBottom:20, lineHeight:1.6 }}>
+        Uses Claude AI to generate high-quality discussion threads based on the most-searched global faith questions. Runs automatically every week, or trigger it manually here. Each thread is written as a thoughtful opening post that invites real community engagement.
+      </p>
+
+      <StatusMsg msg={msg}/>
+
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14, marginBottom:18 }}>
+        <div>
+          <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:C.navy, display:'block', marginBottom:6 }}>Number to generate (1–5)</label>
+          <input type="number" min={1} max={5} value={count} onChange={e=>setCount(Math.min(5,Math.max(1,parseInt(e.target.value)||1)))}
+            style={{ width:'100%', border:`1.5px solid ${C.border}`, borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:14, outline:'none' }}/>
+        </div>
+        <div>
+          <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:C.navy, display:'block', marginBottom:6 }}>Category focus</label>
+          <select value={category} onChange={e=>setCategory(e.target.value)} style={{ width:'100%', border:`1.5px solid ${C.border}`, borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:14, outline:'none', background:'#fff' }}>
+            {CATS.map(c=><option key={c.slug} value={c.slug}>{c.label}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <Btn variant="gold" onClick={generate} disabled={loading}>
+        {loading ? '✍️ Generating… (this takes 20–30 seconds)' : '✍️ Generate Discussions Now'}
+      </Btn>
+
+      {results.length > 0 && (
+        <div style={{ marginTop:20 }}>
+          <h3 style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:C.navy, marginBottom:10 }}>Just created:</h3>
+          <div style={{ display:'grid', gap:8 }}>
+            {results.map((t,i)=>(
+              <div key={i} style={{ padding:'10px 14px', background:C.parchment, borderRadius:8, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                <div>
+                  <span style={{ fontFamily:F.body, fontSize:11, color:C.muted, textTransform:'uppercase', letterSpacing:'0.06em' }}>{t.category}</span>
+                  <p style={{ fontFamily:F.display, fontSize:14, fontWeight:700, color:C.navy, margin:'2px 0 0' }}>{t.title}</p>
+                </div>
+                <a href={`/thread/${t.id}`} target="_blank" rel="noreferrer" style={{ color:C.gold, fontFamily:F.body, fontSize:12.5, fontWeight:600, whiteSpace:'nowrap', marginLeft:12 }}>View →</a>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div style={{ marginTop:24, padding:'16px', background:C.mist, borderRadius:10 }}>
+        <p style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:C.navy, marginBottom:6 }}>⚙️ Automatic weekly schedule</p>
+        <p style={{ fontFamily:F.body, fontSize:12.5, color:C.muted, lineHeight:1.6 }}>
+          To run this automatically every week, add a Cloudflare Worker Cron Trigger:
+          <br/>1. Go to <strong>Cloudflare → Workers & Pages → discussions-exegetica-web → Settings → Triggers</strong>
+          <br/>2. Add cron: <code style={{ background:'#fff', padding:'1px 5px', borderRadius:3 }}>0 8 * * 1</code> (every Monday at 8am UTC)
+          <br/>3. Set it to call <code style={{ background:'#fff', padding:'1px 5px', borderRadius:3 }}>POST /api/admin/auto-content</code> with header <code>X-Cron-Secret: [your CRON_SECRET]</code>
+        </p>
+      </div>
     </Panel>
   )
 }
