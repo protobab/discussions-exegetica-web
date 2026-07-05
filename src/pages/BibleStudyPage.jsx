@@ -56,18 +56,17 @@ export default function BibleStudyPage() {
     if (!aiQuery.trim()) return
     setAiLoading(true); setAiResponse('')
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/bible-helper', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 600,
-          system: `You are a knowledgeable, warm Bible study helper on Discussions Exegetica — a global non-denominational evangelical platform. Help users understand Scripture clearly and faithfully. Reference specific verses. Keep responses to 150-200 words. End with a question that invites deeper reflection or points them to the forum to discuss with the community.`,
-          messages: [{ role: 'user', content: aiQuery }]
-        })
+        body: JSON.stringify({ query: aiQuery, reference })
       })
       const data = await res.json()
-      setAiResponse(data.content?.[0]?.text || 'Sorry, I could not generate a response. Please try again.')
+      if (data.response) {
+        setAiResponse(data.response)
+      } else {
+        setAiResponse(data.error || 'Could not generate a response. Please try again.')
+      }
     } catch (e) {
       setAiResponse('Connection error. Please check your internet and try again.')
     }
