@@ -22,7 +22,7 @@ export default function AdminPage() {
         <h1 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:C.navy }}>Admin Panel</h1>
       </div>
       <div style={{ display:'flex', gap:7, marginBottom:26, flexWrap:'wrap' }}>
-        {[['sessions','Live Sessions'],['posts','Blog Posts'],['daily','Daily Word'],['auto','Auto Content'],['moderation','Moderation']].map(([k,l])=>(
+        {[['sessions','Live Sessions'],['posts','Blog Posts'],['daily','Daily Word'],['auto','Auto Content'],['content','Content Manager'],['moderation','Moderation']].map(([k,l])=>(
           <button key={k} onClick={()=>setTab(k)} style={{ background:tab===k?C.navy:'#fff', color:tab===k?'#fff':C.muted, border:`1.5px solid ${tab===k?C.navy:C.border}`, borderRadius:8, padding:'8px 16px', fontFamily:F.body, fontSize:13, fontWeight:600, cursor:'pointer' }}>{l}</button>
         ))}
       </div>
@@ -30,6 +30,7 @@ export default function AdminPage() {
       {tab === 'posts'       && <PostsTab token={token}/>}
       {tab === 'daily'       && <DailyWordTab token={token}/>}
       {tab === 'auto'        && <AutoContentTab token={token}/>}
+      {tab === 'content'     && <ContentManagerTab token={token}/>}
       {tab === 'moderation'  && <ModerationTab token={token}/>}
     </div>
   )
@@ -360,14 +361,178 @@ function AutoContentTab({ token }) {
       )}
 
       <div style={{ marginTop:24, padding:'16px', background:C.mist, borderRadius:10 }}>
-        <p style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:C.navy, marginBottom:6 }}>⚙️ Automatic weekly schedule</p>
-        <p style={{ fontFamily:F.body, fontSize:12.5, color:C.muted, lineHeight:1.6 }}>
-          To run this automatically every week, add a Cloudflare Worker Cron Trigger:
-          <br/>1. Go to <strong>Cloudflare → Workers & Pages → discussions-exegetica-web → Settings → Triggers</strong>
-          <br/>2. Add cron: <code style={{ background:'#fff', padding:'1px 5px', borderRadius:3 }}>0 8 * * 1</code> (every Monday at 8am UTC)
-          <br/>3. Set it to call <code style={{ background:'#fff', padding:'1px 5px', borderRadius:3 }}>POST /api/admin/auto-content</code> with header <code>X-Cron-Secret: [your CRON_SECRET]</code>
-        </p>
+        <p style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:C.navy, marginBottom:8 }}>⚙️ Weekly rotation schedule</p>
+        {(() => {
+          const DOMAINS = ['exegesis','seekers','prayer','theology','prophecy']
+          const LABELS = { exegesis:'Deep Dive', seekers:"Seekers' Corner", prayer:'Prayer & Life', theology:'Theology', prophecy:'Prophecy' }
+          const weekNum = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000))
+          const thisWeek = DOMAINS[weekNum % DOMAINS.length]
+          const nextWeek = DOMAINS[(weekNum + 1) % DOMAINS.length]
+          return (
+            <div>
+              <p style={{ fontFamily:F.body, fontSize:12.5, color:C.text, marginBottom:6 }}>
+                <strong>This week:</strong> <span style={{ color:C.gold, fontWeight:600 }}>{LABELS[thisWeek]}</span> — 3 auto-threads will be generated
+              </p>
+              <p style={{ fontFamily:F.body, fontSize:12.5, color:C.text, marginBottom:10 }}>
+                <strong>Next week:</strong> {LABELS[nextWeek]}
+              </p>
+              <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+                {DOMAINS.map((d,i) => (
+                  <span key={d} style={{ background: d===thisWeek ? C.navy : '#fff', color: d===thisWeek ? '#fff' : C.muted, border:`1px solid ${d===thisWeek ? C.navy : C.border}`, borderRadius:6, padding:'3px 10px', fontFamily:F.body, fontSize:11.5, fontWeight: d===thisWeek ? 700 : 400 }}>
+                    Week {(weekNum % 5 === i) ? '▶ ' : ''}{LABELS[d]}
+                  </span>
+                ))}
+              </div>
+              <p style={{ fontFamily:F.body, fontSize:12, color:C.muted, marginTop:10, lineHeight:1.6 }}>
+                All auto-generated threads are posted by "Global Discussions (Auto)" and marked transparently at the bottom of each post. The full cycle repeats every 5 weeks.
+              </p>
+            </div>
+          )
+        })()}
       </div>
+    </Panel>
+  )
+}
+
+// ── Content Manager ───────────────────────────────────────────
+
+function ContentManagerTab({ token }) {
+  const [type, setType] = useState('threads')
+  const [items, setItems] = useState([])
+  const [total, setTotal] = useState(0)
+  const [page, setPage] = useState(1)
+  const [search, setSearch] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [msg, setMsg] = useState('')
+  const [confirmDelete, setConfirmDelete] = useState(null) // { id, type, label }
+
+  const TYPES = [
+    { key: 'threads', label: 'Threads' },
+    { key: 'replies', label: 'Replies' },
+    { key: 'users', label: 'Users' },
+    { key: 'armchair_posts', label: 'Blog Posts' },
+    { key: 'armchair_session', label: 'Sessions' },
+    { key: 'groups', label: 'Groups' },
+  ]
+
+  const load = async () => {
+    setLoading(true)
+    const q = search ? `&q=${encodeURIComponent(search)}` : ''
+    const res = await fetch(`/api/admin/content?type=${type}&page=${page}${q}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    const data = await res.json()
+    setItems(data.items || [])
+    setTotal(data.total || 0)
+    setLoading(false)
+  }
+
+  useEffect(() => { load() }, [type, page])
+
+  const doDelete = async () => {
+    if (!confirmDelete) return
+    setMsg('')
+    const res = await fetch(`/api/admin/content`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ type: confirmDelete.type, id: confirmDelete.id })
+    })
+    const data = await res.json()
+    setMsg(data.ok ? `✅ ${data.message}` : `❌ ${data.error}`)
+    setConfirmDelete(null)
+    load()
+  }
+
+  const getLabel = item => {
+    if (type === 'threads') return item.title
+    if (type === 'replies') return item.body?.slice(0, 80) + '…'
+    if (type === 'users') return `${item.display_name} (@${item.username})`
+    if (type === 'armchair_posts') return item.title
+    if (type === 'groups') return item.name
+    return item.title || item.name || `#${item.id}`
+  }
+
+  const getSingular = t => ({ threads:'thread', replies:'reply', users:'user', armchair_posts:'armchair_post', armchair_session:'armchair_session', groups:'group' }[t] || t)
+
+  return (
+    <Panel>
+      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:C.navy, marginBottom:6 }}>Content Manager</h2>
+      <p style={{ fontFamily:F.body, fontSize:13, color:C.muted, marginBottom:18 }}>Review and delete any content from the platform without touching the database.</p>
+
+      <StatusMsg msg={msg}/>
+
+      {/* Type selector */}
+      <div style={{ display:'flex', gap:6, marginBottom:16, flexWrap:'wrap' }}>
+        {TYPES.map(t => (
+          <button key={t.key} onClick={() => { setType(t.key); setPage(1); setSearch('') }}
+            style={{ background:type===t.key?C.navy:'#fff', color:type===t.key?'#fff':C.muted, border:`1.5px solid ${type===t.key?C.navy:C.border}`, borderRadius:7, padding:'6px 14px', fontFamily:F.body, fontSize:12.5, fontWeight:600, cursor:'pointer' }}>
+            {t.label} {type===t.key && total > 0 ? `(${total})` : ''}
+          </button>
+        ))}
+      </div>
+
+      {/* Search */}
+      <div style={{ display:'flex', gap:8, marginBottom:16 }}>
+        <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key==='Enter' && load()}
+          placeholder={`Search ${type}…`}
+          style={{ flex:1, border:`1.5px solid ${C.border}`, borderRadius:8, padding:'8px 12px', fontFamily:F.body, fontSize:13.5, outline:'none' }}/>
+        <Btn variant="outline" onClick={load}>Search</Btn>
+      </div>
+
+      {/* Confirm dialog */}
+      {confirmDelete && (
+        <div style={{ background:'#FEF2F2', border:'1px solid #FECACA', borderRadius:10, padding:'14px 16px', marginBottom:16 }}>
+          <p style={{ fontFamily:F.body, fontSize:13.5, color:'#DC2626', marginBottom:10 }}>
+            ⚠️ Delete this {getSingular(type)}? <strong>"{confirmDelete.label.slice(0,60)}"</strong> — this cannot be undone.
+          </p>
+          <div style={{ display:'flex', gap:8 }}>
+            <Btn variant="outline" onClick={doDelete} style={{ borderColor:'#DC2626', color:'#DC2626' }}>Yes, delete</Btn>
+            <Btn variant="ghost" onClick={() => setConfirmDelete(null)}>Cancel</Btn>
+          </div>
+        </div>
+      )}
+
+      {/* Items list */}
+      {loading ? <p style={{ fontFamily:F.body, color:C.muted }}>Loading…</p> : items.length === 0
+        ? <p style={{ fontFamily:F.body, color:C.muted, fontSize:14 }}>No {type} found.</p>
+        : (
+          <div style={{ display:'grid', gap:8 }}>
+            {items.map(item => (
+              <div key={item.id} style={{ padding:'12px 14px', background:C.parchment, borderRadius:9, border:`1px solid ${C.border}`, display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12 }}>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <p style={{ fontFamily:F.body, fontSize:13.5, fontWeight:600, color:C.navy, margin:'0 0 2px', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                    {getLabel(item)}
+                  </p>
+                  <p style={{ fontFamily:F.body, fontSize:11.5, color:C.muted, margin:0 }}>
+                    {item.display_name && `By ${item.display_name} · `}
+                    {item.reply_count !== undefined && `${item.reply_count} replies · `}
+                    {item.thread_count !== undefined && `${item.thread_count} threads · `}
+                    {item.member_count !== undefined && `${item.member_count} members · `}
+                    {item.created_at && new Date(item.created_at).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'})}
+                  </p>
+                  {type === 'replies' && item.thread_title && (
+                    <p style={{ fontFamily:F.body, fontSize:11, color:C.muted, margin:'3px 0 0' }}>In: {item.thread_title}</p>
+                  )}
+                </div>
+                <button
+                  onClick={() => setConfirmDelete({ id: item.id, type: getSingular(type), label: getLabel(item) })}
+                  style={{ background:'none', border:`1px solid #FECACA`, borderRadius:6, padding:'4px 10px', fontFamily:F.body, fontSize:12, color:'#DC2626', cursor:'pointer', flexShrink:0 }}>
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
+        )
+      }
+
+      {/* Pagination */}
+      {total > 20 && (
+        <div style={{ display:'flex', gap:8, marginTop:16, justifyContent:'center' }}>
+          <Btn variant="ghost" onClick={() => setPage(p => Math.max(1,p-1))} disabled={page===1}>← Prev</Btn>
+          <span style={{ fontFamily:F.body, fontSize:13, color:C.muted, alignSelf:'center' }}>Page {page}</span>
+          <Btn variant="ghost" onClick={() => setPage(p => p+1)} disabled={items.length < 20}>Next →</Btn>
+        </div>
+      )}
     </Panel>
   )
 }

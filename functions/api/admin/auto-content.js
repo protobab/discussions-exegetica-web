@@ -162,7 +162,7 @@ async function generateThreads(env, count, categorySlug) {
   if (!autobot) {
     const r = await env.DB.prepare(`
       INSERT INTO users (username, email, password_hash, display_name, avatar_color, badge, reputation, is_admin)
-      VALUES ('de_autobot', 'autobot@discussionsexegetica.com', 'not-a-real-hash', 'The Community', '#C9A84C', 'Elder', 500, 0)
+      VALUES ('de_autobot', 'autobot@discussionsexegetica.com', 'not-a-real-hash', 'Global Discussions (Auto)', '#7A9E7E', 'Disciple', 100, 0)
     `).run()
     autobot = { id: r.meta.last_row_id }
   }
@@ -189,10 +189,13 @@ async function generateThreads(env, count, categorySlug) {
       const thread = await generateThread(env.ANTHROPIC_API_KEY, topic, cat.label, slug)
       if (!thread) continue
 
+      // Add transparent auto-generated notice to body
+      const markedBody = thread.body + "\n\n---\n*This discussion was auto-generated from globally trending biblical questions to seed community conversation. All views expressed are starting points for discussion, not editorial positions of Discussions Exegetica.*"
+
       const r = await env.DB.prepare(`
         INSERT INTO threads (category_id, author_id, title, body, is_pinned, view_count)
         VALUES (?, ?, ?, ?, 0, ?)
-      `).bind(cat.id, autobot.id, thread.title, thread.body, Math.floor(Math.random() * 20) + 5).run()
+      `).bind(cat.id, autobot.id, thread.title, markedBody, Math.floor(Math.random() * 20) + 5).run()
 
       generated.push({ id: r.meta.last_row_id, title: thread.title, category: slug })
 
@@ -208,18 +211,18 @@ async function generateThreads(env, count, categorySlug) {
 
 function selectTopics(count, categorySlug, env) {
   const selected = []
-  const slugs = categorySlug
-    ? [categorySlug]
-    : ['exegesis', 'seekers', 'prayer', 'theology', 'prophecy']
+  const DOMAIN_ROTATION = ['exegesis', 'seekers', 'prayer', 'theology', 'prophecy']
 
-  // Use current week number as seed for consistent but rotating selection
+  // Rotate one domain per week — week 0 = exegesis, week 1 = seekers, etc.
   const weekNum = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000))
+  const thisDomain = categorySlug || DOMAIN_ROTATION[weekNum % DOMAIN_ROTATION.length]
+  const pool = TOPIC_POOLS[thisDomain] || TOPIC_POOLS.seekers
 
-  for (let i = 0; i < count; i++) {
-    const slug = slugs[i % slugs.length]
-    const pool = TOPIC_POOLS[slug] || TOPIC_POOLS.seekers
-    const topicIdx = (weekNum + i * 7) % pool.length
-    selected.push({ slug, topic: pool[topicIdx] })
+  // Pick 3 topics from this week's domain, spaced through the pool
+  const actualCount = Math.min(count, 3)
+  for (let i = 0; i < actualCount; i++) {
+    const topicIdx = (weekNum * 3 + i) % pool.length
+    selected.push({ slug: thisDomain, topic: pool[topicIdx] })
   }
 
   return selected

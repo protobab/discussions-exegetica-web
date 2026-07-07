@@ -43,7 +43,15 @@ export async function onRequestGet({ env, params }) {
      FROM replies r JOIN users u ON r.author_id = u.id WHERE r.thread_id = ? ORDER BY r.created_at ASC`
   ).bind(params.id).all()
   await env.DB.prepare(`UPDATE threads SET view_count = view_count + 1 WHERE id = ?`).bind(params.id).run()
-  const thread = await env.DB.prepare(`SELECT id, title, author_id FROM threads WHERE id = ?`).bind(params.id).first()
+  const thread = await env.DB.prepare(`
+    SELECT t.id, t.title, t.body, t.author_id, t.created_at, t.like_count, t.reply_count,
+           u.display_name, u.avatar_color, u.badge, u.username,
+           c.label as cat_label, c.slug as cat_slug
+    FROM threads t
+    JOIN users u ON t.author_id = u.id
+    JOIN categories c ON t.category_id = c.id
+    WHERE t.id = ?
+  `).bind(params.id).first()
   return json({ replies: results, thread })
 }
 
