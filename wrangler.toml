@@ -17,7 +17,7 @@ bucket_name = "de-recordings"
 
 [vars]
 SITE_URL = "https://discussionsexegetica.com"
-
+ 
 # Add these in Cloudflare Pages dashboard → Settings → Environment Variables:
 # ANTHROPIC_API_KEY = your Anthropic API key
 # LIVEKIT_API_KEY = your LiveKit API key
