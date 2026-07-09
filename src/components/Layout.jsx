@@ -52,7 +52,7 @@ export default function Layout() {
           {user ? (
             <>
               <NotificationBell/>
-              <Link to="/forum" style={{ color:C.gold, fontFamily:F.body, fontSize:12.5, fontWeight:600, maxWidth:90, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+              <Link to={`/profile/${user.username}`} style={{ color:C.gold, fontFamily:F.body, fontSize:12.5, fontWeight:600, maxWidth:90, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
                 {user.display_name}
               </Link>
               <button onClick={()=>{ logout(); navigate('/') }} style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.18)', color:'rgba(255,255,255,0.75)', borderRadius:7, padding:'6px 11px', fontFamily:F.body, fontSize:12 }}>

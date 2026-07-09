@@ -22,7 +22,7 @@ export default function AdminPage() {
         <h1 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:C.navy }}>Admin Panel</h1>
       </div>
       <div style={{ display:'flex', gap:7, marginBottom:26, flexWrap:'wrap' }}>
-        {[['sessions','Live Sessions'],['posts','Blog Posts'],['daily','Daily Word'],['auto','Auto Content'],['content','Content Manager'],['moderation','Moderation']].map(([k,l])=>(
+        {[['sessions','Live Sessions'],['posts','Blog Posts'],['daily','Daily Word'],['auto','Auto Content'],['digest','Email Digest'],['content','Content Manager'],['moderation','Moderation']].map(([k,l])=>(
           <button key={k} onClick={()=>setTab(k)} style={{ background:tab===k?C.navy:'#fff', color:tab===k?'#fff':C.muted, border:`1.5px solid ${tab===k?C.navy:C.border}`, borderRadius:8, padding:'8px 16px', fontFamily:F.body, fontSize:13, fontWeight:600, cursor:'pointer' }}>{l}</button>
         ))}
       </div>
@@ -30,6 +30,7 @@ export default function AdminPage() {
       {tab === 'posts'       && <PostsTab token={token}/>}
       {tab === 'daily'       && <DailyWordTab token={token}/>}
       {tab === 'auto'        && <AutoContentTab token={token}/>}
+      {tab === 'digest'      && <DigestTab token={token}/>}
       {tab === 'content'     && <ContentManagerTab token={token}/>}
       {tab === 'moderation'  && <ModerationTab token={token}/>}
     </div>
@@ -389,6 +390,77 @@ function AutoContentTab({ token }) {
             </div>
           )
         })()}
+      </div>
+    </Panel>
+  )
+}
+
+// ── Email Digest ──────────────────────────────────────────────
+
+function DigestTab({ token }) {
+  const [info, setInfo] = useState(null)
+  const [msg, setMsg] = useState('')
+  const [sending, setSending] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/admin/digest', { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.json()).then(d => setInfo(d)).catch(() => {})
+  }, [])
+
+  const sendDigest = async () => {
+    setSending(true); setMsg('')
+    const res = await fetch('/api/admin/digest', { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({}) })
+    const data = await res.json()
+    if (data.ok) setMsg(`✅ Sent to ${data.sent} of ${data.total} subscribers`)
+    else setMsg(`❌ ${data.error}`)
+    setSending(false)
+  }
+
+  return (
+    <Panel>
+      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:C.navy, marginBottom:6 }}>Weekly Email Digest</h2>
+      <p style={{ fontFamily:F.body, fontSize:13.5, color:C.muted, marginBottom:20, lineHeight:1.6 }}>
+        Sends a beautiful email to all members showing the top discussions from the past week. Run manually here or set up a weekly cron trigger.
+      </p>
+      <StatusMsg msg={msg}/>
+
+      {info && (
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:20 }}>
+          <div style={{ background:C.parchment, borderRadius:10, padding:'14px 16px' }}>
+            <p style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:C.navy, margin:'0 0 2px' }}>{info.subscriberCount}</p>
+            <p style={{ fontFamily:F.body, fontSize:12.5, color:C.muted, margin:0 }}>Email subscribers</p>
+          </div>
+          <div style={{ background:C.parchment, borderRadius:10, padding:'14px 16px' }}>
+            <p style={{ fontFamily:F.display, fontSize:16, fontWeight:700, color:info.hasEmailProvider?'#15803D':'#DC2626', margin:'0 0 2px' }}>
+              {info.hasEmailProvider ? '✅ Connected' : '❌ Not set up'}
+            </p>
+            <p style={{ fontFamily:F.body, fontSize:12.5, color:C.muted, margin:0 }}>Email provider: {info.provider}</p>
+          </div>
+        </div>
+      )}
+
+      {info && !info.hasEmailProvider && (
+        <div style={{ background:'#FEF2F2', border:'1px solid #FECACA', borderRadius:10, padding:'14px 16px', marginBottom:18 }}>
+          <p style={{ fontFamily:F.body, fontSize:13.5, color:'#DC2626', fontWeight:600, marginBottom:6 }}>Email provider not configured</p>
+          <p style={{ fontFamily:F.body, fontSize:13, color:'#991B1B', lineHeight:1.6, margin:0 }}>
+            1. Sign up free at <strong>resend.com</strong> (3,000 emails/month free)<br/>
+            2. Add your domain and get an API key<br/>
+            3. Add <code style={{ background:'#fff', padding:'1px 5px', borderRadius:3 }}>RESEND_API_KEY</code> to Cloudflare environment variables<br/>
+            4. Verify <code>noreply@discussionsexegetica.com</code> as your sender
+          </p>
+        </div>
+      )}
+
+      <Btn variant="gold" onClick={sendDigest} disabled={sending || (info && !info.hasEmailProvider)}>
+        {sending ? '📨 Sending…' : '📨 Send Weekly Digest Now'}
+      </Btn>
+
+      <div style={{ marginTop:24, padding:'14px 16px', background:C.mist, borderRadius:10 }}>
+        <p style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:C.navy, marginBottom:6 }}>⚙️ Automate weekly sends</p>
+        <p style={{ fontFamily:F.body, fontSize:12.5, color:C.muted, lineHeight:1.6 }}>
+          Add a GitHub Actions scheduled job to send automatically every Sunday at 7am UTC.<br/>
+          Cron: <code style={{ background:'#fff', padding:'1px 5px', borderRadius:3 }}>0 7 * * 0</code> → POST to <code style={{ background:'#fff', padding:'1px 5px', borderRadius:3 }}>/api/admin/digest</code> with header <code>X-Cron-Secret</code>
+        </p>
       </div>
     </Panel>
   )

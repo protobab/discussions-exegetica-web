@@ -5,6 +5,7 @@ import { C, F, API } from '../lib/tokens.js'
 import { Card, Avatar, BadgeTag, CategoryPill, Spinner, Btn } from '../components/ui.jsx'
 import { useAuth } from '../lib/auth.jsx'
 import { usePageTitle } from '../lib/usePageTitle.js'
+import ShareButton from '../components/ShareButton.jsx'
 
 const ALL_CATS = [
   {slug:'all',label:'All Topics',icon:'✦'},
@@ -248,9 +249,11 @@ export function ThreadPage() {
           <span style={{ background: C.mist, color: C.navyLight, borderRadius: 6, padding: '2px 9px', fontSize: 11, fontFamily: F.body, fontWeight: 600 }}>
             {thread.cat_label || 'Discussion'}
           </span>
-          <button onClick={share} style={{ background: 'none', border: `1px solid ${C.border}`, borderRadius: 8, padding: '5px 12px', fontFamily: F.body, fontSize: 12, color: C.muted, cursor: 'pointer' }}>
-            {copied ? '✓ Copied!' : '🔗 Share'}
-          </button>
+          <ShareButton
+            title={thread.title}
+            url={`https://discussionsexegetica.com/thread/${thread.id}`}
+            excerpt={thread.body?.slice(0, 120)}
+          />
         </div>
 
         <h1 style={{ fontFamily: F.display, fontSize: 22, fontWeight: 700, color: C.navy, margin: '0 0 16px', lineHeight: 1.3 }}>
@@ -261,7 +264,7 @@ export function ThreadPage() {
           <Avatar name={thread.display_name} color={thread.avatar_color} size={34}/>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-              <span style={{ fontFamily: F.body, fontSize: 13.5, fontWeight: 600 }}>{thread.display_name}</span>
+              <Link to={`/profile/${thread.username}`} style={{ fontFamily: F.body, fontSize: 13.5, fontWeight: 600, color: C.navy }}>{thread.display_name}</Link>
               <BadgeTag label={thread.badge}/>
             </div>
             <span style={{ fontFamily: F.body, fontSize: 11.5, color: C.muted }}>
