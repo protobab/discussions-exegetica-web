@@ -12,6 +12,7 @@ import ArmchairPostPage from './pages/ArmchairPostPage.jsx'
 import AdminPage from './pages/AdminPage.jsx'
 import BibleStudyPage from './pages/BibleStudyPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
+import JoinPage from './pages/JoinPage.jsx'
 
 export default function App() {
   return (
@@ -33,6 +34,7 @@ export default function App() {
             <Route path="admin" element={<AdminPage />} />
             <Route path="bible" element={<BibleStudyPage />} />
             <Route path="profile/:username" element={<ProfilePage />} />
+            <Route path="join/:code" element={<JoinPage />} />
             <Route path="register" element={<RegisterPage />} />
             <Route path="login" element={<LoginPage />} />
           </Route>

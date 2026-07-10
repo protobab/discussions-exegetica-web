@@ -59,10 +59,11 @@ async function register(env, request) {
     const r = await env.DB.prepare(
       `INSERT INTO users (username, email, password_hash, display_name, avatar_color) VALUES (?,?,?,?,?)`
     ).bind(username.toLowerCase().trim(), email.toLowerCase().trim(), hash, display_name.trim(), avatar_color).run()
+    const newUserId = r.meta.last_row_id
     const token = await makeToken()
-    const userData = { user_id: r.meta.last_row_id, username: username.toLowerCase().trim(), display_name: display_name.trim(), badge: 'Seeker', avatar_color, is_admin: 0 }
+    const userData = { user_id: newUserId, username: username.toLowerCase().trim(), display_name: display_name.trim(), badge: 'Seeker', avatar_color, is_admin: 0 }
     await env.SESSIONS.put(`s:${token}`, JSON.stringify(userData), { expirationTtl: 60*60*24*30 })
-    return json({ token, user: { id: r.meta.last_row_id, ...userData } }, 201)
+    return json({ token, user: { id: newUserId, ...userData } }, 201)
   } catch (e) {
     if (e.message?.includes('UNIQUE')) return json({ error: 'Username or email already taken' }, 400)
     return json({ error: e.message }, 500)

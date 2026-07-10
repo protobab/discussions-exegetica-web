@@ -32,16 +32,34 @@ export function RegisterPage() {
   const { login } = useAuth(); const navigate = useNavigate()
   const [form, setForm] = useState({ username:'', email:'', password:'', display_name:'' })
   const [error, setError] = useState(''); const [loading, setLoading] = useState(false)
+  const inviteCode = sessionStorage.getItem('de_invite_code') || ''
   const set = k => e => setForm(f=>({...f,[k]:e.target.value}))
   const submit = async () => {
     setLoading(true); setError('')
     const res = await fetch(`${API}/auth/register`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(form) })
     const data = await res.json()
-    if (data.token) { login(data.user, data.token); navigate('/forum') }
+    if (data.token) {
+      login(data.user, data.token)
+      // Report invite code usage
+      if (inviteCode) {
+        fetch(`${API}/invite`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: inviteCode, new_user_id: data.user.id })
+        }).catch(() => {})
+        sessionStorage.removeItem('de_invite_code')
+      }
+      navigate('/forum')
+    }
     else { setError(data.error||'Registration failed'); setLoading(false) }
   }
   return (
-    <AuthShell title="Join Discussions Exegetica" sub="Free forever · Open to all">
+    <AuthShell title="Join Discussions Exegetica" sub={inviteCode ? '🎉 You were invited — welcome!' : 'Free forever · Open to all'}>
+      {inviteCode && (
+        <div style={{ background:'#F0FDF4', border:'1px solid #BBF7D0', borderRadius:8, padding:'9px 13px', fontFamily:F.body, fontSize:13, color:'#15803D', marginBottom:14 }}>
+          ✅ Invite code applied — your inviter will earn reputation when you join!
+        </div>
+      )}
       {error && <div style={{ background:'#FEF2F2', border:'1px solid #FECACA', borderRadius:8, padding:'9px 13px', fontFamily:F.body, fontSize:13, color:'#DC2626', marginBottom:14 }}>{error}</div>}
       <Field label="Display name" value={form.display_name} onChange={set('display_name')} placeholder="How others will see you"/>
       <Field label="Username" value={form.username} onChange={set('username')} placeholder="lowercase, no spaces"/>
