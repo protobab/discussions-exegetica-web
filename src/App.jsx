@@ -13,6 +13,7 @@ import AdminPage from './pages/AdminPage.jsx'
 import BibleStudyPage from './pages/BibleStudyPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
 import JoinPage from './pages/JoinPage.jsx'
+import ContactPage from './pages/ContactPage.jsx'
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
             <Route path="bible" element={<BibleStudyPage />} />
             <Route path="profile/:username" element={<ProfilePage />} />
             <Route path="join/:code" element={<JoinPage />} />
+            <Route path="contact" element={<ContactPage />} />
             <Route path="register" element={<RegisterPage />} />
             <Route path="login" element={<LoginPage />} />
           </Route>
