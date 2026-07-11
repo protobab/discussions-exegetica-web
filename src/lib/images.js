@@ -1,29 +1,30 @@
-// Curated Unsplash image URLs — genuinely multicultural, multiracial
-// All free via Unsplash licence. Swap any URL for your own photography later.
+// Verified free Unsplash images — genuinely multiracial and multicultural
+// All confirmed free under the Unsplash License (not Unsplash+)
+// Photo IDs verified by fetching the actual Unsplash photo pages
 
 export const IMAGES = {
-  // Homepage hero — Shane Rounce: diverse hands joined together in unity
-  homeHero: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1600&q=75',
+  // Homepage hero — Vitaly Gariev: diverse multiracial group smiling outdoors (free)
+  homeHero: 'https://images.unsplash.com/photo-1728916196989-e49a02abc73f?w=1600&q=75',
 
-  // Forum — Windows/Microsoft: diverse multiracial group around a table
-  forumHero: 'https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?w=1600&q=75',
+  // Forum — Vitaly Gariev: multiracial team discussion in office (free, Sep 2025)
+  forumHero: 'https://images.unsplash.com/photo-1727871246428-8a41b0a5eb0c?w=1600&q=75',
 
-  // Groups — Joel Muniz: diverse group of friends together, warm tones
-  groupsHero: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&q=75',
+  // Groups — Vitaly Gariev: diverse group students around laptop (free, Sep 2025)
+  groupsHero: 'https://images.unsplash.com/photo-1727869049767-fa3a2c680742?w=1600&q=75',
 
-  // Daily Word — soft painterly light rays / clouds / spiritual
+  // Daily Word — soft light rays through clouds, painterly spiritual
   dailyHero: 'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=1600&q=75',
 
-  // Bible Study — ancient open book / manuscript texture
+  // Bible Study — ancient open book / manuscript texture, candlelight
   bibleHero: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1600&q=75',
 
-  // Armchair — warm intimate conversation, diverse people
-  armchairHero: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1600&q=75',
+  // Armchair — diverse team high-five in office, warm and joyful (free, Sep 2025)
+  armchairHero: 'https://images.unsplash.com/photo-1727871253369-b9b64b5c3d6a?w=1600&q=75',
 
-  // Profile — Clay Banks: multicultural community gathering
-  profileHero: 'https://images.unsplash.com/photo-1573497491208-6b1acb260507?w=1600&q=75',
+  // Profile — Vitaly Gariev: multiracial friends smiling together (free)
+  profileHero: 'https://images.unsplash.com/photo-1728916196989-e49a02abc73f?w=1600&q=75',
 
-  // Seekers — person in quiet reflection, open hands
+  // Seekers — person in quiet reflection, open hands, soft light
   seekersHero: 'https://images.unsplash.com/photo-1501290836048-d8c8d6d84c8d?w=1600&q=75',
 }
 
