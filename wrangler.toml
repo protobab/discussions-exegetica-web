@@ -1,0 +1,27 @@
+name = "discussions-exegetica-web"
+compatibility_date = "2024-09-23"
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "discussions-exegetica-db"
+database_id = "92d92cff-d9d9-413c-af72-8cb89137c3f1"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "bf25dc2c1419437096bdeee8b6ed0a19"
+
+[[r2_buckets]]
+binding = "RECORDINGS"
+bucket_name = "de-recordings"
+
+[vars]
+SITE_URL = "https://discussionsexegetica.com"
+
+# Add these in Cloudflare Pages dashboard → Settings → Environment Variables:
+# ANTHROPIC_API_KEY = your Anthropic API key
+# LIVEKIT_API_KEY = your LiveKit API key
+# LIVEKIT_API_SECRET = your LiveKit API secret
+# LIVEKIT_WS_URL = your LiveKit WebSocket URL
+# PIXABAY_API_KEY = your Pixabay API key
+# CRON_SECRET = a random string you choose (used to secure the cron endpoint)
