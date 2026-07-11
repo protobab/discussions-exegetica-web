@@ -28,6 +28,7 @@ export function ForumPage() {
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
   const [sort, setSort] = useState('recent') // recent | popular | unanswered
+  const [view, setView] = useState('list') // list | grid
   const navigate = useNavigate()
   const { user } = useAuth()
 
@@ -104,7 +105,7 @@ export function ForumPage() {
             <div style={{ marginBottom: 20 }}>
               <p style={{ fontFamily: F.body, fontSize: 11.5, fontWeight: 700, color: C.muted, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>📌 Featured</p>
               <div style={{ display: 'grid', gap: 10 }}>
-                {pinned.map(t => <ThreadCard key={t.id} thread={t} onClick={() => navigate(`/thread/${t.id}`)} pinned/>)}
+                {pinned.map(t => <ThreadCard key={t.id} thread={t} view={view} onClick={() => navigate(`/thread/${t.id}`)} pinned/>)}
               </div>
             </div>
           )}
@@ -114,8 +115,8 @@ export function ForumPage() {
             ? (
               <>
                 {pinned.length > 0 && <p style={{ fontFamily: F.body, fontSize: 11.5, fontWeight: 700, color: C.muted, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>All Discussions</p>}
-                <div style={{ display: 'grid', gap: 10 }}>
-                  {paginated.map(t => <ThreadCard key={t.id} thread={t} onClick={() => navigate(`/thread/${t.id}`)}/>)}
+                <div style={{ display: view==='grid' ? 'grid' : 'grid', gridTemplateColumns: view==='grid' ? 'repeat(auto-fill,minmax(280px,1fr))' : '1fr', gap: view==='grid' ? 16 : 10 }}>
+                  {paginated.map(t => <ThreadCard key={t.id} thread={t} view={view} onClick={() => navigate(`/thread/${t.id}`)}/>)}
                 </div>
 
                 {/* Pagination */}
@@ -148,7 +149,16 @@ export function ForumPage() {
   )
 }
 
-function ThreadCard({ thread, onClick, pinned }) {
+const CAT_COLOURS = {
+  exegesis:  { bg: '#FFF8E7', bar: '#F59E0B', text: '#92400E' },
+  seekers:   { bg: '#F0FDF4', bar: '#22C55E', text: '#15803D' },
+  prayer:    { bg: '#EFF6FF', bar: '#3B82F6', text: '#1D4ED8' },
+  prophecy:  { bg: '#F5F3FF', bar: '#8B5CF6', text: '#6D28D9' },
+  theology:  { bg: '#FFF1F2', bar: '#F43F5E', text: '#BE123C' },
+  resources: { bg: '#F0F9FF', bar: '#0EA5E9', text: '#0369A1' },
+}
+
+function ThreadCard({ thread, onClick, pinned, view = 'list' }) {
   const timeAgo = ts => {
     const s = Math.floor((Date.now() - new Date(ts+'Z').getTime()) / 1000)
     if (s < 60) return 'just now'
@@ -157,34 +167,74 @@ function ThreadCard({ thread, onClick, pinned }) {
     if (s < 604800) return `${Math.floor(s/86400)}d ago`
     return new Date(ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
   }
+  const cat = CAT_COLOURS[thread.cat_slug] || { bg: C.mist, bar: C.navyLight, text: C.navyLight }
 
+  if (view === 'grid') {
+    return (
+      <div onClick={onClick} style={{
+        background: '#fff', borderRadius: 12, overflow: 'hidden',
+        border: `1px solid ${C.border}`, cursor: 'pointer',
+        transition: 'all 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.05)'
+      }}
+        onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)' }}
+        onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.05)' }}
+      >
+        {/* Coloured top bar */}
+        <div style={{ background: cat.bar, height: 4 }}/>
+        <div style={{ padding: '14px 16px' }}>
+          <div style={{ display: 'flex', gap: 6, marginBottom: 8, alignItems: 'center' }}>
+            <span style={{ background: cat.bg, color: cat.text, borderRadius: 5, padding: '2px 8px', fontSize: 10.5, fontFamily: F.body, fontWeight: 700 }}>{thread.cat_label}</span>
+            {pinned && <span style={{ fontSize: 10.5, color: C.gold, fontWeight: 700 }}>📌</span>}
+            <span style={{ fontFamily: F.body, fontSize: 10.5, color: C.muted, marginLeft: 'auto' }}>{timeAgo(thread.created_at)}</span>
+          </div>
+          <h3 style={{ fontFamily: F.display, fontSize: 15, fontWeight: 700, color: C.navy, margin: '0 0 6px', lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{thread.title}</h3>
+          <p style={{ fontFamily: F.body, fontSize: 12.5, color: C.muted, margin: '0 0 12px', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{thread.body?.slice(0, 120)}</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <Avatar name={thread.display_name} color={thread.avatar_color} size={20}/>
+              <span style={{ fontFamily: F.body, fontSize: 11.5, color: C.muted, maxWidth: 80, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{thread.display_name}</span>
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <span style={{ fontFamily: F.body, fontSize: 11, color: C.muted }}>💬 {thread.reply_count}</span>
+              <span style={{ fontFamily: F.body, fontSize: 11, color: C.muted }}>❤️ {thread.like_count}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // List view (default)
   return (
     <div onClick={onClick} style={{
-      background: '#fff', borderRadius: 10, padding: '14px 18px',
+      background: '#fff', borderRadius: 10, overflow: 'hidden',
       border: `1px solid ${pinned ? C.gold + '55' : C.border}`,
       cursor: 'pointer', transition: 'box-shadow 0.15s',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+      display: 'grid', gridTemplateColumns: `4px 1fr`
     }}
       onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.1)'}
-      onMouseLeave={e => e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.04)'}
+      onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
     >
-      <div style={{ display: 'flex', gap: 8, marginBottom: 6, alignItems: 'center' }}>
-        <span style={{ background: C.mist, color: C.navyLight, borderRadius: 5, padding: '2px 8px', fontSize: 11, fontFamily: F.body, fontWeight: 600 }}>{thread.cat_label}</span>
-        {pinned && <span style={{ fontSize: 11, color: C.gold, fontWeight: 700 }}>📌 Featured</span>}
-        <span style={{ fontFamily: F.body, fontSize: 11, color: C.muted, marginLeft: 'auto' }}>{timeAgo(thread.created_at)}</span>
-      </div>
-      <h3 style={{ fontFamily: F.display, fontSize: 16, fontWeight: 700, color: C.navy, margin: '0 0 5px', lineHeight: 1.35 }}>{thread.title}</h3>
-      <p style={{ fontFamily: F.body, fontSize: 13, color: C.muted, margin: '0 0 10px', lineHeight: 1.5 }}>{thread.body?.slice(0, 140)}…</p>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 6 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <Avatar name={thread.display_name} color={thread.avatar_color} size={22}/>
-          <span style={{ fontFamily: F.body, fontSize: 12, fontWeight: 500 }}>{thread.display_name}</span>
-          <BadgeTag label={thread.badge}/>
+      <div style={{ background: cat.bar }}/>
+      <div style={{ padding: '13px 16px' }}>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 5, alignItems: 'center' }}>
+          <span style={{ background: cat.bg, color: cat.text, borderRadius: 5, padding: '2px 8px', fontSize: 11, fontFamily: F.body, fontWeight: 700 }}>{thread.cat_label}</span>
+          {pinned && <span style={{ fontSize: 11, color: C.gold, fontWeight: 700 }}>📌 Featured</span>}
+          <span style={{ fontFamily: F.body, fontSize: 11, color: C.muted, marginLeft: 'auto' }}>{timeAgo(thread.created_at)}</span>
         </div>
-        <div style={{ display: 'flex', gap: 12 }}>
-          <span style={{ fontFamily: F.body, fontSize: 11.5, color: C.muted }}>💬 {thread.reply_count}</span>
-          <span style={{ fontFamily: F.body, fontSize: 11.5, color: C.muted }}>👁 {thread.view_count}</span>
-          <span style={{ fontFamily: F.body, fontSize: 11.5, color: C.muted }}>❤️ {thread.like_count}</span>
+        <h3 style={{ fontFamily: F.display, fontSize: 15.5, fontWeight: 700, color: C.navy, margin: '0 0 4px', lineHeight: 1.35 }}>{thread.title}</h3>
+        <p style={{ fontFamily: F.body, fontSize: 13, color: C.muted, margin: '0 0 10px', lineHeight: 1.5 }}>{thread.body?.slice(0, 130)}…</p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 6 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Avatar name={thread.display_name} color={thread.avatar_color} size={20}/>
+            <span style={{ fontFamily: F.body, fontSize: 12, fontWeight: 500 }}>{thread.display_name}</span>
+            <BadgeTag label={thread.badge}/>
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <span style={{ fontFamily: F.body, fontSize: 11.5, color: C.muted }}>💬 {thread.reply_count}</span>
+            <span style={{ fontFamily: F.body, fontSize: 11.5, color: C.muted }}>👁 {thread.view_count}</span>
+            <span style={{ fontFamily: F.body, fontSize: 11.5, color: C.muted }}>❤️ {thread.like_count}</span>
+          </div>
         </div>
       </div>
     </div>
