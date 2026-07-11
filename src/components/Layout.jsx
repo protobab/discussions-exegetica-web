@@ -81,7 +81,7 @@ export default function Layout() {
         </div>
         <p style={{ marginBottom:10 }}>A global biblical discussion community · Free · Always open</p>
         <div style={{ display:'flex', gap:16, justifyContent:'center', flexWrap:'wrap' }}>
-          {[['Forum','/forum'],['Armchair','/armchair'],['Bible','/bible'],['Groups','/groups'],['Daily Word','/daily-word'],['Contact','/contact']].map(([l,t])=>(
+          {[['Forum','/forum'],['Armchair','/armchair'],['Bible','/bible'],['Groups','/groups'],['Daily Word','/daily-word'],['Prayer of Salvation','/salvation'],['Contact','/contact']].map(([l,t])=>(
             <Link key={l} to={t} style={{ color:'rgba(255,255,255,0.45)', fontFamily:F.body, fontSize:12 }}>{l}</Link>
           ))}
         </div>

@@ -78,8 +78,8 @@ export default function ArmchairPage() {
       {/* FULL-SCREEN BACKGROUND */}
       <div style={{
         position: 'fixed', inset: 0, zIndex: 0,
-        backgroundImage: `url(/ambient/bg-loop.jpg), url(${IMAGES.armchairHero})`,
-        backgroundSize: 'cover, cover',
+        backgroundImage: `url(/ambient/bg-loop.jpg)`,
+        backgroundSize: 'cover',
         backgroundSize: 'cover', backgroundPosition: 'center',
         filter: 'brightness(0.45)',
         transition: 'filter 0.8s ease',

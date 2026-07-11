@@ -117,6 +117,7 @@ export default function HomePage() {
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link to="/forum" style={{ background: C.gold, color: C.navy, borderRadius: 10, padding: '13px 26px', fontFamily: F.body, fontSize: 15, fontWeight: 700, transition: 'transform 0.15s' }}>Enter the Forum</Link>
           <Link to="/register" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 10, padding: '13px 26px', fontFamily: F.body, fontSize: 15, fontWeight: 600 }}>I'm new — start here 🌱</Link>
+          <Link to="/salvation" style={{ background: 'rgba(201,168,76,0.15)', color: C.gold, border: `1px solid ${C.gold}44`, borderRadius: 10, padding: '13px 26px', fontFamily: F.body, fontSize: 15, fontWeight: 600 }}>Prayer of Salvation 🙏</Link>
         </div>
         <style>{`@keyframes pulse-ring{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:0.3;transform:translate(-50%,-50%) scale(1.04)}}`}</style>
       </div>
