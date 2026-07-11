@@ -59,13 +59,13 @@ export function ForumPage() {
   const totalPages = Math.ceil(unpinned.length / PAGE_SIZE)
 
   return (
-    <div style={{ maxWidth: 960, margin: '0 auto', padding: '32px 20px 60px' }}>
+    <div style={{ maxWidth: 960, margin: '0 auto', padding: '32px 20px 80px', minHeight:'80vh' }}>
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 22, flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <h1 style={{ fontFamily: F.display, fontSize: 26, fontWeight: 700, color: C.navy, marginBottom: 4 }}>The Forum</h1>
-          <p style={{ fontFamily: F.body, fontSize: 13.5, color: C.muted }}>
+          <h1 style={{ fontFamily: F.display, fontSize: 26, fontWeight: 700, color: '#fff', marginBottom: 4 }}>The Forum</h1>
+          <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.55)' }}>
             {filtered.length} discussion{filtered.length !== 1 ? 's' : ''} · Join in, ask freely, share deeply
           </p>
         </div>
@@ -172,8 +172,8 @@ function ThreadCard({ thread, onClick, pinned, view = 'list' }) {
   if (view === 'grid') {
     return (
       <div onClick={onClick} style={{
-        background: '#fff', borderRadius: 12, overflow: 'hidden',
-        border: `1px solid ${C.border}`, cursor: 'pointer',
+        background: 'rgba(27,42,74,0.5)', backdropFilter:'blur(8px)', borderRadius: 12, overflow: 'hidden',
+        border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer',
         transition: 'all 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.05)'
       }}
         onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)' }}
@@ -207,8 +207,8 @@ function ThreadCard({ thread, onClick, pinned, view = 'list' }) {
   // List view (default)
   return (
     <div onClick={onClick} style={{
-      background: '#fff', borderRadius: 10, overflow: 'hidden',
-      border: `1px solid ${pinned ? C.gold + '55' : C.border}`,
+      background: 'rgba(27,42,74,0.5)', backdropFilter:'blur(8px)', borderRadius: 10, overflow: 'hidden',
+      border: `1px solid ${pinned ? C.gold + '55' : 'rgba(255,255,255,0.08)'}`,
       cursor: 'pointer', transition: 'box-shadow 0.15s',
       display: 'grid', gridTemplateColumns: `4px 1fr`
     }}
@@ -360,7 +360,7 @@ export function ThreadPage() {
       <div style={{ background: '#fff', borderRadius: 12, padding: '20px 22px', border: `1px solid ${C.border}`, marginTop: 22 }}>
         <p style={{ fontFamily: F.display, fontSize: 15, fontWeight: 700, color: C.navy, marginBottom: 14 }}>Add your voice</p>
         {!user
-          ? <p style={{ fontFamily: F.body, fontSize: 13.5, color: C.muted }}><Link to="/login" style={{ color: C.gold, fontWeight: 600 }}>Sign in</Link> or <Link to="/register" style={{ color: C.gold, fontWeight: 600 }}>join free</Link> to reply.</p>
+          ? <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.55)' }}><Link to="/login" style={{ color: C.gold, fontWeight: 600 }}>Sign in</Link> or <Link to="/register" style={{ color: C.gold, fontWeight: 600 }}>join free</Link> to reply.</p>
           : <>
               {error && <p style={{ color: '#DC2626', fontFamily: F.body, fontSize: 13, marginBottom: 10 }}>{error}</p>}
               <textarea value={body} onChange={e => setBody(e.target.value)} placeholder="Share your reflection, question, or insight…" rows={4}
@@ -399,7 +399,7 @@ export function NewThreadPage() {
     <div style={{ maxWidth: 720, margin: '36px auto', padding: '0 20px 60px' }}>
       <button onClick={() => navigate('/forum')} style={{ background: 'none', border: 'none', color: C.navyLight, fontFamily: F.body, fontSize: 13.5, fontWeight: 600, cursor: 'pointer', marginBottom: 24, padding: 0 }}>← Back to Forum</button>
       <h1 style={{ fontFamily: F.display, fontSize: 24, fontWeight: 700, color: C.navy, marginBottom: 6 }}>Start a Discussion</h1>
-      <p style={{ fontFamily: F.body, fontSize: 13.5, color: C.muted, marginBottom: 24 }}>Ask a question, share an insight, or open a passage for study. All perspectives welcome.</p>
+      <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.55)', marginBottom: 24 }}>Ask a question, share an insight, or open a passage for study. All perspectives welcome.</p>
       {error && <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 8, padding: '10px 14px', fontFamily: F.body, fontSize: 13, color: '#DC2626', marginBottom: 16 }}>{error}</div>}
       <div style={{ marginBottom: 18 }}>
         <label style={{ fontFamily: F.body, fontSize: 13, fontWeight: 600, color: C.navy, display: 'block', marginBottom: 8 }}>Category *</label>

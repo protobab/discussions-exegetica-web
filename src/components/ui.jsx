@@ -72,27 +72,57 @@ export function BadgeTag({ label }) {
 }
 
 export function Btn({ children, onClick, variant='primary', style:ex={}, disabled }) {
-  const s = { primary:{background:C.navy,color:'#fff',border:'none'}, gold:{background:C.gold,color:C.navy,border:'none'}, outline:{background:'transparent',color:C.navy,border:`1.5px solid ${C.navy}`}, ghost:{background:'transparent',color:C.muted,border:`1px solid ${C.border}`} }
-  return <button onClick={onClick} disabled={disabled} style={{ ...s[variant], borderRadius:8, padding:'9px 20px', fontFamily:F.body, fontSize:13.5, fontWeight:600, cursor:disabled?'not-allowed':'pointer', opacity:disabled?.6:1, transition:'opacity 0.15s', ...ex }}>{children}</button>
+  const s = {
+    primary:{ background:'linear-gradient(135deg,#1B2A4A,#2E4270)', color:'#fff', border:'1px solid rgba(255,255,255,0.1)' },
+    gold:   { background:`linear-gradient(135deg,${C.gold},#E8C97A)`, color:'#0a0f1e', border:'none' },
+    outline:{ background:'transparent', color:C.gold, border:`1.5px solid ${C.gold}` },
+    ghost:  { background:'rgba(255,255,255,0.06)', color:'rgba(255,255,255,0.6)', border:'1px solid rgba(255,255,255,0.1)' }
+  }
+  return <button onClick={onClick} disabled={disabled} style={{ ...s[variant], borderRadius:9, padding:'9px 20px', fontFamily:F.body, fontSize:13.5, fontWeight:600, cursor:disabled?'not-allowed':'pointer', opacity:disabled?.6:1, transition:'all 0.15s', boxShadow: variant==='gold'?'0 4px 14px rgba(201,168,76,0.3)':'none', ...ex }}>{children}</button>
 }
 
 export function Card({ children, style:ex={} }) {
-  return <div style={{ background:'#fff', border:`1px solid ${C.border}`, borderRadius:12, padding:'20px 22px', boxShadow:'0 1px 4px rgba(0,0,0,0.05)', ...ex }}>{children}</div>
+  return <div style={{
+    background:'rgba(27,42,74,0.6)',
+    backdropFilter:'blur(8px)',
+    border:'1px solid rgba(201,168,76,0.15)',
+    borderRadius:14,
+    padding:'20px 22px',
+    boxShadow:'0 4px 24px rgba(0,0,0,0.3)',
+    ...ex
+  }}>{children}</div>
 }
 
 export function Spinner() {
-  return <div style={{ textAlign:'center', padding:'60px 0', color:C.muted, fontFamily:F.body }}>Loading…</div>
+  return (
+    <div style={{ textAlign:'center', padding:'60px 0', fontFamily:F.body }}>
+      <div style={{ display:'inline-flex', gap:6 }}>
+        {[0,1,2].map(i=>(
+          <div key={i} style={{ width:8, height:8, borderRadius:'50%', background:C.gold, animation:`spin-dot 1s ${i*0.2}s infinite` }}/>
+        ))}
+      </div>
+      <style>{`@keyframes spin-dot{0%,100%{opacity:0.2;transform:scale(0.8)}50%{opacity:1;transform:scale(1.1)}}`}</style>
+    </div>
+  )
 }
 
 export function CategoryPill({ label, icon, active, onClick }) {
-  return <button onClick={onClick} style={{ background:active?C.navy:'#fff', color:active?'#fff':C.muted, border:`1.5px solid ${active?C.navy:C.border}`, borderRadius:20, padding:'6px 16px', fontFamily:F.body, fontSize:13, fontWeight:500, cursor:'pointer', whiteSpace:'nowrap', transition:'all 0.15s' }}>{icon} {label}</button>
+  return <button onClick={onClick} style={{
+    background: active ? `linear-gradient(135deg,${C.gold},#E8C97A)` : 'rgba(255,255,255,0.06)',
+    color: active ? '#0a0f1e' : 'rgba(255,255,255,0.6)',
+    border: active ? 'none' : '1px solid rgba(255,255,255,0.1)',
+    borderRadius:20, padding:'6px 16px', fontFamily:F.body, fontSize:13,
+    fontWeight: active?700:500, cursor:'pointer', whiteSpace:'nowrap',
+    transition:'all 0.15s',
+    boxShadow: active ? '0 4px 12px rgba(201,168,76,0.3)' : 'none'
+  }}>{icon} {label}</button>
 }
 
 export function Field({ label, type='text', value, onChange, placeholder, style:ex={} }) {
   return (
     <div style={{ marginBottom:14, ...ex }}>
-      {label && <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:C.navy, display:'block', marginBottom:5 }}>{label}</label>}
-      <input type={type} value={value} onChange={onChange} placeholder={placeholder} style={{ width:'100%', border:`1.5px solid ${C.border}`, borderRadius:8, padding:'10px 13px', fontFamily:F.body, fontSize:13.5, outline:'none', boxSizing:'border-box' }}/>
+      {label && <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:C.gold, display:'block', marginBottom:5 }}>{label}</label>}
+      <input type={type} value={value} onChange={onChange} placeholder={placeholder} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:9, padding:'10px 13px', fontFamily:F.body, fontSize:13.5, outline:'none', boxSizing:'border-box', background:'rgba(255,255,255,0.05)', color:'#E8E0D0' }}/>
     </div>
   )
 }
@@ -100,8 +130,8 @@ export function Field({ label, type='text', value, onChange, placeholder, style:
 export function TextArea({ label, value, onChange, placeholder, rows=4 }) {
   return (
     <div style={{ marginBottom:14 }}>
-      {label && <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:C.navy, display:'block', marginBottom:5 }}>{label}</label>}
-      <textarea value={value} onChange={onChange} placeholder={placeholder} rows={rows} style={{ width:'100%', border:`1.5px solid ${C.border}`, borderRadius:8, padding:'10px 13px', fontFamily:F.body, fontSize:13.5, outline:'none', resize:'vertical', lineHeight:1.6, boxSizing:'border-box' }}/>
+      {label && <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:C.gold, display:'block', marginBottom:5 }}>{label}</label>}
+      <textarea value={value} onChange={onChange} placeholder={placeholder} rows={rows} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:9, padding:'10px 13px', fontFamily:F.body, fontSize:13.5, outline:'none', resize:'vertical', lineHeight:1.6, boxSizing:'border-box', background:'rgba(255,255,255,0.05)', color:'#E8E0D0' }}/>
     </div>
   )
 }
@@ -109,5 +139,5 @@ export function TextArea({ label, value, onChange, placeholder, rows=4 }) {
 export function StatusMsg({ msg }) {
   if (!msg) return null
   const ok = msg.startsWith('✅')
-  return <div style={{ background:ok?'#F0FDF4':'#FEF2F2', border:`1px solid ${ok?'#BBF7D0':'#FECACA'}`, borderRadius:8, padding:'10px 14px', fontFamily:F.body, fontSize:13, color:ok?'#15803D':'#DC2626', marginBottom:16 }}>{msg}</div>
+  return <div style={{ background:ok?'rgba(21,128,61,0.15)':'rgba(220,38,38,0.15)', border:`1px solid ${ok?'rgba(21,128,61,0.4)':'rgba(220,38,38,0.4)'}`, borderRadius:9, padding:'10px 14px', fontFamily:F.body, fontSize:13, color:ok?'#4ade80':'#f87171', marginBottom:16 }}>{msg}</div>
 }

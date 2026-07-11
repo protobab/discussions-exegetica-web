@@ -149,19 +149,28 @@ export default function ArmchairSessionPage() {
       {/* RECORDING PLAYBACK */}
       {isEnded && (
         <div style={{ marginBottom:20 }}>
-          {session.recording_url ? (
-            <div style={{ borderRadius:12, overflow:'hidden', background:'#1a1a2e', padding:'4px 0' }}>
-              <audio controls style={{ width:'100%', display:'block' }} src={session.recording_url}/>
-              <p style={{ fontFamily:F.body, fontSize:11.5, color:'rgba(255,255,255,0.45)', padding:'4px 14px 8px' }}>Recording from this session</p>
-            </div>
-          ) : session.recording_key ? (
-            <div style={{ borderRadius:12, overflow:'hidden', background:'#1a1a2e', padding:'4px 0' }}>
-              <audio controls style={{ width:'100%', display:'block' }} src={`${API}/armchair/recordings/${session.recording_key.replace('recordings/','')}`}/>
-              <p style={{ fontFamily:F.body, fontSize:11.5, color:'rgba(255,255,255,0.45)', padding:'4px 14px 8px' }}>Recording from this session</p>
+          {(session.recording_url || session.recording_key) ? (
+            <div style={{ background:'rgba(27,42,74,0.8)', borderRadius:12, padding:'14px 18px', border:`1px solid ${C.gold}33` }}>
+              <p style={{ fontFamily:F.body, fontSize:11.5, fontWeight:700, color:C.gold, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:10 }}>
+                📼 Session Recording
+              </p>
+              <audio
+                controls
+                controlsList="nodownload"
+                preload="metadata"
+                style={{ width:'100%', maxWidth:480, height:36, display:'block', borderRadius:6 }}
+              >
+                {session.recording_url && <source src={session.recording_url} type="audio/webm"/>}
+                {session.recording_key && <source src={`${API}/armchair/recordings/${session.recording_key.replace('recordings/','')}`} type="audio/webm"/>}
+                Your browser does not support audio playback.
+              </audio>
+              <p style={{ fontFamily:F.body, fontSize:11, color:'rgba(255,255,255,0.35)', marginTop:6 }}>
+                Having trouble playing? Try Chrome or Safari. Firefox may require WebM codec support.
+              </p>
             </div>
           ) : (
             <div style={{ background:C.mist, borderRadius:10, padding:'14px 18px', fontFamily:F.body, fontSize:13.5, color:C.muted }}>
-              No recording available for this session. If you were broadcasting, the recording may not have been saved — next time use the <strong>"End Session & Save Recording"</strong> button in the broadcaster controls on this page.
+              No recording available for this session. Always end via the <strong>"End Session & Save Recording"</strong> button to save recordings.
             </div>
           )}
         </div>

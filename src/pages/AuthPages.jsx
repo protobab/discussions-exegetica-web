@@ -7,11 +7,11 @@ import { usePageTitle } from '../lib/usePageTitle.js'
 
 function AuthShell({ title, sub, children }) {
   return (
-    <div style={{ minHeight:'80vh', display:'flex', alignItems:'center', justifyContent:'center', padding:'40px 20px' }}>
-      <div style={{ background:'#fff', borderRadius:16, padding:'38px 32px', width:'100%', maxWidth:420, boxShadow:'0 4px 32px rgba(0,0,0,0.08)' }}>
+    <div style={{ minHeight:'80vh', display:'flex', alignItems:'center', justifyContent:'center', padding:'40px 20px', background:'#0a0f1e' }}>
+      <div style={{ background:'rgba(17,24,39,0.95)', backdropFilter:'blur(16px)', border:'1px solid rgba(201,168,76,0.2)', borderRadius:16, padding:'38px 32px', width:'100%', maxWidth:420, boxShadow:'0 8px 40px rgba(0,0,0,0.5)' }}>
         <div style={{ display:'flex', justifyContent:'center', marginBottom:18 }}><Logo size={38}/></div>
-        <h1 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:C.navy, textAlign:'center', marginBottom:6 }}>{title}</h1>
-        <p style={{ fontFamily:F.body, fontSize:13.5, color:C.muted, textAlign:'center', marginBottom:24 }}>{sub}</p>
+        <h1 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:'#fff', textAlign:'center', marginBottom:6 }}>{title}</h1>
+        <p style={{ fontFamily:F.body, fontSize:13.5, color:'rgba(255,255,255,0.5)', textAlign:'center', marginBottom:24 }}>{sub}</p>
         {children}
       </div>
     </div>
@@ -22,7 +22,7 @@ function Field({ label, type='text', value, onChange, placeholder }) {
   return (
     <div style={{ marginBottom:14 }}>
       <label style={{ fontFamily:F.body, fontSize:13, fontWeight:600, color:C.navy, display:'block', marginBottom:5 }}>{label}</label>
-      <input type={type} value={value} onChange={onChange} placeholder={placeholder} style={{ width:'100%', border:`1.5px solid ${C.border}`, borderRadius:8, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', boxSizing:'border-box' }}/>
+      <input type={type} value={value} onChange={onChange} placeholder={placeholder} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:9, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', boxSizing:'border-box', background:'rgba(255,255,255,0.06)', color:'#E8E0D0' }}/>
     </div>
   )
 }

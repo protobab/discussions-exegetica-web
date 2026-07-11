@@ -1,9 +1,44 @@
+// Design tokens — cinematic dark navy theme
 export const C = {
-  navy:'#1B2A4A', navyLight:'#2E4270', parchment:'#F7F3EB',
-  gold:'#C9A84C', goldLight:'#E8C97A', sage:'#7A9E7E',
-  mist:'#EEF2F7', text:'#2C2C2C', muted:'#6B7280', border:'#E5E7EB'
+  // Core palette
+  navy:      '#0a0f1e',        // deepest dark — page backgrounds
+  navyMid:   '#111827',        // card backgrounds
+  navyLight: '#1B2A4A',        // elevated surfaces
+  navyBorder:'rgba(201,168,76,0.15)', // gold-tinted borders
+
+  // Gold spectrum
+  gold:      '#C9A84C',
+  goldLight: '#E8C97A',
+  goldDim:   'rgba(201,168,76,0.15)',
+
+  // Text
+  text:      '#E8E0D0',        // warm white for body text on dark
+  textMuted: 'rgba(255,255,255,0.55)',
+  textDim:   'rgba(255,255,255,0.35)',
+
+  // Accents
+  sage:      '#52B788',
+  red:       '#EF4444',
+
+  // Legacy aliases (keep for compatibility)
+  parchment: '#F7F3EB',
+  mist:      '#EEF2F7',
+  muted:     'rgba(255,255,255,0.55)',
+  border:    'rgba(255,255,255,0.1)',
+  navyLightOld: '#2E4270',
 }
-export const F = { display:"'Playfair Display', Georgia, serif", body:"'Inter', system-ui, sans-serif" }
-export const BADGE = { Seeker:'#A78BFA', Disciple:'#3B82F6', Elder:'#C9A84C', Teacher:'#EF4444' }
+
+export const F = {
+  display: "'Playfair Display', Georgia, serif",
+  body:    "'Inter', system-ui, sans-serif",
+}
+
+export const BADGE = {
+  Seeker:  '#A78BFA',
+  Disciple:'#3B82F6',
+  Elder:   '#C9A84C',
+  Teacher: '#EF4444'
+}
+
 export const API = '/api'
 export const ADMIN_USERS = ['eki']
