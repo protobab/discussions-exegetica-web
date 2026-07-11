@@ -1,38 +1,62 @@
 import { C, F, BADGE } from '../lib/tokens.js'
 
 export function Logo({ size = 34 }) {
-  // Option B — Dove descending into concentric circles
-  // Echoes Matthew 3:16: the Spirit of God descending like a dove
-  const s = size / 44  // scale factor from 44px base
+  // Dove alighting on an open Bible
+  // The open Book = Scripture; the descending Dove = Holy Spirit
+  // Together: the Spirit breathing life into the Word
+  const h = size * 1.15
   return (
-    <svg width={size} height={size * 1.1} viewBox="0 0 44 48" fill="none">
-      {/* Concentric rings */}
-      <circle cx="22" cy="30" r="17" stroke={C.gold} strokeWidth="1.4" opacity="0.4"/>
-      <circle cx="22" cy="30" r="11" stroke={C.gold} strokeWidth="1" strokeDasharray="2.5 2" opacity="0.5"/>
-      {/* Descending light rays above */}
-      <line x1="22" y1="2" x2="22" y2="10" stroke={C.gold} strokeWidth="0.8" opacity="0.35" strokeDasharray="1.5 1.5"/>
-      <line x1="18" y1="3" x2="20" y2="10" stroke={C.gold} strokeWidth="0.6" opacity="0.2"/>
-      <line x1="26" y1="3" x2="24" y2="10" stroke={C.gold} strokeWidth="0.6" opacity="0.2"/>
-      {/* Dove body — descending posture, angled down */}
-      <g transform="translate(22,15) rotate(15)">
-        {/* Body */}
-        <ellipse cx="0" cy="0" rx="5" ry="3.5" fill={C.gold}/>
-        {/* Head */}
-        <circle cx="4.5" cy="-2" r="2.8" fill={C.gold}/>
-        {/* Beak */}
-        <path d="M7 -2.3 L9.5 -1.5 L7 -1" fill={C.gold}/>
-        {/* Eye */}
-        <circle cx="5.5" cy="-2.2" r="0.7" fill="#1B2A4A"/>
-        {/* Left wing spread */}
-        <path d="M-2 -1 Q-11 -9 -13 -3 Q-9 1 -2 1Z" fill={C.goldLight} opacity="0.9"/>
-        {/* Right wing spread */}
-        <path d="M2 -2 Q9 -10 13 -6 Q10 -1 3 0Z" fill={C.goldLight} opacity="0.9"/>
-        {/* Tail feathers (pointing up as dove descends) */}
-        <path d="M-5 2 Q-7 6 -9 5 Q-7 8 -5 6 Q-3 4 -4 3Z" fill={C.gold} opacity="0.75"/>
-        <path d="M-3 3 Q-3 7 -5 7 Q-2 8 -2 5Z" fill={C.gold} opacity="0.6"/>
-      </g>
-      {/* Small glow dot at centre where dove is heading */}
-      <circle cx="22" cy="30" r="2" fill={C.gold} opacity="0.5"/>
+    <svg width={size} height={h} viewBox="0 0 40 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+      {/* ── OPEN BIBLE (bottom) ── */}
+      {/* Left page */}
+      <path d="M4 32 Q4 28 8 27 L20 25 L20 40 L8 42 Q4 42 4 38 Z" fill="#1B2A4A" stroke="#C9A84C" strokeWidth="1.2"/>
+      {/* Right page */}
+      <path d="M36 32 Q36 28 32 27 L20 25 L20 40 L32 42 Q36 42 36 38 Z" fill="#1B2A4A" stroke="#C9A84C" strokeWidth="1.2"/>
+      {/* Spine centre line */}
+      <line x1="20" y1="25" x2="20" y2="40" stroke="#C9A84C" strokeWidth="1"/>
+      {/* Left page lines (text suggestion) */}
+      <line x1="8" y1="30" x2="17" y2="29.5" stroke="#C9A84C" strokeWidth="0.5" opacity="0.5"/>
+      <line x1="8" y1="32.5" x2="17" y2="32" stroke="#C9A84C" strokeWidth="0.5" opacity="0.5"/>
+      <line x1="8" y1="35" x2="17" y2="34.5" stroke="#C9A84C" strokeWidth="0.5" opacity="0.5"/>
+      {/* Right page lines */}
+      <line x1="23" y1="29.5" x2="32" y2="30" stroke="#C9A84C" strokeWidth="0.5" opacity="0.5"/>
+      <line x1="23" y1="32" x2="32" y2="32.5" stroke="#C9A84C" strokeWidth="0.5" opacity="0.5"/>
+      <line x1="23" y1="34.5" x2="32" y2="35" stroke="#C9A84C" strokeWidth="0.5" opacity="0.5"/>
+      {/* Bible cover bottom */}
+      <path d="M4 38 Q4 42 8 43 L20 44 L32 43 Q36 42 36 38" stroke="#C9A84C" strokeWidth="1" fill="none"/>
+
+      {/* ── DOVE (alighting on the Bible spine) ── */}
+      {/* Body — facing right, wings up as it lands */}
+      <ellipse cx="20" cy="22" rx="5.5" ry="3.2" fill="#C9A84C" transform="rotate(-8 20 22)"/>
+      {/* Head */}
+      <circle cx="25" cy="19.5" r="3" fill="#C9A84C"/>
+      {/* Beak — pointed right */}
+      <path d="M27.5 19 L31 19.8 L27.5 20.5" fill="#C9A84C"/>
+      {/* Eye */}
+      <circle cx="26.2" cy="19.2" r="0.7" fill="#1B2A4A"/>
+      {/* Left wing — raised up, landing posture */}
+      <path d="M17 21 Q8 13 5 17 Q9 22 16 23 Z" fill="#E8C97A" opacity="0.95"/>
+      {/* Left wing inner highlight */}
+      <path d="M17 21 Q10 15 7 18 Q10 21 16 22 Z" fill="#C9A84C" opacity="0.6"/>
+      {/* Right wing — raised up other side */}
+      <path d="M20 19.5 Q26 11 32 14 Q29 19 22 21 Z" fill="#E8C97A" opacity="0.95"/>
+      {/* Right wing inner */}
+      <path d="M20 20 Q25 13 30 16 Q28 19 22 21 Z" fill="#C9A84C" opacity="0.6"/>
+      {/* Tail — fanned as it lands */}
+      <path d="M14 23 Q10 27 7 25 Q10 29 13 27 Q15 25 15 24 Z" fill="#C9A84C" opacity="0.8"/>
+      <path d="M15 24 Q13 28 11 27 Q13 30 15 28 Z" fill="#C9A84C" opacity="0.6"/>
+      {/* Feet touching the spine */}
+      <line x1="19" y1="25" x2="18" y2="27" stroke="#C9A84C" strokeWidth="0.8" strokeLinecap="round"/>
+      <line x1="21" y1="25" x2="22" y2="27" stroke="#C9A84C" strokeWidth="0.8" strokeLinecap="round"/>
+      {/* Toes */}
+      <line x1="18" y1="27" x2="16.5" y2="27.5" stroke="#C9A84C" strokeWidth="0.7" strokeLinecap="round"/>
+      <line x1="18" y1="27" x2="18" y2="28" stroke="#C9A84C" strokeWidth="0.7" strokeLinecap="round"/>
+      <line x1="22" y1="27" x2="23.5" y2="27.5" stroke="#C9A84C" strokeWidth="0.7" strokeLinecap="round"/>
+      <line x1="22" y1="27" x2="22" y2="28" stroke="#C9A84C" strokeWidth="0.7" strokeLinecap="round"/>
+
+      {/* Subtle glow around dove */}
+      <ellipse cx="20" cy="20" rx="11" ry="8" fill="none" stroke="#C9A84C" strokeWidth="0.5" opacity="0.2"/>
     </svg>
   )
 }

@@ -87,7 +87,34 @@ export default function ArmchairSessionPage() {
         </div>
       </div>
 
-      {/* ZOOM LINK BANNER */}
+      {/* ADMIN SESSION CONTROLS */}
+      {isHost && (
+        <div style={{ display:'flex', gap:8, marginBottom:12, flexWrap:'wrap', alignItems:'center' }}>
+          {session.status === 'scheduled' && (
+            <span style={{ fontFamily:F.body, fontSize:12, color:C.muted }}>Session not yet live</span>
+          )}
+          <button
+            onClick={async () => {
+              if (!window.confirm('Delete this session and all its messages permanently?')) return
+              const res = await fetch(`/api/armchair/manage?session_id=${id}`, {
+                method: 'DELETE', headers: { Authorization: `Bearer ${token}` }
+              })
+              const data = await res.json()
+              if (data.ok) navigate('/armchair')
+              else alert('Delete failed: ' + data.error)
+            }}
+            style={{ background:'none', border:'1px solid #FECACA', borderRadius:8, padding:'6px 14px', fontFamily:F.body, fontSize:12.5, color:'#DC2626', cursor:'pointer' }}>
+            🗑 Delete Session
+          </button>
+          <button
+            onClick={() => navigate('/admin')}
+            style={{ background:'none', border:`1px solid ${C.border}`, borderRadius:8, padding:'6px 14px', fontFamily:F.body, fontSize:12.5, color:C.muted, cursor:'pointer' }}>
+            ← Admin Panel
+          </button>
+        </div>
+      )}
+
+      {/* ZOOM LINK BANNER */}}
       {session.zoom_link && isLive && (
         <div style={{ background: C.navyLight, borderRadius: 10, padding: '12px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
           <span style={{ fontFamily: F.body, fontSize: 13.5, color: '#fff' }}>
