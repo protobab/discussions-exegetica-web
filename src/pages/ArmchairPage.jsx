@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { C, F, API } from '../lib/tokens.js'
 import { Card, Avatar, Spinner, Btn } from '../components/ui.jsx'
 import { usePageTitle } from '../lib/usePageTitle.js'
+import { IMAGES } from '../lib/images.js'
 
 const TRACKS = [
   { src: '/ambient/track1.mp3', label: 'Reflective Piano' },
@@ -77,7 +78,8 @@ export default function ArmchairPage() {
       {/* FULL-SCREEN BACKGROUND */}
       <div style={{
         position: 'fixed', inset: 0, zIndex: 0,
-        backgroundImage: `url(/ambient/bg-loop.jpg)`,
+        backgroundImage: `url(/ambient/bg-loop.jpg), url(${IMAGES.armchairHero})`,
+        backgroundSize: 'cover, cover',
         backgroundSize: 'cover', backgroundPosition: 'center',
         filter: 'brightness(0.45)',
         transition: 'filter 0.8s ease',

@@ -5,6 +5,7 @@ import { Avatar, BadgeTag, Spinner } from '../components/ui.jsx'
 import { useAuth } from '../lib/auth.jsx'
 import { usePageTitle } from '../lib/usePageTitle.js'
 import ShareButton from '../components/ShareButton.jsx'
+import { IMAGES } from '../lib/images.js'
 
 const BADGE_INFO = {
   Seeker:   { color:'#A78BFA', desc:'Asking honest questions — the beginning of wisdom' },
@@ -59,7 +60,7 @@ export default function ProfilePage() {
     <div style={{ minHeight: '100vh', background: C.parchment, opacity: visible ? 1 : 0, transition: 'opacity 0.5s ease' }}>
 
       {/* PROFILE HERO */}
-      <div style={{ background: `linear-gradient(135deg, ${C.navy} 0%, ${C.navyLight} 100%)`, padding: '44px 24px 0' }}>
+      <div style={{ backgroundImage: `linear-gradient(135deg, rgba(27,42,74,0.88) 0%, rgba(46,66,112,0.92) 100%), url(${IMAGES.profileHero})`, backgroundSize: 'cover', backgroundPosition: 'center top', padding: '44px 24px 0' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 20, marginBottom: 0, flexWrap: 'wrap' }}>
 

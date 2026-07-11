@@ -1,12 +1,38 @@
 import { C, F, BADGE } from '../lib/tokens.js'
 
 export function Logo({ size = 34 }) {
+  // Option B — Dove descending into concentric circles
+  // Echoes Matthew 3:16: the Spirit of God descending like a dove
+  const s = size / 44  // scale factor from 44px base
   return (
-    <svg width={size} height={size} viewBox="0 0 36 36" fill="none">
-      <circle cx="18" cy="18" r="16" stroke={C.gold} strokeWidth="2"/>
-      <circle cx="18" cy="18" r="9" stroke={C.gold} strokeWidth="1.5" strokeDasharray="3 2"/>
-      <circle cx="18" cy="18" r="3.5" fill={C.gold}/>
-      <path d="M18 2 A16 16 0 0 1 34 18" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round"/>
+    <svg width={size} height={size * 1.1} viewBox="0 0 44 48" fill="none">
+      {/* Concentric rings */}
+      <circle cx="22" cy="30" r="17" stroke={C.gold} strokeWidth="1.4" opacity="0.4"/>
+      <circle cx="22" cy="30" r="11" stroke={C.gold} strokeWidth="1" strokeDasharray="2.5 2" opacity="0.5"/>
+      {/* Descending light rays above */}
+      <line x1="22" y1="2" x2="22" y2="10" stroke={C.gold} strokeWidth="0.8" opacity="0.35" strokeDasharray="1.5 1.5"/>
+      <line x1="18" y1="3" x2="20" y2="10" stroke={C.gold} strokeWidth="0.6" opacity="0.2"/>
+      <line x1="26" y1="3" x2="24" y2="10" stroke={C.gold} strokeWidth="0.6" opacity="0.2"/>
+      {/* Dove body — descending posture, angled down */}
+      <g transform="translate(22,15) rotate(15)">
+        {/* Body */}
+        <ellipse cx="0" cy="0" rx="5" ry="3.5" fill={C.gold}/>
+        {/* Head */}
+        <circle cx="4.5" cy="-2" r="2.8" fill={C.gold}/>
+        {/* Beak */}
+        <path d="M7 -2.3 L9.5 -1.5 L7 -1" fill={C.gold}/>
+        {/* Eye */}
+        <circle cx="5.5" cy="-2.2" r="0.7" fill="#1B2A4A"/>
+        {/* Left wing spread */}
+        <path d="M-2 -1 Q-11 -9 -13 -3 Q-9 1 -2 1Z" fill={C.goldLight} opacity="0.9"/>
+        {/* Right wing spread */}
+        <path d="M2 -2 Q9 -10 13 -6 Q10 -1 3 0Z" fill={C.goldLight} opacity="0.9"/>
+        {/* Tail feathers (pointing up as dove descends) */}
+        <path d="M-5 2 Q-7 6 -9 5 Q-7 8 -5 6 Q-3 4 -4 3Z" fill={C.gold} opacity="0.75"/>
+        <path d="M-3 3 Q-3 7 -5 7 Q-2 8 -2 5Z" fill={C.gold} opacity="0.6"/>
+      </g>
+      {/* Small glow dot at centre where dove is heading */}
+      <circle cx="22" cy="30" r="2" fill={C.gold} opacity="0.5"/>
     </svg>
   )
 }

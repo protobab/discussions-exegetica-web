@@ -5,6 +5,7 @@ import { usePageTitle } from '../lib/usePageTitle.js'
 import { Btn } from '../components/ui.jsx'
 import { useAuth } from '../lib/auth.jsx'
 import { useStreak } from '../lib/useStreak.js'
+import { IMAGES } from '../lib/images.js'
 
 const BOOKS = [
   {label:'Genesis',ref:'Gen.1'},{label:'Exodus',ref:'Exod.1'},
@@ -98,7 +99,7 @@ export default function BibleStudyPage() {
   const inputStyle = { border: `1px solid rgba(255,255,255,0.15)`, borderRadius: 8, padding: '9px 12px', fontFamily: F.body, fontSize: 13.5, outline: 'none', background: 'rgba(255,255,255,0.08)', color: cream, width: '100%', boxSizing: 'border-box' }
 
   return (
-    <div style={{ minHeight: '100vh', background: ink, opacity: visible ? 1 : 0, transition: 'opacity 0.6s ease' }}>
+    <div style={{ minHeight: '100vh', backgroundImage: `linear-gradient(rgba(10,25,42,0.93), rgba(10,25,42,0.96)), url(${IMAGES.bibleHero})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed', opacity: visible ? 1 : 0, transition: 'opacity 0.6s ease' }}>
 
       {/* HEADER */}
       <div style={{ background: inkLight, borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '16px 20px' }}>

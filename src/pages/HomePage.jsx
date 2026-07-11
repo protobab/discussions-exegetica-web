@@ -5,6 +5,7 @@ import { Logo, Card, Avatar, BadgeTag } from '../components/ui.jsx'
 import { usePageTitle } from '../lib/usePageTitle.js'
 import { useAuth } from '../lib/auth.jsx'
 import { useStreak } from '../lib/useStreak.js'
+import { IMAGES, OVERLAY } from '../lib/images.js'
 
 // Animated word-by-word text reveal
 function RevealText({ text, style = {} }) {
@@ -86,10 +87,11 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* HERO */}
+      {/* HERO — bold photography */}
       <div style={{
-        background: `linear-gradient(135deg, #1B2A4A 0%, #2E4270 100%)`,
-        padding: '72px 24px 64px', textAlign: 'center', position: 'relative', overflow: 'hidden'
+        backgroundImage: `linear-gradient(135deg, rgba(27,42,74,0.78) 0%, rgba(46,66,112,0.82) 100%), url(${IMAGES.homeHero})`,
+        backgroundSize: 'cover', backgroundPosition: 'center top',
+        padding: '80px 24px 72px', textAlign: 'center', position: 'relative', overflow: 'hidden'
       }}>
         {[200, 360, 520].map((r, i) => (
           <div key={i} style={{
@@ -204,8 +206,9 @@ export default function HomePage() {
       {/* ARMCHAIR FEATURE */}
       <div style={{
         position: 'relative', overflow: 'hidden',
-        backgroundImage: `linear-gradient(rgba(27,42,74,0.85), rgba(27,42,74,0.92)), url(/ambient/bg-loop.jpg)`,
-        backgroundSize: 'cover', backgroundPosition: 'center',
+        backgroundImage: `linear-gradient(rgba(27,42,74,0.78), rgba(27,42,74,0.88)), url(/ambient/bg-loop.jpg), url(${IMAGES.homeHero})`,
+        backgroundSize: 'cover, cover, cover',
+        backgroundPosition: 'center, center, center',
         padding: '52px 24px',
       }}>
         <div style={{ maxWidth: 980, margin: '0 auto' }}>

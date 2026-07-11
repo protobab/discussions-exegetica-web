@@ -6,6 +6,7 @@ import { Card, Avatar, BadgeTag, CategoryPill, Spinner, Btn } from '../component
 import { useAuth } from '../lib/auth.jsx'
 import { usePageTitle } from '../lib/usePageTitle.js'
 import ShareButton from '../components/ShareButton.jsx'
+import { IMAGES } from '../lib/images.js'
 
 const ALL_CATS = [
   {slug:'all',label:'All Topics',icon:'✦'},

@@ -5,6 +5,7 @@ import { Logo } from '../components/ui.jsx'
 import { usePageTitle } from '../lib/usePageTitle.js'
 import { useAuth } from '../lib/auth.jsx'
 import { useStreak } from '../lib/useStreak.js'
+import { IMAGES } from '../lib/images.js'
 
 function RevealText({ text }) {
   const [shown, setShown] = useState(0)
@@ -40,7 +41,7 @@ export default function DailyWordPage() {
   }, [])
 
   return (
-    <div style={{ minHeight: '100vh', background: `linear-gradient(to bottom, #1B2A4A 0%, #0d1b2e 100%)`, position: 'relative', overflow: 'hidden' }}>
+    <div style={{ minHeight: '100vh', backgroundImage: `linear-gradient(to bottom, rgba(27,42,74,0.88) 0%, rgba(10,20,45,0.94) 100%), url(${IMAGES.dailyHero})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative', overflow: 'hidden' }}>
 
       {/* Decorative circles */}
       {[300, 500, 700].map((r, i) => (

@@ -4,6 +4,7 @@ import { C, F, API } from '../lib/tokens.js'
 import { Avatar, BadgeTag, Spinner, Btn } from '../components/ui.jsx'
 import { useAuth } from '../lib/auth.jsx'
 import { usePageTitle } from '../lib/usePageTitle.js'
+import { IMAGES } from '../lib/images.js'
 
 const sage = '#2D6A4F'
 const sageBg = '#F0F7F4'
@@ -40,7 +41,7 @@ export function GroupsPage() {
     <div style={{ minHeight:'100vh', background: sageBg, opacity: visible?1:0, transition:'opacity 0.5s ease' }}>
 
       {/* HERO */}
-      <div style={{ background:`linear-gradient(135deg, #1E3A2F 0%, ${sage} 100%)`, padding:'52px 24px 44px', textAlign:'center' }}>
+      <div style={{ backgroundImage:`linear-gradient(135deg, rgba(30,58,47,0.82) 0%, rgba(45,106,79,0.88) 100%), url(${IMAGES.groupsHero})`, backgroundSize:'cover', backgroundPosition:'center', padding:'52px 24px 44px', textAlign:'center' }}>
         <p style={{ fontFamily:F.body, fontSize:11, fontWeight:700, color:sageMid, letterSpacing:'0.16em', textTransform:'uppercase', marginBottom:10 }}>Study Groups</p>
         <h1 style={{ fontFamily:F.display, fontSize:'clamp(24px,4vw,38px)', fontWeight:900, color:'#fff', marginBottom:12, lineHeight:1.2 }}>
           Smaller circles,<br/>deeper roots.
@@ -166,7 +167,7 @@ export function GroupDetailPage() {
 
   return (
     <div style={{ minHeight:'100vh', background:sageBg, opacity:visible?1:0, transition:'opacity 0.5s ease' }}>
-      <div style={{ background:`linear-gradient(135deg, #1E3A2F 0%, ${sage} 100%)`, padding:'32px 24px 28px' }}>
+      <div style={{ backgroundImage:`linear-gradient(135deg, rgba(30,58,47,0.85) 0%, rgba(45,106,79,0.9) 100%), url(${IMAGES.groupsHero})`, backgroundSize:'cover', backgroundPosition:'center', padding:'32px 24px 28px' }}>
         <div style={{ maxWidth:760, margin:'0 auto' }}>
           <button onClick={()=>navigate('/groups')} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.65)', fontFamily:F.body, fontSize:13, cursor:'pointer', marginBottom:14, padding:0 }}>← All Groups</button>
           {group.book_focus && <span style={{ background:'rgba(255,255,255,0.15)', color:'#fff', borderRadius:6, padding:'2px 10px', fontSize:11, fontFamily:F.body, fontWeight:600, display:'inline-block', marginBottom:10 }}>📖 {group.book_focus}</span>}
