@@ -141,7 +141,8 @@ export default function Layout() {
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
             {[['Forum','/forum'],['Armchair','/armchair'],['Bible','/bible'],
               ['Groups','/groups'],['Daily Word','/daily-word'],
-              ['Prayer of Salvation','/salvation'],['Contact','/contact']].map(([l,t]) => (
+              ['Prayer of Salvation','/salvation'],['Contact','/contact'],
+              ['Privacy Policy','/privacy'],['Terms of Use','/terms']].map(([l,t]) => (
               <Link key={l} to={t} style={{ color: 'rgba(255,255,255,0.35)', fontSize: 12 }}>{l}</Link>
             ))}
           </div>

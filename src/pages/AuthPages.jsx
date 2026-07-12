@@ -67,6 +67,7 @@ export function RegisterPage() {
       <Field label="Password" type="password" value={form.password} onChange={set('password')} placeholder="At least 8 characters"/>
       <Btn variant="gold" onClick={submit} disabled={loading} style={{ width:'100%', padding:'12px', fontSize:15, marginTop:6 }}>{loading?'Creating account…':'Create free account'}</Btn>
       <p style={{ fontFamily:F.body, fontSize:13, color:C.muted, textAlign:'center', marginTop:14 }}>Already a member? <Link to="/login" style={{ color:C.gold, fontWeight:600 }}>Sign in</Link></p>
+      <p style={{ fontFamily:F.body, fontSize:11.5, color:'rgba(255,255,255,0.3)', textAlign:'center', marginTop:12, lineHeight:1.6 }}>By joining you agree to our <Link to="/terms" style={{ color:C.gold }}>Terms of Use</Link> and <Link to="/privacy" style={{ color:C.gold }}>Privacy Policy</Link></p>
     </AuthShell>
   )
 }

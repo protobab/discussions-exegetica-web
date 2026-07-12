@@ -15,6 +15,8 @@ import ProfilePage from './pages/ProfilePage.jsx'
 import JoinPage from './pages/JoinPage.jsx'
 import ContactPage from './pages/ContactPage.jsx'
 import ResetPasswordPage from './pages/ResetPasswordPage.jsx'
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage.jsx'
+import TermsOfUsePage from './pages/TermsOfUsePage.jsx'
 import PrayerOfSalvationPage from './pages/PrayerOfSalvationPage.jsx'
 
 export default function App() {
@@ -40,6 +42,8 @@ export default function App() {
             <Route path="profile/:username" element={<ProfilePage />} />
             <Route path="join/:code" element={<JoinPage />} />
             <Route path="contact" element={<ContactPage />} />
+            <Route path="privacy" element={<PrivacyPolicyPage />} />
+            <Route path="terms" element={<TermsOfUsePage />} />
             <Route path="salvation" element={<PrayerOfSalvationPage />} />
             <Route path="register" element={<RegisterPage />} />
             <Route path="login" element={<LoginPage />} />
