@@ -1,38 +1,27 @@
 import { useEffect, useState, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { C, F, API } from '../lib/tokens.js'
-import { Logo, Card, Avatar, BadgeTag } from '../components/ui.jsx'
+import { Logo, Avatar, BadgeTag } from '../components/ui.jsx'
 import { usePageTitle } from '../lib/usePageTitle.js'
 import { useAuth } from '../lib/auth.jsx'
 import { useStreak } from '../lib/useStreak.js'
-import { IMAGES, OVERLAY } from '../lib/images.js'
+import { IMAGES } from '../lib/images.js'
 
-// Animated word-by-word text reveal
-function RevealText({ text, style = {} }) {
+// Word-by-word verse reveal
+function RevealText({ text }) {
   const [shown, setShown] = useState(0)
   const words = text.split(' ')
   useEffect(() => {
     if (shown >= words.length) return
-    const t = setTimeout(() => setShown(s => s + 1), 80)
+    const t = setTimeout(() => setShown(s => s + 1), 100)
     return () => clearTimeout(t)
   }, [shown, words.length])
   return (
-    <span style={style}>
+    <>
       {words.map((w, i) => (
-        <span key={i} style={{ opacity: i < shown ? 1 : 0, transition: 'opacity 0.3s', marginRight: 4, display: 'inline-block' }}>{w}</span>
+        <span key={i} style={{ opacity: i < shown ? 1 : 0, transition: 'opacity 0.35s', marginRight: 4, display: 'inline-block' }}>{w}</span>
       ))}
-    </span>
-  )
-}
-
-// Streak flame badge
-function StreakBadge({ streak }) {
-  if (!streak || streak < 1) return null
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(201,168,76,0.12)', border: `1px solid ${C.gold}44`, borderRadius: 20, padding: '4px 12px' }}>
-      <span style={{ fontSize: 16 }}>🔥</span>
-      <span style={{ fontFamily: F.body, fontSize: 13, fontWeight: 700, color: C.gold }}>{streak} day{streak !== 1 ? 's' : ''}</span>
-    </div>
+    </>
   )
 }
 
@@ -45,328 +34,357 @@ export default function HomePage() {
   const [pulse, setPulse] = useState(null)
   const [armchair, setArmchair] = useState(null)
   const [meditate, setMeditate] = useState(false)
-  const [pageVisible, setPageVisible] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const navigate = useNavigate()
+  const discoverRef = useRef(null)
 
   useEffect(() => {
-    setTimeout(() => setPageVisible(true), 50)
     fetch(`${API}/daily-word`).then(r=>r.json()).then(d=>setDailyWord(d.word)).catch(()=>{})
     fetch(`${API}/threads`).then(r=>r.json()).then(d=>setThreads(d.threads||[])).catch(()=>{})
     fetch(`${API}/pulse`).then(r=>r.json()).then(d=>setPulse(d)).catch(()=>{})
     fetch(`${API}/armchair/feed`).then(r=>r.json()).then(d=>setArmchair(d)).catch(()=>{})
     if (user) recordActivity('visit', null)
+    const onScroll = () => setScrolled(window.scrollY > 60)
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
   }, [user])
 
   const isLive = armchair?.featured?.status === 'live'
 
   return (
-    <div style={{ opacity: pageVisible ? 1 : 0, transition: 'opacity 0.5s ease', background: C.parchment, minHeight: '100vh' }}>
+    <div style={{ background: C.navy, minHeight: '100vh' }}>
 
       {/* MEDITATE OVERLAY */}
       {meditate && dailyWord && (
         <div onClick={() => setMeditate(false)} style={{
           position: 'fixed', inset: 0, zIndex: 999,
-          background: 'rgba(27,42,74,0.97)',
+          background: 'rgba(6,10,20,0.98)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          flexDirection: 'column', padding: 40, cursor: 'pointer'
+          flexDirection: 'column', padding: '40px 24px', cursor: 'pointer'
         }}>
-          <p style={{ fontFamily: F.body, fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 32 }}>
-            Meditate · Be still · Know
-          </p>
-          <blockquote style={{
-            fontFamily: F.display, fontSize: 'clamp(22px,4vw,38px)', fontWeight: 700,
-            color: '#fff', textAlign: 'center', lineHeight: 1.6,
-            maxWidth: 680, margin: '0 0 28px',
-            animation: 'fadeInUp 1.2s ease'
-          }}>
+          <p style={{ fontFamily: F.body, fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: 40 }}>Be still · Know · Rest</p>
+          <blockquote style={{ fontFamily: F.display, fontSize: 'clamp(20px,4vw,34px)', fontWeight: 700, color: '#fff', textAlign: 'center', lineHeight: 1.7, maxWidth: 680, margin: '0 0 24px', fontStyle: 'italic' }}>
             "{dailyWord.verse_text}"
           </blockquote>
           <p style={{ fontFamily: F.body, fontSize: 18, color: C.gold, fontWeight: 700 }}>— {dailyWord.verse_ref}</p>
-          <p style={{ fontFamily: F.body, fontSize: 12, color: 'rgba(255,255,255,0.35)', marginTop: 48 }}>Tap anywhere to return</p>
-          <style>{`@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}`}</style>
+          <p style={{ fontFamily: F.body, fontSize: 12, color: 'rgba(255,255,255,0.25)', marginTop: 56 }}>Tap anywhere to return</p>
+          <style>{`@keyframes fi{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}`}</style>
         </div>
       )}
 
-      {/* HERO — bold photography */}
-      <div style={{
-        backgroundImage: `linear-gradient(135deg, rgba(27,42,74,0.78) 0%, rgba(46,66,112,0.82) 100%), url(${IMAGES.homeHero})`,
+      {/* ── SECTION 1: FULL-SCREEN HERO ── */}
+      <section style={{
+        minHeight: '100vh',
+        backgroundImage: `linear-gradient(to bottom, rgba(6,10,20,0.55) 0%, rgba(6,10,20,0.7) 60%, rgba(6,10,20,0.95) 100%), url(${IMAGES.homeHero})`,
         backgroundSize: 'cover', backgroundPosition: 'center top',
-        padding: '80px 24px 72px', textAlign: 'center', position: 'relative', overflow: 'hidden'
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center',
+        textAlign: 'center', padding: '80px 24px 60px',
+        position: 'relative',
       }}>
-        {[200, 360, 520].map((r, i) => (
-          <div key={i} style={{
-            position: 'absolute', top: '50%', left: '50%',
-            transform: 'translate(-50%,-50%)',
-            width: r, height: r, borderRadius: '50%',
-            border: `1px solid ${C.gold}${['14','0c','08'][i]}`,
-            pointerEvents: 'none',
-            animation: `pulse-ring ${3 + i}s ease-in-out infinite`,
-          }}/>
-        ))}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 18 }}><Logo size={52}/></div>
-        <h1 style={{
-          fontFamily: F.display, fontSize: 'clamp(28px,5vw,52px)',
-          fontWeight: 900, color: '#fff', margin: '0 0 14px', lineHeight: 1.12,
-          position: 'relative'
-        }}>
-          Where Scripture is<br/><span style={{ color: C.gold }}>opened together.</span>
-        </h1>
-        <p style={{ fontFamily: F.body, fontSize: 16.5, color: 'rgba(255,255,255,0.7)', maxWidth: 500, margin: '0 auto 32px', lineHeight: 1.75 }}>
-          A global community for honest seekers and devoted believers — asking real questions, studying Scripture deeply, and walking in the light of Christ.
-        </p>
-        <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link to="/forum" style={{ background: C.gold, color: C.navy, borderRadius: 10, padding: '13px 26px', fontFamily: F.body, fontSize: 15, fontWeight: 700, transition: 'transform 0.15s' }}>Enter the Forum</Link>
-          <Link to="/register" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 10, padding: '13px 26px', fontFamily: F.body, fontSize: 15, fontWeight: 600 }}>I'm new — start here 🌱</Link>
-          <Link to="/salvation" style={{ background: 'rgba(201,168,76,0.15)', color: C.gold, border: `1px solid ${C.gold}44`, borderRadius: 10, padding: '13px 26px', fontFamily: F.body, fontSize: 15, fontWeight: 600 }}>Prayer of Salvation 🙏</Link>
-        </div>
-        <style>{`@keyframes pulse-ring{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:0.3;transform:translate(-50%,-50%) scale(1.04)}}`}</style>
-      </div>
-
-      {/* WELCOME BACK BANNER — personalised for returning users */}
-      {user && (streak > 0 || lastThread) && (
-        <div style={{ background: C.navy, padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 20, flexWrap: 'wrap' }}>
-          <span style={{ fontFamily: F.body, fontSize: 13.5, color: '#fff' }}>
-            Welcome back, <strong style={{ color: C.gold }}>{user.display_name}</strong>
-          </span>
-          {streak > 0 && <StreakBadge streak={streak}/>}
-          {lastThread && (
-            <Link to={`/thread/${lastThread.id}`} style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.7)', borderLeft: '1px solid rgba(255,255,255,0.2)', paddingLeft: 20 }}>
-              ↩ Continue reading: <span style={{ color: C.goldLight }}>{lastThread.title.slice(0, 40)}…</span>
-            </Link>
-          )}
-          {lastBibleRef && !lastThread && (
-            <Link to={`/bible?ref=${lastBibleRef}`} style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.7)', borderLeft: '1px solid rgba(255,255,255,0.2)', paddingLeft: 20 }}>
-              ↩ Return to <span style={{ color: C.goldLight }}>{lastBibleRef}</span> in Bible Study
-            </Link>
-          )}
-        </div>
-      )}
-
-      {/* LIVE INDICATOR — if armchair session is live */}
-      {isLive && (
-        <div style={{ background: '#DC2626', padding: '10px 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#fff', display: 'inline-block', animation: 'pulse-dot 1.2s infinite' }}/>
-          <span style={{ fontFamily: F.body, fontSize: 13.5, fontWeight: 700, color: '#fff' }}>
-            Live now: {armchair.featured.title}
-          </span>
-          <Link to={`/armchair/session/${armchair.featured.id}`} style={{ background: '#fff', color: '#DC2626', borderRadius: 6, padding: '4px 12px', fontFamily: F.body, fontSize: 12.5, fontWeight: 700 }}>
-            Join →
+        {/* Live session badge */}
+        {isLive && (
+          <Link to={`/armchair/session/${armchair.featured.id}`} style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            background: 'rgba(239,68,68,0.2)', border: '1px solid rgba(239,68,68,0.5)',
+            borderRadius: 30, padding: '6px 18px', marginBottom: 28,
+            fontFamily: F.body, fontSize: 13, fontWeight: 700, color: '#fff',
+            textDecoration: 'none'
+          }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#EF4444', display: 'inline-block', animation: 'pulse-dot 1.2s infinite' }}/>
+            Live now — {armchair.featured.title} →
           </Link>
-          <style>{`@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.3}}`}</style>
-        </div>
-      )}
+        )}
 
-      {/* DAILY WORD — immersive with meditate button */}
-      {dailyWord && (
-        <div style={{ background: `linear-gradient(135deg, ${C.navy} 0%, #1a3a5c 100%)`, padding: '36px 24px' }}>
-          <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
-            <p style={{ fontFamily: F.body, fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.16em', textTransform: 'uppercase', marginBottom: 16 }}>
-              Today's Word · {dailyWord.theme}
+        {/* Welcome back for returning users */}
+        {user && (streak > 0 || lastThread) && (
+          <div style={{ marginBottom: 28, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
+            <span style={{ fontFamily: F.body, fontSize: 14, color: 'rgba(255,255,255,0.6)' }}>
+              Welcome back, <strong style={{ color: C.gold }}>{user.display_name}</strong>
+            </span>
+            {streak > 0 && (
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(201,168,76,0.12)', border: `1px solid ${C.gold}33`, borderRadius: 20, padding: '3px 12px', fontFamily: F.body, fontSize: 12.5, fontWeight: 700, color: C.gold }}>
+                🔥 {streak} day{streak !== 1 ? 's' : ''}
+              </span>
+            )}
+            {lastThread && (
+              <Link to={`/thread/${lastThread.id}`} style={{ fontFamily: F.body, fontSize: 12.5, color: 'rgba(255,255,255,0.5)', borderLeft: '1px solid rgba(255,255,255,0.15)', paddingLeft: 12 }}>
+                ↩ {lastThread.title.slice(0, 35)}…
+              </Link>
+            )}
+          </div>
+        )}
+
+        {/* Main headline */}
+        <h1 style={{
+          fontFamily: F.display,
+          fontSize: 'clamp(36px,6vw,72px)',
+          fontWeight: 900, color: '#fff',
+          lineHeight: 1.08, margin: '0 0 20px',
+          maxWidth: 800, letterSpacing: '-0.02em',
+          textShadow: '0 4px 32px rgba(0,0,0,0.4)'
+        }}>
+          Where Scripture is<br/>
+          <span style={{ color: C.gold, display: 'inline-block' }}>opened together.</span>
+        </h1>
+
+        <p style={{
+          fontFamily: F.body, fontSize: 'clamp(16px,2vw,20px)',
+          color: 'rgba(255,255,255,0.65)',
+          maxWidth: 540, margin: '0 auto 36px', lineHeight: 1.75,
+          fontWeight: 400
+        }}>
+          A global community for honest seekers and devoted believers — asking real questions, studying Scripture deeply, walking in the light of Christ.
+        </p>
+
+        {/* CTAs */}
+        <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 40 }}>
+          {user ? (
+            <Link to="/forum" style={{
+              background: `linear-gradient(135deg, ${C.gold}, #E8C97A)`,
+              color: C.navy, borderRadius: 12, padding: '14px 32px',
+              fontFamily: F.body, fontSize: 16, fontWeight: 700,
+              boxShadow: '0 8px 24px rgba(201,168,76,0.35)'
+            }}>Enter the Forum →</Link>
+          ) : (
+            <>
+              <Link to="/register" style={{
+                background: `linear-gradient(135deg, ${C.gold}, #E8C97A)`,
+                color: C.navy, borderRadius: 12, padding: '14px 32px',
+                fontFamily: F.body, fontSize: 16, fontWeight: 700,
+                boxShadow: '0 8px 24px rgba(201,168,76,0.35)'
+              }}>Join Free →</Link>
+              <Link to="/forum" style={{
+                background: 'rgba(255,255,255,0.08)', color: '#fff',
+                border: '1px solid rgba(255,255,255,0.2)', borderRadius: 12,
+                padding: '14px 32px', fontFamily: F.body, fontSize: 16, fontWeight: 500
+              }}>Explore the Forum</Link>
+            </>
+          )}
+          <Link to="/salvation" style={{
+            background: 'rgba(201,168,76,0.1)', color: C.gold,
+            border: `1px solid ${C.gold}44`, borderRadius: 12,
+            padding: '14px 24px', fontFamily: F.body, fontSize: 15, fontWeight: 600
+          }}>🙏 Prayer of Salvation</Link>
+        </div>
+
+        {/* Daily Word inline */}
+        {dailyWord && (
+          <div style={{
+            maxWidth: 640, margin: '0 auto',
+            background: 'rgba(201,168,76,0.07)',
+            border: `1px solid ${C.gold}22`,
+            borderRadius: 16, padding: '22px 28px',
+          }}>
+            <p style={{ fontFamily: F.body, fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 12 }}>
+              Today's Word · {dailyWord.verse_ref}
             </p>
-            <blockquote style={{ fontFamily: F.display, fontSize: 'clamp(17px,3vw,24px)', fontWeight: 700, color: '#fff', lineHeight: 1.6, margin: '0 0 18px', borderLeft: `3px solid ${C.gold}`, paddingLeft: 20, textAlign: 'left' }}>
-              <RevealText text={`"${dailyWord.verse_text}"`}/>
-            </blockquote>
-            <p style={{ fontFamily: F.body, fontSize: 15, fontWeight: 700, color: C.gold, marginBottom: 20 }}>— {dailyWord.verse_ref}</p>
+            <p style={{ fontFamily: F.display, fontSize: 'clamp(15px,2.2vw,19px)', fontWeight: 600, color: '#fff', lineHeight: 1.7, margin: '0 0 16px', fontStyle: 'italic' }}>
+              "<RevealText text={dailyWord.verse_text}/>"
+            </p>
             <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-              <button onClick={() => setMeditate(true)} style={{ background: 'rgba(201,168,76,0.15)', color: C.gold, border: `1px solid ${C.gold}44`, borderRadius: 8, padding: '9px 20px', fontFamily: F.body, fontSize: 13.5, fontWeight: 600, cursor: 'pointer' }}>
-                🧘 Meditate on this
+              <button onClick={() => setMeditate(true)} style={{ background: 'none', border: `1px solid ${C.gold}44`, borderRadius: 8, padding: '7px 16px', fontFamily: F.body, fontSize: 13, color: C.gold, cursor: 'pointer' }}>
+                🧘 Meditate
               </button>
-              <Link to="/forum/exegesis" style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.8)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '9px 20px', fontFamily: F.body, fontSize: 13.5 }}>
+              <Link to="/forum/exegesis" style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.5)', padding: '7px 0' }}>
                 Discuss in forum →
               </Link>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* WEEKLY PULSE */}
+        {/* Scroll hint */}
+        <div style={{
+          position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)',
+          opacity: scrolled ? 0 : 0.5, transition: 'opacity 0.4s',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4
+        }}>
+          <span style={{ fontFamily: F.body, fontSize: 11, color: '#fff', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Explore</span>
+          <span style={{ color: '#fff', fontSize: 18, animation: 'bounce-y 1.5s infinite' }}>↓</span>
+        </div>
+
+        <style>{`
+          @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.3}}
+          @keyframes bounce-y{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+        `}</style>
+      </section>
+
+      {/* ── SECTION 2: COMMUNITY PULSE ── */}
       {pulse && (
-        <div style={{ background: '#fff', borderBottom: `1px solid ${C.border}`, padding: '14px 24px' }}>
-          <div style={{ maxWidth: 980, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap', justifyContent: 'center' }}>
-            <span style={{ fontFamily: F.body, fontSize: 11.5, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>This week</span>
+        <section style={{
+          background: 'rgba(255,255,255,0.03)',
+          borderTop: '1px solid rgba(255,255,255,0.06)',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          padding: '18px 24px'
+        }}>
+          <div style={{ maxWidth: 900, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 28, flexWrap: 'wrap', justifyContent: 'center' }}>
+            <span style={{ fontFamily: F.body, fontSize: 11, fontWeight: 700, color: C.gold, textTransform: 'uppercase', letterSpacing: '0.1em' }}>This week</span>
             {[
-              { val: pulse.week?.newMembers, label: 'new members' },
-              { val: pulse.week?.newThreads, label: 'discussions' },
+              { val: pulse.total?.members, label: 'members' },
+              { val: pulse.week?.newThreads, label: 'new discussions' },
               { val: pulse.week?.newReplies, label: 'replies' },
-              { val: pulse.total?.members, label: 'total members' },
             ].map((s, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ fontFamily: F.display, fontSize: 20, fontWeight: 700, color: C.navy }}>{s.val ?? '—'}</span>
-                <span style={{ fontFamily: F.body, fontSize: 12, color: C.muted }}>{s.label}</span>
+              <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 5 }}>
+                <span style={{ fontFamily: F.display, fontSize: 22, fontWeight: 700, color: '#fff' }}>{s.val ?? '—'}</span>
+                <span style={{ fontFamily: F.body, fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>{s.label}</span>
               </div>
             ))}
             {pulse.week?.topThread && (
-              <Link to={`/thread/${pulse.week.topThread.id}`} style={{ fontFamily: F.body, fontSize: 12.5, color: C.navyLight, borderLeft: `1px solid ${C.border}`, paddingLeft: 16 }}>
-                🔥 Most loved: <strong>{pulse.week.topThread.title.slice(0, 45)}…</strong>
+              <Link to={`/thread/${pulse.week.topThread.id}`} style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.5)', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: 20 }}>
+                🔥 <strong style={{ color: 'rgba(255,255,255,0.75)' }}>{pulse.week.topThread.title.slice(0, 42)}…</strong>
               </Link>
             )}
           </div>
-        </div>
+        </section>
       )}
 
-      {/* ARMCHAIR FEATURE */}
-      <div style={{
-        position: 'relative', overflow: 'hidden',
-        backgroundImage: `linear-gradient(rgba(27,42,74,0.78), rgba(27,42,74,0.88)), url(/ambient/bg-loop.jpg), url(${IMAGES.homeHero})`,
-        backgroundSize: 'cover, cover, cover',
-        backgroundPosition: 'center, center, center',
-        padding: '52px 24px',
+      {/* ── SECTION 3: ARMCHAIR FEATURE ── */}
+      <section style={{
+        backgroundImage: `linear-gradient(rgba(6,10,20,0.82), rgba(6,10,20,0.9)), url(/ambient/bg-loop.jpg)`,
+        backgroundSize: 'cover', backgroundPosition: 'center',
+        padding: '64px 24px'
       }}>
-        <div style={{ maxWidth: 980, margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.1fr) minmax(0,1fr)', gap: 40, alignItems: 'center' }} className="armchair-home-grid">
-            <div>
-              <p style={{ fontFamily: F.body, fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.16em', textTransform: 'uppercase', marginBottom: 12 }}>🎙 The Armchair</p>
-              <h2 style={{ fontFamily: F.display, fontSize: 'clamp(22px,3.5vw,36px)', fontWeight: 900, color: '#fff', marginBottom: 14, lineHeight: 1.2 }}>
-                Live conversations,<br/>ambient music &amp; reflections.
-              </h2>
-              <p style={{ fontFamily: F.body, fontSize: 15, color: 'rgba(255,255,255,0.7)', lineHeight: 1.75, marginBottom: 22, maxWidth: 420 }}>
-                Join Eki and guests for live audio armchair discussions on faith, Scripture and life. Past sessions recorded and available to listen back.
-              </p>
-              {isLive && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 18, background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.4)', borderRadius: 10, padding: '10px 16px', width: 'fit-content' }}>
-                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#EF4444', display: 'inline-block', animation: 'pulse-dot 1.2s infinite' }}/>
-                  <span style={{ fontFamily: F.body, fontSize: 13, fontWeight: 700, color: '#fff' }}>Live now</span>
-                </div>
-              )}
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                <Link to="/armchair" style={{ background: C.gold, color: C.navy, borderRadius: 10, padding: '11px 22px', fontFamily: F.body, fontSize: 14, fontWeight: 700 }}>
-                  {isLive ? '🎧 Join Live →' : 'Enter The Armchair →'}
-                </Link>
-              </div>
-            </div>
-            <div style={{ display: 'grid', gap: 10 }}>
-              {armchair?.posts?.slice(0, 2).map(p => (
-                <Link key={p.id} to="/armchair" style={{ display: 'grid', gridTemplateColumns: '72px 1fr', gap: 10, background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 10, overflow: 'hidden', textDecoration: 'none', transition: 'background 0.2s' }}
-                  onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.13)'}
-                  onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.07)'}
-                >
-                  <div style={{ backgroundImage: `url(${p.cover_image||'https://images.unsplash.com/photo-1490127252417-7c393f993ee4?w=200&q=50'})`, backgroundSize: 'cover', backgroundPosition: 'center' }}/>
-                  <div style={{ padding: '10px 10px 10px 0' }}>
-                    <p style={{ fontFamily: F.display, fontSize: 13, fontWeight: 700, color: '#fff', margin: '0 0 3px', lineHeight: 1.3 }}>{p.title}</p>
-                    {p.excerpt && <p style={{ fontFamily: F.body, fontSize: 11.5, color: 'rgba(255,255,255,0.55)', margin: 0 }}>{p.excerpt.slice(0, 60)}…</p>}
-                  </div>
-                </Link>
-              ))}
-              {!armchair?.posts?.length && (
-                <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, padding: '18px', textAlign: 'center' }}>
-                  <p style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 10 }}>🎵 Ambient worship music playing now</p>
-                  <Link to="/armchair" style={{ color: C.gold, fontFamily: F.body, fontSize: 13, fontWeight: 600 }}>Enter the Armchair →</Link>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* LIVE DISCUSSIONS FEED */}
-      <div style={{ maxWidth: 980, margin: '0 auto', padding: '44px 20px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.6fr) minmax(0,1fr)', gap: 28, alignItems: 'start' }} className="home-feed-grid">
-
-          {/* Main feed */}
+        <div style={{ maxWidth: 900, margin: '0 auto', display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 48, alignItems: 'center' }} className="armchair-grid">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-              <h2 style={{ fontFamily: F.display, fontSize: 20, fontWeight: 700, color: C.navy }}>Active Discussions</h2>
-              <Link to="/forum" style={{ border: `1.5px solid ${C.navy}`, color: C.navy, borderRadius: 8, padding: '6px 14px', fontFamily: F.body, fontSize: 12.5, fontWeight: 600 }}>See all →</Link>
-            </div>
-            {threads.length === 0
-              ? <Card><p style={{ fontFamily: F.body, color: C.muted, textAlign: 'center', padding: '24px 0' }}>No discussions yet — <Link to="/new-thread" style={{ color: C.gold, fontWeight: 600 }}>be the first!</Link></p></Card>
-              : <div style={{ display: 'grid', gap: 10 }}>
-                  {threads.slice(0, 6).map(t => <HomeThreadCard key={t.id} thread={t} onClick={() => { recordActivity('thread', t.id); navigate(`/thread/${t.id}`) }}/>)}
-                </div>
-            }
-          </div>
-
-          {/* Sidebar */}
-          <div style={{ display: 'grid', gap: 16 }}>
-
-            {/* Streak card */}
-            {user && streak > 0 && (
-              <div style={{ background: `linear-gradient(135deg, ${C.navy} 0%, ${C.navyLight} 100%)`, borderRadius: 14, padding: '20px' }}>
-                <p style={{ fontFamily: F.body, fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 10 }}>Your Streak</p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                  <span style={{ fontSize: 32 }}>🔥</span>
-                  <div>
-                    <span style={{ fontFamily: F.display, fontSize: 28, fontWeight: 700, color: '#fff' }}>{streak}</span>
-                    <span style={{ fontFamily: F.body, fontSize: 14, color: 'rgba(255,255,255,0.6)', marginLeft: 6 }}>day{streak !== 1 ? 's' : ''}</span>
-                  </div>
-                </div>
-                <p style={{ fontFamily: F.body, fontSize: 12, color: 'rgba(255,255,255,0.5)', margin: 0 }}>Keep coming back daily to maintain your streak. Longest: {streak} day{streak !== 1 ? 's' : ''}.</p>
+            <p style={{ fontFamily: F.body, fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.16em', textTransform: 'uppercase', marginBottom: 14 }}>🎙 The Armchair</p>
+            <h2 style={{ fontFamily: F.display, fontSize: 'clamp(26px,4vw,40px)', fontWeight: 900, color: '#fff', marginBottom: 16, lineHeight: 1.15 }}>
+              Live conversations.<br/>Ambient music.<br/>Reflections in writing.
+            </h2>
+            <p style={{ fontFamily: F.body, fontSize: 15.5, color: 'rgba(255,255,255,0.62)', lineHeight: 1.8, marginBottom: 28 }}>
+              Join live audio discussions with guests, listen back to past sessions, and read written reflections between broadcasts.
+            </p>
+            {isLive && (
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.4)', borderRadius: 10, padding: '10px 16px', marginBottom: 20 }}>
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#EF4444', animation: 'pulse-dot 1.2s infinite', display: 'inline-block' }}/>
+                <span style={{ fontFamily: F.body, fontSize: 13.5, fontWeight: 700, color: '#fff' }}>Live right now</span>
               </div>
             )}
-
-            {/* Quick navigate */}
-            <div style={{ background: '#fff', borderRadius: 14, padding: '18px', border: `1px solid ${C.border}` }}>
-              <p style={{ fontFamily: F.display, fontSize: 15, fontWeight: 700, color: C.navy, marginBottom: 14 }}>Explore</p>
-              <div style={{ display: 'grid', gap: 8 }}>
-                {[
-                  { icon: '🌱', label: "Seekers' Corner", sub: 'No wrong questions here', to: '/forum/seekers', bg: '#F0F7F4' },
-                  { icon: '📖', label: 'Bible Study Hub', sub: 'Read with AI insights', to: '/bible', bg: '#F0F5FF' },
-                  { icon: '👥', label: 'Study Groups', sub: 'Book-by-book community', to: '/groups', bg: '#FFF8E7' },
-                  { icon: '🕊️', label: 'Prophecy', sub: 'Messianic & end times', to: '/forum/prophecy', bg: '#F5F0FF' },
-                ].map(item => (
-                  <Link key={item.to} to={item.to} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px', background: item.bg, borderRadius: 10, textDecoration: 'none', transition: 'opacity 0.15s' }}
-                    onMouseEnter={e => e.currentTarget.style.opacity='0.8'}
-                    onMouseLeave={e => e.currentTarget.style.opacity='1'}
-                  >
-                    <span style={{ fontSize: 20, flexShrink: 0 }}>{item.icon}</span>
-                    <div>
-                      <p style={{ fontFamily: F.body, fontSize: 13, fontWeight: 600, color: C.navy, margin: 0 }}>{item.label}</p>
-                      <p style={{ fontFamily: F.body, fontSize: 11.5, color: C.muted, margin: 0 }}>{item.sub}</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            {/* Badge journey */}
-            <div style={{ background: C.navy, borderRadius: 14, padding: '18px' }}>
-              <p style={{ fontFamily: F.display, fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 12 }}>The Journey</p>
-              {[{l:'Seeker',c:'#A78BFA',d:'Asking honest questions'},{l:'Disciple',c:'#3B82F6',d:'Consistent learner'},{l:'Elder',c:C.gold,d:'Trusted voice'},{l:'Teacher',c:'#EF4444',d:'Guiding others'}].map((b, i) => (
-                <div key={b.l} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: i < 3 ? 10 : 0 }}>
-                  <span style={{ background: b.c+'22', color: b.c, border: `1px solid ${b.c}55`, borderRadius: 4, padding: '1px 7px', fontSize: 10, fontFamily: F.body, fontWeight: 700, textTransform: 'uppercase', flexShrink: 0 }}>{b.l}</span>
-                  <span style={{ fontFamily: F.body, fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>{b.d}</span>
+            <Link to="/armchair" style={{
+              display: 'inline-block',
+              background: `linear-gradient(135deg, ${C.gold}, #E8C97A)`,
+              color: C.navy, borderRadius: 10, padding: '12px 26px',
+              fontFamily: F.body, fontSize: 14.5, fontWeight: 700,
+              boxShadow: '0 6px 20px rgba(201,168,76,0.3)'
+            }}>
+              {isLive ? '🎧 Join Live →' : 'Enter The Armchair →'}
+            </Link>
+          </div>
+          <div style={{ display: 'grid', gap: 12 }}>
+            {armchair?.posts?.slice(0, 2).map(p => (
+              <Link key={p.id} to="/armchair" style={{
+                display: 'grid', gridTemplateColumns: '70px 1fr',
+                background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: 12, overflow: 'hidden', textDecoration: 'none',
+                transition: 'background 0.2s'
+              }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
+              >
+                <div style={{ backgroundImage: `url(${p.cover_image || IMAGES.armchairHero})`, backgroundSize: 'cover', backgroundPosition: 'center' }}/>
+                <div style={{ padding: '12px 14px' }}>
+                  <p style={{ fontFamily: F.display, fontSize: 13.5, fontWeight: 700, color: '#fff', margin: '0 0 4px', lineHeight: 1.3 }}>{p.title}</p>
+                  {p.excerpt && <p style={{ fontFamily: F.body, fontSize: 12, color: 'rgba(255,255,255,0.5)', margin: 0 }}>{p.excerpt.slice(0, 65)}…</p>}
                 </div>
-              ))}
-              {!user && <Link to="/register" style={{ display: 'block', marginTop: 14, background: C.gold, color: C.navy, borderRadius: 8, padding: '9px', textAlign: 'center', fontFamily: F.body, fontSize: 13, fontWeight: 700 }}>Start your journey →</Link>}
-            </div>
+              </Link>
+            ))}
+            {!armchair?.posts?.length && (
+              <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '24px', textAlign: 'center' }}>
+                <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.4)', marginBottom: 12 }}>🎵 Ambient worship music playing</p>
+                <Link to="/armchair" style={{ color: C.gold, fontFamily: F.body, fontSize: 13, fontWeight: 600 }}>Enter The Armchair →</Link>
+              </div>
+            )}
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* ── SECTION 4: LIVE DISCUSSIONS ── */}
+      <section style={{ padding: '64px 24px', maxWidth: 900, margin: '0 auto' }} ref={discoverRef}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
+          <h2 style={{ fontFamily: F.display, fontSize: 26, fontWeight: 700, color: '#fff' }}>Active Discussions</h2>
+          <Link to="/forum" style={{ fontFamily: F.body, fontSize: 13.5, color: C.gold, fontWeight: 600 }}>See all →</Link>
+        </div>
+        {threads.length === 0 ? (
+          <p style={{ fontFamily: F.body, color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '32px 0' }}>
+            No discussions yet — <Link to="/new-thread" style={{ color: C.gold }}>be the first!</Link>
+          </p>
+        ) : (
+          <div style={{ display: 'grid', gap: 12 }}>
+            {threads.slice(0, 5).map(t => (
+              <div key={t.id} onClick={() => { recordActivity('thread', t.id); navigate(`/thread/${t.id}`) }} style={{
+                background: 'rgba(27,42,74,0.5)', backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12,
+                padding: '16px 20px', cursor: 'pointer', transition: 'all 0.15s'
+              }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(27,42,74,0.8)'; e.currentTarget.style.borderColor = `${C.gold}44` }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(27,42,74,0.5)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)' }}
+              >
+                <div style={{ display: 'flex', gap: 8, marginBottom: 6, alignItems: 'center' }}>
+                  <span style={{ background: 'rgba(201,168,76,0.12)', color: C.gold, borderRadius: 5, padding: '2px 9px', fontSize: 11, fontFamily: F.body, fontWeight: 600 }}>{t.cat_label}</span>
+                  <span style={{ fontFamily: F.body, fontSize: 11, color: 'rgba(255,255,255,0.3)', marginLeft: 'auto' }}>
+                    {Math.floor((Date.now() - new Date(t.created_at+'Z').getTime()) / 3600000)}h ago
+                  </span>
+                </div>
+                <h3 style={{ fontFamily: F.display, fontSize: 16, fontWeight: 700, color: '#fff', margin: '0 0 6px', lineHeight: 1.35 }}>{t.title}</h3>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <Avatar name={t.display_name} color={t.avatar_color} size={20}/>
+                    <span style={{ fontFamily: F.body, fontSize: 12, color: 'rgba(255,255,255,0.45)' }}>{t.display_name}</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: 12 }}>
+                    <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'rgba(255,255,255,0.35)' }}>💬 {t.reply_count}</span>
+                    <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'rgba(255,255,255,0.35)' }}>👁 {t.view_count}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        <div style={{ textAlign: 'center', marginTop: 28 }}>
+          <Link to="/forum" style={{
+            display: 'inline-block',
+            background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.7)',
+            border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10,
+            padding: '12px 28px', fontFamily: F.body, fontSize: 14
+          }}>View all discussions →</Link>
+        </div>
+      </section>
+
+      {/* ── SECTION 5: EXPLORE PATHWAYS ── */}
+      <section style={{ background: 'rgba(255,255,255,0.02)', borderTop: '1px solid rgba(255,255,255,0.05)', padding: '56px 24px' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
+          <h2 style={{ fontFamily: F.display, fontSize: 22, fontWeight: 700, color: '#fff', textAlign: 'center', marginBottom: 8 }}>Where would you like to go?</h2>
+          <p style={{ fontFamily: F.body, fontSize: 14.5, color: 'rgba(255,255,255,0.4)', textAlign: 'center', marginBottom: 32 }}>Every door leads deeper into the Word</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px,1fr))', gap: 14 }}>
+            {[
+              { icon:'🌱', label:"Seekers' Corner", sub:'No wrong questions', to:'/forum/seekers', gold:false },
+              { icon:'📖', label:'Bible Study Hub', sub:'Read with AI insights', to:'/bible', gold:false },
+              { icon:'⚡', label:'Theology', sub:'Doctrine & apologetics', to:'/forum/theology', gold:false },
+              { icon:'🕊️', label:'Prophecy', sub:'Messianic & end times', to:'/forum/prophecy', gold:false },
+              { icon:'🙏', label:'Prayer & Life', sub:'Faith in daily life', to:'/forum/prayer', gold:false },
+              { icon:'🙏', label:'Prayer of Salvation', sub:'Come as you are', to:'/salvation', gold:true },
+            ].map(item => (
+              <Link key={item.to} to={item.to} style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+                padding: '16px', borderRadius: 12, textDecoration: 'none',
+                background: item.gold ? `rgba(201,168,76,0.1)` : 'rgba(255,255,255,0.04)',
+                border: `1px solid ${item.gold ? C.gold + '44' : 'rgba(255,255,255,0.07)'}`,
+                transition: 'all 0.15s'
+              }}
+                onMouseEnter={e => { e.currentTarget.style.background = item.gold ? 'rgba(201,168,76,0.15)' : 'rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'translateY(-2px)' }}
+                onMouseLeave={e => { e.currentTarget.style.background = item.gold ? 'rgba(201,168,76,0.1)' : 'rgba(255,255,255,0.04)'; e.currentTarget.style.transform = 'translateY(0)' }}
+              >
+                <span style={{ fontSize: 22, marginBottom: 8 }}>{item.icon}</span>
+                <p style={{ fontFamily: F.body, fontSize: 13.5, fontWeight: 700, color: item.gold ? C.gold : '#fff', margin: '0 0 3px' }}>{item.label}</p>
+                <p style={{ fontFamily: F.body, fontSize: 12, color: 'rgba(255,255,255,0.4)', margin: 0 }}>{item.sub}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <style>{`
-        @media(max-width:700px){ .armchair-home-grid,.home-feed-grid{ grid-template-columns:1fr !important; } }
+        @media(max-width:700px){ .armchair-grid{ grid-template-columns:1fr !important } }
       `}</style>
-    </div>
-  )
-}
-
-function HomeThreadCard({ thread, onClick }) {
-  const timeAgo = ts => {
-    const s = Math.floor((Date.now() - new Date(ts+'Z').getTime()) / 1000)
-    if (s < 3600) return `${Math.floor(s/60)}m ago`
-    if (s < 86400) return `${Math.floor(s/3600)}h ago`
-    return `${Math.floor(s/86400)}d ago`
-  }
-  return (
-    <div onClick={onClick} style={{ background: '#fff', borderRadius: 10, padding: '13px 16px', border: `1px solid ${C.border}`, cursor: 'pointer', transition: 'box-shadow 0.15s, transform 0.15s' }}
-      onMouseEnter={e => { e.currentTarget.style.boxShadow='0 4px 16px rgba(0,0,0,0.09)'; e.currentTarget.style.transform='translateY(-1px)' }}
-      onMouseLeave={e => { e.currentTarget.style.boxShadow='none'; e.currentTarget.style.transform='translateY(0)' }}
-    >
-      <div style={{ display: 'flex', gap: 7, marginBottom: 5, alignItems: 'center' }}>
-        <span style={{ background: C.mist, color: C.navyLight, borderRadius: 5, padding: '1px 7px', fontSize: 10.5, fontFamily: F.body, fontWeight: 600 }}>{thread.cat_label}</span>
-        <span style={{ fontFamily: F.body, fontSize: 10.5, color: C.muted, marginLeft: 'auto' }}>{timeAgo(thread.created_at)}</span>
-      </div>
-      <h3 style={{ fontFamily: F.display, fontSize: 14.5, fontWeight: 700, color: C.navy, margin: '0 0 4px', lineHeight: 1.35 }}>{thread.title}</h3>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-          <Avatar name={thread.display_name} color={thread.avatar_color} size={18}/>
-          <span style={{ fontFamily: F.body, fontSize: 11.5, color: C.muted }}>{thread.display_name}</span>
-        </div>
-        <div style={{ display: 'flex', gap: 10 }}>
-          <span style={{ fontFamily: F.body, fontSize: 11, color: C.muted }}>💬 {thread.reply_count}</span>
-          <span style={{ fontFamily: F.body, fontSize: 11, color: C.muted }}>👁 {thread.view_count}</span>
-        </div>
-      </div>
     </div>
   )
 }
