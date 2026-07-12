@@ -3,7 +3,7 @@ import { AuthProvider } from './lib/auth.jsx'
 import Layout from './components/Layout.jsx'
 import HomePage from './pages/HomePage.jsx'
 import { ForumPage, ThreadPage, NewThreadPage } from './pages/ForumPages.jsx'
-import { GroupsPage, GroupDetailPage } from './pages/GroupPages.jsx'
+import { GroupsPage, GroupDetailPage, GroupJoinPage } from './pages/GroupPages.jsx'
 import { RegisterPage, LoginPage, ForgotPasswordPage, ChangePasswordPage } from './pages/AuthPages.jsx'
 import DailyWordPage from './pages/DailyWordPage.jsx'
 import ArmchairPage from './pages/ArmchairPage.jsx'
@@ -30,6 +30,7 @@ export default function App() {
             <Route path="new-thread" element={<NewThreadPage />} />
             <Route path="groups" element={<GroupsPage />} />
             <Route path="groups/:id" element={<GroupDetailPage />} />
+            <Route path="groups/join/:code" element={<GroupJoinPage />} />
             <Route path="daily-word" element={<DailyWordPage />} />
             <Route path="armchair" element={<ArmchairPage />} />
             <Route path="armchair/session/:id" element={<ArmchairSessionPage />} />

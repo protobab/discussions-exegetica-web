@@ -71,7 +71,7 @@ export function GroupsPage() {
   const [groups, setGroups] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
-  const [form, setForm] = useState({ name: '', description: '', book_focus: '', cover_image: '', max_members: 0, approval_required: false })
+  const [form, setForm] = useState({ name: '', description: '', book_focus: '', cover_image: '', max_members: 0, approval_required: false, is_private: false })
   const [error, setError] = useState('')
   const [creating, setCreating] = useState(false)
   const [visible, setVisible] = useState(false)
@@ -95,8 +95,9 @@ export function GroupsPage() {
   }
 
   const filtered = groups.filter(g => {
-    if (filter === 'open') return !g.approval_required && (!g.max_members || g.member_count < g.max_members)
+    if (filter === 'open') return !g.approval_required && !g.is_private && (!g.max_members || g.member_count < g.max_members)
     if (filter === 'approval') return g.approval_required
+    if (filter === 'private') return g.is_private
     return true
   })
 
@@ -157,7 +158,7 @@ export function GroupsPage() {
 
         {/* Filter pills */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
-          {[['all','All Groups'],['open','Open to join'],['approval','Approval required']].map(([k,l]) => (
+          {[['all','All Groups'],['open','Open to join'],['approval','Approval required'],['private','🔐 Private']].map(([k,l]) => (
             <button key={k} onClick={() => setFilter(k)} style={{ background: filter===k ? sage : '#fff', color: filter===k ? '#fff' : C.muted, border: `1.5px solid ${filter===k ? sage : sageLight}`, borderRadius: 20, padding: '6px 16px', fontFamily: F.body, fontSize: 13, cursor: 'pointer' }}>{l}</button>
           ))}
           <span style={{ fontFamily: F.body, fontSize: 12.5, color: C.muted, alignSelf: 'center', marginLeft: 4 }}>{filtered.length} group{filtered.length !== 1 ? 's' : ''}</span>
@@ -232,6 +233,8 @@ export function GroupDetailPage() {
   const [visible, setVisible] = useState(false)
   const [maxMembers, setMaxMembers] = useState('')
   const [editingMax, setEditingMax] = useState(false)
+  const [inviteUrl, setInviteUrl] = useState('')
+  const [copied, setCopied] = useState(false)
 
   usePageTitle(group?.name)
 
@@ -239,6 +242,7 @@ export function GroupDetailPage() {
     fetch(`${API}/groups/${id}`).then(r => r.json()).then(d => {
       setGroup(d.group); setPosts(d.posts || []); setLoading(false)
       setMaxMembers(String(d.group?.max_members || 0))
+      if (d.group?.invite_url) setInviteUrl(d.group.invite_url)
     })
   }
   useEffect(() => { load(); setTimeout(() => setVisible(true), 60) }, [id])
@@ -269,7 +273,16 @@ export function GroupDetailPage() {
   }
 
   if (loading) return <div style={{ maxWidth: 760, margin: '40px auto' }}><Spinner/></div>
-  if (!group) return <div style={{ textAlign: 'center', padding: '80px', fontFamily: F.body, color: C.muted }}>Group not found.</div>
+  if (!group && !loading) return (
+    <div style={{ minHeight:'60vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#0a0f1e' }}>
+      <div style={{ textAlign:'center', padding:'40px', maxWidth:400 }}>
+        <p style={{ fontSize:48, marginBottom:16 }}>🔐</p>
+        <h2 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:'#fff', marginBottom:10 }}>Private Group</h2>
+        <p style={{ fontFamily:F.body, fontSize:14.5, color:'rgba(255,255,255,0.55)', lineHeight:1.7, marginBottom:20 }}>This group is private. You need a personal invite link from the group owner to join.</p>
+        <button onClick={()=>navigate('/groups')} style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.15)', color:'rgba(255,255,255,0.7)', borderRadius:10, padding:'10px 24px', fontFamily:F.body, fontSize:14, cursor:'pointer' }}>← Back to Groups</button>
+      </div>
+    </div>
+  )
 
   const full = group.max_members > 0 && group.member_count >= group.max_members
 
@@ -285,6 +298,7 @@ export function GroupDetailPage() {
             <span style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>
               👥 {group.member_count}{group.max_members > 0 ? `/${group.max_members}` : ''} members
             </span>
+            {group.is_private && <span style={{ fontFamily: F.body, fontSize: 12, color: '#C9A84C', fontWeight: 600 }}>🔐 Private Group</span>}
             {group.approval_required && <span style={{ fontFamily: F.body, fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>🔒 Approval required</span>}
             {full && <span style={{ fontFamily: F.body, fontSize: 12, color: '#FCA5A5', fontWeight: 600 }}>Group is full</span>}
             {user && !full && (
@@ -313,6 +327,20 @@ export function GroupDetailPage() {
       </div>
 
       <div style={{ maxWidth: 760, margin: '0 auto', padding: '24px 20px 60px' }}>
+        {/* Invite link panel for owner/admin of private group */}
+        {inviteUrl && (
+          <div style={{ background:'rgba(201,168,76,0.08)', border:'1px solid rgba(201,168,76,0.2)', borderRadius:12, padding:'16px 18px', marginBottom:20 }}>
+            <p style={{ fontFamily:F.body, fontSize:12, fontWeight:700, color:'#C9A84C', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:8 }}>🔐 Private Invite Link</p>
+            <p style={{ fontFamily:F.body, fontSize:12.5, color:'rgba(255,255,255,0.55)', marginBottom:10, lineHeight:1.6 }}>Share this link to invite members. Only people with this link can find and join this group.</p>
+            <div style={{ display:'flex', gap:8, alignItems:'center', flexWrap:'wrap' }}>
+              <code style={{ flex:1, background:'rgba(0,0,0,0.3)', borderRadius:8, padding:'8px 12px', fontFamily:'monospace', fontSize:12.5, color:'#E8C97A', wordBreak:'break-all' }}>{inviteUrl}</code>
+              <button onClick={async () => { await navigator.clipboard.writeText(inviteUrl); setCopied(true); setTimeout(()=>setCopied(false),2000) }}
+                style={{ background:copied?'rgba(21,128,61,0.2)':'rgba(201,168,76,0.15)', color:copied?'#4ade80':'#C9A84C', border:`1px solid ${copied?'rgba(21,128,61,0.4)':'rgba(201,168,76,0.3)'}`, borderRadius:8, padding:'8px 14px', fontFamily:F.body, fontSize:13, cursor:'pointer', whiteSpace:'nowrap' }}>
+                {copied ? '✓ Copied!' : '📋 Copy'}
+              </button>
+            </div>
+          </div>
+        )}
         <h2 style={{ fontFamily: F.display, fontSize: 17, fontWeight: 700, color: '#1E3A2F', marginBottom: 14 }}>Discussion ({posts.length})</h2>
         {posts.map(p => (
           <div key={p.id} style={{ background: '#fff', borderRadius: 10, padding: '14px 18px', marginBottom: 10, border: `1px solid ${sageLight}` }}>
@@ -341,6 +369,92 @@ export function GroupDetailPage() {
               </>
           }
         </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Group Join Page (private invite link landing) ─────────────
+export function GroupJoinPage() {
+  const { code } = useParams()
+  const { user, token } = useAuth()
+  const navigate = useNavigate()
+  const [group, setGroup] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [joining, setJoining] = useState(false)
+  const [error, setError] = useState('')
+  const [joined, setJoined] = useState(false)
+
+  useEffect(() => {
+    if (!code) return
+    fetch(`${API}/groups?invite=${code}`)
+      .then(r => r.json())
+      .then(d => { setGroup(d.group); setLoading(false) })
+      .catch(() => setLoading(false))
+  }, [code])
+
+  const join = async () => {
+    if (!user) { navigate(`/register?next=/groups/join/${code}`); return }
+    setJoining(true); setError('')
+    const res = await fetch(`${API}/groups/${group.id}/join`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    const data = await res.json()
+    if (data.ok) setJoined(true)
+    else setError(data.error || 'Could not join group')
+    setJoining(false)
+  }
+
+  if (loading) return (
+    <div style={{ minHeight:'80vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#0a0f1e' }}>
+      <p style={{ fontFamily:F.body, color:'rgba(255,255,255,0.4)' }}>Loading…</p>
+    </div>
+  )
+
+  if (!group) return (
+    <div style={{ minHeight:'80vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#0a0f1e' }}>
+      <div style={{ textAlign:'center', padding:40 }}>
+        <p style={{ fontFamily:F.display, fontSize:20, color:'#fff', marginBottom:12 }}>Invalid invite link</p>
+        <p style={{ fontFamily:F.body, fontSize:14, color:'rgba(255,255,255,0.5)', marginBottom:20 }}>This link may have expired or been removed.</p>
+        <button onClick={()=>navigate('/groups')} style={{ background:sage, color:'#fff', border:'none', borderRadius:10, padding:'11px 24px', fontFamily:F.body, fontSize:14, fontWeight:700, cursor:'pointer' }}>Browse Groups</button>
+      </div>
+    </div>
+  )
+
+  return (
+    <div style={{ minHeight:'80vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#0a0f1e', padding:'40px 20px' }}>
+      <div style={{ background:'rgba(17,24,39,0.95)', border:'1px solid rgba(201,168,76,0.2)', borderRadius:20, padding:'40px 32px', maxWidth:460, width:'100%', textAlign:'center', boxShadow:'0 8px 40px rgba(0,0,0,0.5)' }}>
+        {group.cover_image && (
+          <div style={{ backgroundImage:`url(${group.cover_image})`, backgroundSize:'cover', backgroundPosition:'center', height:120, borderRadius:12, marginBottom:20 }}/>
+        )}
+        <span style={{ background:'rgba(201,168,76,0.15)', color:'#C9A84C', borderRadius:6, padding:'3px 12px', fontSize:12, fontFamily:F.body, fontWeight:700, display:'inline-block', marginBottom:14 }}>
+          🔐 Private Group Invitation
+        </span>
+        <h1 style={{ fontFamily:F.display, fontSize:24, fontWeight:700, color:'#fff', marginBottom:8 }}>{group.name}</h1>
+        {group.book_focus && <p style={{ fontFamily:F.body, fontSize:13, color:'#C9A84C', marginBottom:10 }}>📖 {group.book_focus}</p>}
+        {group.description && <p style={{ fontFamily:F.body, fontSize:14.5, color:'rgba(255,255,255,0.6)', lineHeight:1.7, marginBottom:20 }}>{group.description}</p>}
+        <p style={{ fontFamily:F.body, fontSize:13, color:'rgba(255,255,255,0.4)', marginBottom:24 }}>
+          {group.member_count} member{group.member_count !== 1 ? 's' : ''} · Hosted by {group.display_name}
+        </p>
+
+        {error && <p style={{ fontFamily:F.body, fontSize:13, color:'#f87171', marginBottom:14 }}>{error}</p>}
+
+        {joined ? (
+          <div>
+            <p style={{ fontFamily:F.body, fontSize:15, color:'#4ade80', marginBottom:16 }}>✅ You've joined the group!</p>
+            <button onClick={()=>navigate(`/groups/${group.id}`)} style={{ background:'linear-gradient(135deg,#C9A84C,#E8C97A)', color:'#0a0f1e', border:'none', borderRadius:10, padding:'12px 28px', fontFamily:F.body, fontSize:14.5, fontWeight:700, cursor:'pointer' }}>
+              Enter Group →
+            </button>
+          </div>
+        ) : (
+          <button onClick={join} disabled={joining} style={{ background:'linear-gradient(135deg,#C9A84C,#E8C97A)', color:'#0a0f1e', border:'none', borderRadius:10, padding:'13px 32px', fontFamily:F.body, fontSize:15, fontWeight:700, cursor:'pointer', opacity:joining?0.7:1, width:'100%' }}>
+            {joining ? 'Joining…' : user ? 'Join This Group →' : 'Sign in to Join →'}
+          </button>
+        )}
+        <button onClick={()=>navigate('/groups')} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.35)', fontFamily:F.body, fontSize:12.5, cursor:'pointer', marginTop:14 }}>
+          ← Back to all groups
+        </button>
       </div>
     </div>
   )
