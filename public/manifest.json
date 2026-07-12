@@ -15,34 +15,16 @@
   "lang": "en-GB",
   "icons": [
     {
-      "src": "/icons/icon-72.png",
-      "sizes": "72x72",
-      "type": "image/png",
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-96.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icons/icon-128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icons/icon-144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icons/icon-152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "any"
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     },
     {
       "src": "/icons/icon-192.png",
@@ -51,32 +33,45 @@
       "purpose": "any maskable"
     },
     {
-      "src": "/icons/icon-384.png",
-      "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "screenshots": [
     {
-      "src": "/screenshots/home.png",
-      "sizes": "1080x1920",
+      "src": "/screenshots/mobile-home.png",
+      "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Homepage \u2014 Where Scripture is opened together"
     },
     {
-      "src": "/screenshots/forum.png",
-      "sizes": "1080x1920",
+      "src": "/screenshots/mobile-forum.png",
+      "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Forum \u2014 Active biblical discussions"
+    },
+    {
+      "src": "/screenshots/desktop-home.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Discussions Exegetica on desktop"
     }
   ],
   "shortcuts": [
@@ -87,8 +82,9 @@
       "url": "/forum",
       "icons": [
         {
-          "src": "/icons/icon-96.png",
-          "sizes": "96x96"
+          "src": "/favicon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
         }
       ]
     },
@@ -99,8 +95,9 @@
       "url": "/bible",
       "icons": [
         {
-          "src": "/icons/icon-96.png",
-          "sizes": "96x96"
+          "src": "/favicon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
         }
       ]
     },
@@ -111,8 +108,9 @@
       "url": "/daily-word",
       "icons": [
         {
-          "src": "/icons/icon-96.png",
-          "sizes": "96x96"
+          "src": "/favicon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
         }
       ]
     }
