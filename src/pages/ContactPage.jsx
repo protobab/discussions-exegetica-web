@@ -43,9 +43,18 @@ export default function ContactPage() {
       <div style={{ background: '#fff', borderRadius: 16, padding: '38px 32px', width: '100%', maxWidth: 520, boxShadow: '0 4px 32px rgba(0,0,0,0.08)' }}>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 18 }}><Logo size={38}/></div>
         <h1 style={{ fontFamily: F.display, fontSize: 22, fontWeight: 700, color: C.navy, textAlign: 'center', marginBottom: 6 }}>Get in Touch</h1>
-        <p style={{ fontFamily: F.body, fontSize: 13.5, color: C.muted, textAlign: 'center', marginBottom: 24, lineHeight: 1.6 }}>
+        <p style={{ fontFamily: F.body, fontSize: 13.5, color: C.muted, textAlign: 'center', marginBottom: 16, lineHeight: 1.6 }}>
           Have a question, suggestion, or need help? We'd love to hear from you.
         </p>
+        <div style={{ background:'rgba(201,168,76,0.08)', border:'1px solid rgba(201,168,76,0.2)', borderRadius:10, padding:'12px 16px', marginBottom:20, textAlign:'center' }}>
+          <p style={{ fontFamily: F.body, fontSize: 12.5, color: C.muted, margin:0, lineHeight:1.6 }}>
+            Looking for our Privacy Policy or Terms of Use?
+          </p>
+          <div style={{ display:'flex', gap:16, justifyContent:'center', marginTop:8 }}>
+            <Link to="/privacy" style={{ fontFamily:F.body, fontSize:13, color:C.gold, fontWeight:600 }}>📄 Privacy Policy</Link>
+            <Link to="/terms" style={{ fontFamily:F.body, fontSize:13, color:C.gold, fontWeight:600 }}>📋 Terms of Use</Link>
+          </div>
+        </div>
 
         {status && (
           <div style={{ background: status.startsWith('✅') ? '#F0FDF4' : '#FEF2F2', border: `1px solid ${status.startsWith('✅') ? '#BBF7D0' : '#FECACA'}`, borderRadius: 8, padding: '10px 14px', fontFamily: F.body, fontSize: 13, color: status.startsWith('✅') ? '#15803D' : '#DC2626', marginBottom: 16 }}>
