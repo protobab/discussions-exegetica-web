@@ -1,10 +1,15 @@
 
 // Register service worker for PWA / offline support
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js', { scope: '/' })
-      .then(reg => console.log('[SW] Registered:', reg.scope))
-      .catch(err => console.log('[SW] Registration failed:', err))
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      console.log('[SW] Registered scope:', reg.scope)
+      // Check for updates every hour
+      setInterval(() => reg.update(), 60 * 60 * 1000)
+    } catch (err) {
+      console.warn('[SW] Registration failed:', err)
+    }
   })
 }
 
