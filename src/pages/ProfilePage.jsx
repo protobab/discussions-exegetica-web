@@ -171,6 +171,9 @@ export default function ProfilePage() {
               <p style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.6, marginBottom: 14 }}>
                 Share your personal invite link. Every person who joins earns you +20 reputation.
               </p>
+              <Link to="/change-password" style={{ display:'block', background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:10, padding:'10px 14px', fontFamily:F.body, fontSize:13.5, color:'rgba(255,255,255,0.7)', marginBottom:12, textAlign:'center' }}>
+                🔑 Change Password
+              </Link>
               {!inviteCode ? (
                 <button onClick={getInviteLink} disabled={inviteLoading} style={{ background: C.gold, color: C.navy, border: 'none', borderRadius: 8, padding: '10px 18px', fontFamily: F.body, fontSize: 13.5, fontWeight: 700, cursor: 'pointer', width: '100%' }}>
                   {inviteLoading ? 'Generating…' : 'Get My Invite Link'}

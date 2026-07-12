@@ -192,12 +192,63 @@ export default function BibleStudyPage() {
       }
       recorder.start()
       setRecording(true)
+
+      // Start live transcription via Web Speech API
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition()
+        recognition.continuous = true
+        recognition.interimResults = true
+        recognition.lang = 'en-US'
+        recognitionRef.current = recognition
+        let finalTranscript = ''
+        recognition.onstart = () => setTranscribing(true)
+        recognition.onresult = (e) => {
+          let interim = ''
+          for (let i = e.resultIndex; i < e.results.length; i++) {
+            const t = e.results[i][0].transcript
+            if (e.results[i].isFinal) finalTranscript += t + ' '
+            else interim = t
+          }
+          setTranscript(finalTranscript + interim)
+        }
+        recognition.onerror = () => setTranscribing(false)
+        recognition.onend = () => setTranscribing(false)
+        recognition.start()
+      }
     } catch { alert('Microphone access required for audio notes') }
   }
 
   const stopRecording = () => {
     mediaRecorderRef.current?.stop()
+    recognitionRef.current?.stop()
     setRecording(false)
+    setTranscribing(false)
+  }
+
+  const saveTranscriptAsNote = () => {
+    if (!transcript.trim()) return
+    const newNote = {
+      id: Date.now(),
+      text: '[Audio transcript] ' + transcript.trim(),
+      ref: reference,
+      date: new Date().toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })
+    }
+    const updated = [newNote, ...savedNotes]
+    setSavedNotes(updated)
+    localStorage.setItem(NOTES_KEY + '_list', JSON.stringify(updated))
+    setTranscript('')
+    setNoteSaved(true)
+    setTimeout(() => setNoteSaved(false), 2000)
+  }
+
+  const downloadTranscript = () => {
+    if (!transcript.trim()) return
+    const blob = new Blob([transcript], { type: 'text/plain' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = `transcript-${reference}-${Date.now()}.txt`
+    a.click()
   }
 
   const downloadAudioNote = () => {

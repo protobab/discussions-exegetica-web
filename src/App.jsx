@@ -4,7 +4,7 @@ import Layout from './components/Layout.jsx'
 import HomePage from './pages/HomePage.jsx'
 import { ForumPage, ThreadPage, NewThreadPage } from './pages/ForumPages.jsx'
 import { GroupsPage, GroupDetailPage } from './pages/GroupPages.jsx'
-import { RegisterPage, LoginPage } from './pages/AuthPages.jsx'
+import { RegisterPage, LoginPage, ForgotPasswordPage, ChangePasswordPage } from './pages/AuthPages.jsx'
 import DailyWordPage from './pages/DailyWordPage.jsx'
 import ArmchairPage from './pages/ArmchairPage.jsx'
 import ArmchairSessionPage from './pages/ArmchairSessionPage.jsx'
@@ -14,6 +14,7 @@ import BibleStudyPage from './pages/BibleStudyPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
 import JoinPage from './pages/JoinPage.jsx'
 import ContactPage from './pages/ContactPage.jsx'
+import ResetPasswordPage from './pages/ResetPasswordPage.jsx'
 import PrayerOfSalvationPage from './pages/PrayerOfSalvationPage.jsx'
 
 export default function App() {
@@ -41,6 +42,9 @@ export default function App() {
             <Route path="salvation" element={<PrayerOfSalvationPage />} />
             <Route path="register" element={<RegisterPage />} />
             <Route path="login" element={<LoginPage />} />
+            <Route path="forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="reset-password" element={<ResetPasswordPage />} />
+            <Route path="change-password" element={<ChangePasswordPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

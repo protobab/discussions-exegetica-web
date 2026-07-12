@@ -94,3 +94,97 @@ export function LoginPage() {
     </AuthShell>
   )
 }
+
+
+export function ForgotPasswordPage() {
+  usePageTitle('Forgot Password')
+  const [email, setEmail] = useState('')
+  const [msg, setMsg] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [sent, setSent] = useState(false)
+
+  const submit = async () => {
+    if (!email.trim()) return setMsg('Please enter your email address')
+    setLoading(true); setMsg('')
+    const res = await fetch(`${API}/auth/reset`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    })
+    const data = await res.json()
+    if (data.ok) setSent(true)
+    else setMsg(`❌ ${data.error}`)
+    setLoading(false)
+  }
+
+  return (
+    <AuthShell title="Forgot Password" sub="Enter your email and we'll send a reset link">
+      {sent ? (
+        <div style={{ textAlign:'center' }}>
+          <p style={{ fontFamily:F.body, fontSize:32, marginBottom:12 }}>📨</p>
+          <p style={{ fontFamily:F.body, fontSize:15, color:'#4ade80', marginBottom:8 }}>Reset link sent!</p>
+          <p style={{ fontFamily:F.body, fontSize:13.5, color:'rgba(255,255,255,0.5)', marginBottom:20, lineHeight:1.6 }}>
+            Check your inbox for a link from noreply@discussionsexegetica.com — it expires in 1 hour.
+          </p>
+          <Link to="/login" style={{ color:C.gold, fontFamily:F.body, fontSize:13.5, fontWeight:600 }}>← Back to sign in</Link>
+        </div>
+      ) : (
+        <>
+          {msg && <div style={{ background:'rgba(220,38,38,0.15)', border:'1px solid rgba(220,38,38,0.4)', borderRadius:8, padding:'10px 14px', fontFamily:F.body, fontSize:13, color:'#f87171', marginBottom:14 }}>{msg}</div>}
+          <input type="email" value={email} onChange={e=>setEmail(e.target.value)} onKeyDown={e=>e.key==='Enter'&&submit()}
+            placeholder="Your email address"
+            style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:9, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', boxSizing:'border-box', background:'rgba(255,255,255,0.06)', color:'#E8E0D0', marginBottom:14 }}/>
+          <button onClick={submit} disabled={loading} style={{ width:'100%', background:`linear-gradient(135deg,${C.gold},#E8C97A)`, color:C.navy, border:'none', borderRadius:10, padding:'12px', fontFamily:F.body, fontSize:14.5, fontWeight:700, cursor:'pointer', opacity:loading?0.7:1, marginBottom:14 }}>
+            {loading ? 'Sending…' : 'Send Reset Link'}
+          </button>
+          <p style={{ fontFamily:F.body, fontSize:12.5, color:'rgba(255,255,255,0.35)', textAlign:'center' }}>
+            <Link to="/login" style={{ color:C.gold }}>← Back to sign in</Link>
+          </p>
+        </>
+      )}
+    </AuthShell>
+  )
+}
+
+export function ChangePasswordPage() {
+  usePageTitle('Change Password')
+  const { token } = useAuth()
+  const navigate = useNavigate()
+  const [form, setForm] = useState({ current:'', next:'', confirm:'' })
+  const [msg, setMsg] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const submit = async () => {
+    if (!form.current || !form.next || !form.confirm) return setMsg('❌ Please fill in all fields')
+    if (form.next !== form.confirm) return setMsg('❌ New passwords do not match')
+    setLoading(true); setMsg('')
+    const res = await fetch(`${API}/auth/change-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ current_password: form.current, new_password: form.next })
+    })
+    const data = await res.json()
+    if (data.ok) { setMsg('✅ Password changed! Redirecting…'); setTimeout(()=>navigate(-1), 2000) }
+    else setMsg(`❌ ${data.error}`)
+    setLoading(false)
+  }
+
+  return (
+    <AuthShell title="Change Password" sub="Enter your current password then choose a new one">
+      {msg && <div style={{ background: msg.startsWith('✅') ? 'rgba(21,128,61,0.15)' : 'rgba(220,38,38,0.15)', border:`1px solid ${msg.startsWith('✅')?'rgba(21,128,61,0.4)':'rgba(220,38,38,0.4)'}`, borderRadius:8, padding:'10px 14px', fontFamily:F.body, fontSize:13, color:msg.startsWith('✅')?'#4ade80':'#f87171', marginBottom:14 }}>{msg}</div>}
+      {['current','next','confirm'].map((k,i)=>(
+        <input key={k} type="password" value={form[k]} onChange={e=>setForm(f=>({...f,[k]:e.target.value}))}
+          placeholder={['Current password','New password','Confirm new password'][i]}
+          style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:9, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', boxSizing:'border-box', background:'rgba(255,255,255,0.06)', color:'#E8E0D0', marginBottom:12 }}/>
+      ))}
+      <p style={{ fontFamily:F.body, fontSize:11.5, color:'rgba(255,255,255,0.35)', marginBottom:16, lineHeight:1.6 }}>
+        At least 8 characters, one capital letter, one number or special character
+      </p>
+      <button onClick={submit} disabled={loading} style={{ width:'100%', background:`linear-gradient(135deg,${C.gold},#E8C97A)`, color:C.navy, border:'none', borderRadius:10, padding:'12px', fontFamily:F.body, fontSize:14.5, fontWeight:700, cursor:'pointer', opacity:loading?0.7:1, marginBottom:14 }}>
+        {loading ? 'Updating…' : 'Change Password'}
+      </button>
+      <p style={{ fontFamily:F.body, fontSize:12.5, color:'rgba(255,255,255,0.35)', textAlign:'center' }}>
+        <button onClick={()=>navigate(-1)} style={{ background:'none', border:'none', color:C.gold, fontFamily:F.body, fontSize:12.5, cursor:'pointer' }}>← Cancel</button>
+      </p>
+    </AuthShell>
+  )
+}
