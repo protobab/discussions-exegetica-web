@@ -1,13 +1,17 @@
 {
   "name": "Discussions Exegetica",
   "short_name": "DE",
-  "description": "A global biblical discussion community — where Scripture is opened together",
+  "description": "A global biblical discussion community \u2014 where Scripture is opened together",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0a0f1e",
   "theme_color": "#0a0f1e",
-  "categories": ["education", "lifestyle", "social"],
+  "categories": [
+    "education",
+    "lifestyle",
+    "social"
+  ],
   "lang": "en-GB",
   "icons": [
     {
@@ -65,14 +69,14 @@
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Homepage — Where Scripture is opened together"
+      "label": "Homepage \u2014 Where Scripture is opened together"
     },
     {
       "src": "/screenshots/forum.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Forum — Active biblical discussions"
+      "label": "Forum \u2014 Active biblical discussions"
     }
   ],
   "shortcuts": [
@@ -81,21 +85,63 @@
       "short_name": "Forum",
       "description": "Join the discussion",
       "url": "/forum",
-      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "/icons/icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
     },
     {
       "name": "Bible Study",
       "short_name": "Bible",
       "description": "Open the Bible Study Hub",
       "url": "/bible",
-      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "/icons/icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
     },
     {
       "name": "Daily Word",
       "short_name": "Daily",
       "description": "Today's verse",
       "url": "/daily-word",
-      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "/icons/icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
     }
-  ]
+  ],
+  "id": "com.discussionsexegetica.app",
+  "dir": "ltr",
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.discussionsexegetica.app",
+      "id": "com.discussionsexegetica.app"
+    },
+    {
+      "platform": "itunes",
+      "url": "https://apps.apple.com/app/discussions-exegetica"
+    }
+  ],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+discussionsexegetica",
+      "url": "/?protocol=%s"
+    }
+  ],
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  }
 }
