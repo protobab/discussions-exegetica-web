@@ -2,23 +2,55 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#1B2A4A" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Primary Meta -->
     <title>Discussions Exegetica — Where Scripture is Opened Together</title>
-    <meta name="description" content="A global biblical discussion community for seekers and believers. Ask honest questions, study Scripture deeply, and grow in faith together — free to join." />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Discussions Exegetica" />
-    <meta property="og:description" content="Where Scripture is opened together. A global community for seekers and believers." />
-    <meta property="og:image" content="https://discussionsexegetica.com/api/og-image?title=Discussions%20Exegetica&category=Bible%20Discussion" />
-    <meta property="og:url" content="https://discussionsexegetica.com" />
-    <meta property="og:site_name" content="Discussions Exegetica" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Discussions Exegetica" />
-    <meta name="twitter:description" content="Where Scripture is opened together." />
-    <meta name="twitter:image" content="https://discussionsexegetica.com/api/og-image?title=Discussions%20Exegetica&category=Bible%20Discussion" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="description" content="A global community for honest seekers and devoted believers — asking real questions, studying Scripture deeply, walking in the light of Christ."/>
+    <meta name="theme-color" content="#0a0f1e"/>
+    <meta name="color-scheme" content="dark"/>
+
+    <!-- PWA / App install -->
+    <link rel="manifest" href="/manifest.json"/>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+    <link rel="apple-touch-icon" href="/icons/icon-192.png"/>
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png"/>
+    <link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144.png"/>
+
+    <!-- iOS standalone app meta -->
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="apple-mobile-web-app-title" content="Discussions Exegetica"/>
+
+    <!-- Android -->
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <meta name="application-name" content="Discussions Exegetica"/>
+
+    <!-- OG / Social sharing -->
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="Discussions Exegetica"/>
+    <meta property="og:description" content="A global biblical discussion community — where Scripture is opened together."/>
+    <meta property="og:url" content="https://discussionsexegetica.com"/>
+    <meta property="og:image" content="https://discussionsexegetica.com/api/og-image"/>
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content="Discussions Exegetica"/>
+    <meta name="twitter:description" content="Where Scripture is opened together."/>
+    <meta name="twitter:image" content="https://discussionsexegetica.com/api/og-image"/>
+
+    <!-- Safe area support for iPhone notch/Dynamic Island -->
+    <style>
+      :root {
+        --sat: env(safe-area-inset-top);
+        --sar: env(safe-area-inset-right);
+        --sab: env(safe-area-inset-bottom);
+        --sal: env(safe-area-inset-left);
+      }
+      body { margin: 0; background: #0a0f1e; }
+    </style>
   </head>
-  <body style="margin:0">
+  <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
