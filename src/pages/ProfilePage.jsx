@@ -47,7 +47,7 @@ export default function ProfilePage() {
 
   if (loading) return <div style={{ maxWidth: 760, margin: '60px auto' }}><Spinner/></div>
   if (!data?.user) return (
-    <div style={{ textAlign: 'center', padding: '80px', fontFamily: F.body, color: C.muted }}>
+    <div style={{ textAlign: 'center', padding: '80px', fontFamily: F.body, color: 'rgba(255,255,255,0.6)' }}>
       User not found. <Link to="/forum" style={{ color: C.gold }}>Back to Forum</Link>
     </div>
   )
@@ -57,7 +57,7 @@ export default function ProfilePage() {
   const joinedDate = new Date(user.joined).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
 
   return (
-    <div style={{ minHeight: '100vh', background: C.parchment, opacity: visible ? 1 : 0, transition: 'opacity 0.5s ease' }}>
+    <div style={{ minHeight: '100vh', background: 'rgba(255,255,255,0.05)', opacity: visible ? 1 : 0, transition: 'opacity 0.5s ease' }}>
 
       {/* PROFILE HERO */}
       <div style={{ backgroundImage: `linear-gradient(135deg, rgba(27,42,74,0.88) 0%, rgba(46,66,112,0.92) 100%), url(${IMAGES.profileHero})`, backgroundSize: 'cover', backgroundPosition: 'center top', padding: '44px 24px 0' }}>
@@ -120,29 +120,29 @@ export default function ProfilePage() {
 
         {/* Threads */}
         <div>
-          <h2 style={{ fontFamily: F.display, fontSize: 18, fontWeight: 700, color: C.navy, marginBottom: 14 }}>
+          <h2 style={{ fontFamily: F.display, fontSize: 18, fontWeight: 700, color: '#E8E0D0', marginBottom: 14 }}>
             Discussions ({user.thread_count})
           </h2>
           {threads.length === 0
-            ? <p style={{ fontFamily: F.body, color: C.muted, fontSize: 14 }}>No discussions yet.</p>
+            ? <p style={{ fontFamily: F.body, color: 'rgba(255,255,255,0.6)', fontSize: 14 }}>No discussions yet.</p>
             : <div style={{ display: 'grid', gap: 10 }}>
                 {threads.map(t => (
                   <div key={t.id} onClick={() => navigate(`/thread/${t.id}`)} style={{
-                    background: '#fff', borderRadius: 10, padding: '14px 16px',
-                    border: `1px solid ${C.border}`, cursor: 'pointer', transition: 'box-shadow 0.15s'
+                    background: 'rgba(255,255,255,0.06)', borderRadius: 10, padding: '14px 16px',
+                    border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer', transition: 'box-shadow 0.15s'
                   }}
                     onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 14px rgba(0,0,0,0.08)'}
                     onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
                   >
                     <div style={{ display: 'flex', gap: 7, marginBottom: 5 }}>
-                      <span style={{ background: C.mist, color: C.navyLight, borderRadius: 5, padding: '2px 8px', fontSize: 10.5, fontFamily: F.body, fontWeight: 600 }}>{t.cat_label}</span>
-                      <span style={{ fontFamily: F.body, fontSize: 10.5, color: C.muted, marginLeft: 'auto' }}>{new Date(t.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
+                      <span style={{ background: 'rgba(255,255,255,0.05)', color: '#E8C97A', borderRadius: 5, padding: '2px 8px', fontSize: 10.5, fontFamily: F.body, fontWeight: 600 }}>{t.cat_label}</span>
+                      <span style={{ fontFamily: F.body, fontSize: 10.5, color: 'rgba(255,255,255,0.6)', marginLeft: 'auto' }}>{new Date(t.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
                     </div>
-                    <h3 style={{ fontFamily: F.display, fontSize: 14.5, fontWeight: 700, color: C.navy, margin: '0 0 6px', lineHeight: 1.35 }}>{t.title}</h3>
+                    <h3 style={{ fontFamily: F.display, fontSize: 14.5, fontWeight: 700, color: '#E8E0D0', margin: '0 0 6px', lineHeight: 1.35 }}>{t.title}</h3>
                     <div style={{ display: 'flex', gap: 10 }}>
-                      <span style={{ fontFamily: F.body, fontSize: 11.5, color: C.muted }}>💬 {t.reply_count}</span>
-                      <span style={{ fontFamily: F.body, fontSize: 11.5, color: C.muted }}>❤️ {t.like_count}</span>
-                      <span style={{ fontFamily: F.body, fontSize: 11.5, color: C.muted }}>👁 {t.view_count}</span>
+                      <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'rgba(255,255,255,0.6)' }}>💬 {t.reply_count}</span>
+                      <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'rgba(255,255,255,0.6)' }}>❤️ {t.like_count}</span>
+                      <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'rgba(255,255,255,0.6)' }}>👁 {t.view_count}</span>
                     </div>
                   </div>
                 ))}
@@ -154,14 +154,14 @@ export default function ProfilePage() {
         <div style={{ display: 'grid', gap: 16, alignContent: 'start' }}>
 
           {/* Badge info */}
-          <div style={{ background: '#fff', borderRadius: 14, padding: '20px', border: `1px solid ${C.border}` }}>
-            <p style={{ fontFamily: F.body, fontSize: 11, fontWeight: 700, color: C.muted, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 12 }}>Current Badge</p>
+          <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 14, padding: '20px', border: '1px solid rgba(255,255,255,0.12)' }}>
+            <p style={{ fontFamily: F.body, fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 12 }}>Current Badge</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
               <span style={{ background: badge.color + '22', color: badge.color, border: `1px solid ${badge.color}55`, borderRadius: 6, padding: '3px 11px', fontSize: 12, fontFamily: F.body, fontWeight: 700, textTransform: 'uppercase' }}>
                 {user.badge}
               </span>
             </div>
-            <p style={{ fontFamily: F.body, fontSize: 13, color: C.muted, lineHeight: 1.6, margin: 0 }}>{badge.desc}</p>
+            <p style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, margin: 0 }}>{badge.desc}</p>
           </div>
 
           {/* Own profile actions */}
@@ -175,7 +175,7 @@ export default function ProfilePage() {
                 🔑 Change Password
               </Link>
               {!inviteCode ? (
-                <button onClick={getInviteLink} disabled={inviteLoading} style={{ background: C.gold, color: C.navy, border: 'none', borderRadius: 8, padding: '10px 18px', fontFamily: F.body, fontSize: 13.5, fontWeight: 700, cursor: 'pointer', width: '100%' }}>
+                <button onClick={getInviteLink} disabled={inviteLoading} style={{ background: C.gold, color: '#E8E0D0', border: 'none', borderRadius: 8, padding: '10px 18px', fontFamily: F.body, fontSize: 13.5, fontWeight: 700, cursor: 'pointer', width: '100%' }}>
                   {inviteLoading ? 'Generating…' : 'Get My Invite Link'}
                 </button>
               ) : (
@@ -196,10 +196,10 @@ export default function ProfilePage() {
           )}
 
           {/* Quick links */}
-          <div style={{ background: '#fff', borderRadius: 14, padding: '18px', border: `1px solid ${C.border}` }}>
-            <p style={{ fontFamily: F.display, fontSize: 14, fontWeight: 700, color: C.navy, marginBottom: 12 }}>Join the conversation</p>
+          <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 14, padding: '18px', border: '1px solid rgba(255,255,255,0.12)' }}>
+            <p style={{ fontFamily: F.display, fontSize: 14, fontWeight: 700, color: '#E8E0D0', marginBottom: 12 }}>Join the conversation</p>
             {[['📖 Deep Dive','/forum/exegesis'],['🌱 Seekers Corner','/forum/seekers'],['🙏 Prayer & Life','/forum/prayer'],['👥 Study Groups','/groups']].map(([l,t]) => (
-              <Link key={t} to={t} style={{ fontFamily: F.body, fontSize: 13, color: C.navyLight, display: 'block', marginBottom: 8 }}>{l}</Link>
+              <Link key={t} to={t} style={{ fontFamily: F.body, fontSize: 13, color: '#E8C97A', display: 'block', marginBottom: 8 }}>{l}</Link>
             ))}
           </div>
         </div>

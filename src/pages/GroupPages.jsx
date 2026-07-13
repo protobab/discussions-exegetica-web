@@ -36,7 +36,7 @@ function GroupImagePicker({ currentImage, onSelect }) {
         🖼 {open ? 'Close' : currentImage ? 'Change cover image' : 'Add cover image'}
       </button>
       {open && (
-        <div style={{ marginTop: 10, padding: 14, background: '#fff', borderRadius: 10, border: `1px solid ${sageLight}` }}>
+        <div style={{ marginTop: 10, padding: 14, background: 'rgba(255,255,255,0.06)', borderRadius: 10, border: `1px solid ${sageLight}` }}>
           <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
             <input value={query} onChange={e => setQuery(e.target.value)} onKeyDown={e => e.key === 'Enter' && search()}
               placeholder="e.g. bible study, community, prayer, mountains"
@@ -57,7 +57,7 @@ function GroupImagePicker({ currentImage, onSelect }) {
               ))}
             </div>
           )}
-          <p style={{ fontFamily: F.body, fontSize: 10.5, color: C.muted, marginTop: 6 }}>Free images via Pixabay</p>
+          <p style={{ fontFamily: F.body, fontSize: 10.5, color: 'rgba(255,255,255,0.6)', marginTop: 6 }}>Free images via Pixabay</p>
         </div>
       )}
     </div>
@@ -127,7 +127,7 @@ export function GroupsPage() {
 
         {/* Create form */}
         {showForm && (
-          <div style={{ background: '#fff', borderRadius: 14, padding: '24px', marginBottom: 24, border: `1px solid ${sageLight}`, boxShadow: '0 4px 20px rgba(45,106,79,0.1)' }}>
+          <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 14, padding: '24px', marginBottom: 24, border: `1px solid ${sageLight}`, boxShadow: '0 4px 20px rgba(45,106,79,0.1)' }}>
             <h3 style={{ fontFamily: F.display, fontSize: 17, fontWeight: 700, color: sage, marginBottom: 16 }}>New Study Group</h3>
             {error && <p style={{ color: '#DC2626', fontFamily: F.body, fontSize: 13, marginBottom: 10 }}>{error}</p>}
             <div style={{ display: 'grid', gap: 10 }}>
@@ -144,7 +144,7 @@ export function GroupsPage() {
                   <input type="number" min="0" max="500" value={form.max_members} onChange={e => setForm(f => ({ ...f, max_members: e.target.value }))}
                     style={{ width: '100%', border: `1.5px solid ${sageLight}`, borderRadius: 8, padding: '9px 12px', fontFamily: F.body, fontSize: 13.5, outline: 'none', boxSizing: 'border-box' }}/>
                 </div>
-                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: F.body, fontSize: 13.5, color: C.text, alignSelf: 'end', paddingBottom: 10 }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: F.body, fontSize: 13.5, color: '#E8E0D0', alignSelf: 'end', paddingBottom: 10 }}>
                   <input type="checkbox" checked={form.approval_required} onChange={e => setForm(f => ({ ...f, approval_required: e.target.checked }))}/>
                   Require approval to join
                 </label>
@@ -161,14 +161,14 @@ export function GroupsPage() {
           {[['all','All Groups'],['open','Open to join'],['approval','Approval required'],['private','🔐 Private']].map(([k,l]) => (
             <button key={k} onClick={() => setFilter(k)} style={{ background: filter===k ? sage : '#fff', color: filter===k ? '#fff' : C.muted, border: `1.5px solid ${filter===k ? sage : sageLight}`, borderRadius: 20, padding: '6px 16px', fontFamily: F.body, fontSize: 13, cursor: 'pointer' }}>{l}</button>
           ))}
-          <span style={{ fontFamily: F.body, fontSize: 12.5, color: C.muted, alignSelf: 'center', marginLeft: 4 }}>{filtered.length} group{filtered.length !== 1 ? 's' : ''}</span>
+          <span style={{ fontFamily: F.body, fontSize: 12.5, color: 'rgba(255,255,255,0.6)', alignSelf: 'center', marginLeft: 4 }}>{filtered.length} group{filtered.length !== 1 ? 's' : ''}</span>
         </div>
 
         {loading ? <Spinner/> : filtered.length === 0
           ? (
             <div style={{ textAlign: 'center', padding: '52px 24px' }}>
               <p style={{ fontFamily: F.display, fontSize: 22, fontWeight: 700, color: sage, marginBottom: 8 }}>No groups yet</p>
-              <p style={{ fontFamily: F.body, fontSize: 14.5, color: C.muted, marginBottom: 20 }}>Be the founder of the first one.</p>
+              <p style={{ fontFamily: F.body, fontSize: 14.5, color: 'rgba(255,255,255,0.6)', marginBottom: 20 }}>Be the founder of the first one.</p>
               {user
                 ? <button onClick={() => setShowForm(true)} style={{ background: sage, color: '#fff', border: 'none', borderRadius: 10, padding: '11px 24px', fontFamily: F.body, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>Start a Group</button>
                 : <Link to="/register" style={{ background: sage, color: '#fff', borderRadius: 10, padding: '11px 24px', fontFamily: F.body, fontSize: 14, fontWeight: 700 }}>Join to start one</Link>}
@@ -180,7 +180,7 @@ export function GroupsPage() {
                 const full = g.max_members > 0 && g.member_count >= g.max_members
                 return (
                   <div key={g.id} onClick={() => !full && navigate(`/groups/${g.id}`)} style={{
-                    background: '#fff', borderRadius: 14, overflow: 'hidden', cursor: full ? 'not-allowed' : 'pointer',
+                    background: 'rgba(255,255,255,0.06)', borderRadius: 14, overflow: 'hidden', cursor: full ? 'not-allowed' : 'pointer',
                     border: `1px solid ${sageLight}`, transition: 'all 0.2s', opacity: full ? 0.7 : 1,
                     boxShadow: '0 2px 8px rgba(45,106,79,0.08)'
                   }}
@@ -197,11 +197,11 @@ export function GroupsPage() {
                         {full && <span style={{ background: '#FEF2F2', color: '#DC2626', borderRadius: 6, padding: '2px 9px', fontSize: 10.5, fontFamily: F.body, fontWeight: 600 }}>Full</span>}
                       </div>
                       <h3 style={{ fontFamily: F.display, fontSize: 16.5, fontWeight: 700, color: '#1E3A2F', margin: '0 0 5px', lineHeight: 1.3 }}>{g.name}</h3>
-                      {g.description && <p style={{ fontFamily: F.body, fontSize: 12.5, color: C.muted, margin: '0 0 12px', lineHeight: 1.55 }}>{g.description.slice(0, 90)}{g.description.length > 90 ? '…' : ''}</p>}
+                      {g.description && <p style={{ fontFamily: F.body, fontSize: 12.5, color: 'rgba(255,255,255,0.6)', margin: '0 0 12px', lineHeight: 1.55 }}>{g.description.slice(0, 90)}{g.description.length > 90 ? '…' : ''}</p>}
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                           <Avatar name={g.display_name} color={g.avatar_color || sage} size={20}/>
-                          <span style={{ fontFamily: F.body, fontSize: 11.5, color: C.muted }}>{g.display_name}</span>
+                          <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'rgba(255,255,255,0.6)' }}>{g.display_name}</span>
                         </div>
                         <span style={{ fontFamily: F.body, fontSize: 12, color: sage, fontWeight: 600 }}>
                           👥 {g.member_count}{g.max_members > 0 ? `/${g.max_members}` : ''}
@@ -343,22 +343,22 @@ export function GroupDetailPage() {
         )}
         <h2 style={{ fontFamily: F.display, fontSize: 17, fontWeight: 700, color: '#1E3A2F', marginBottom: 14 }}>Discussion ({posts.length})</h2>
         {posts.map(p => (
-          <div key={p.id} style={{ background: '#fff', borderRadius: 10, padding: '14px 18px', marginBottom: 10, border: `1px solid ${sageLight}` }}>
+          <div key={p.id} style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 10, padding: '14px 18px', marginBottom: 10, border: `1px solid ${sageLight}` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 8 }}>
               <Avatar name={p.display_name} color={p.avatar_color || sage} size={28}/>
               <span style={{ fontFamily: F.body, fontSize: 13, fontWeight: 600, color: '#1E3A2F' }}>{p.display_name}</span>
               <BadgeTag label={p.badge}/>
-              <span style={{ fontFamily: F.body, fontSize: 11, color: C.muted, marginLeft: 'auto' }}>
+              <span style={{ fontFamily: F.body, fontSize: 11, color: 'rgba(255,255,255,0.6)', marginLeft: 'auto' }}>
                 {new Date(p.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
               </span>
             </div>
-            <p style={{ fontFamily: F.body, fontSize: 14, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{p.body}</p>
+            <p style={{ fontFamily: F.body, fontSize: 14, color: '#E8E0D0', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{p.body}</p>
           </div>
         ))}
 
-        <div style={{ background: '#fff', borderRadius: 12, padding: '18px 20px', border: `1px solid ${sageLight}`, marginTop: 18 }}>
+        <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 12, padding: '18px 20px', border: `1px solid ${sageLight}`, marginTop: 18 }}>
           {!user
-            ? <p style={{ fontFamily: F.body, fontSize: 13.5, color: C.muted }}><Link to="/login" style={{ color: sage, fontWeight: 600 }}>Sign in</Link> to join the conversation.</p>
+            ? <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.6)' }}><Link to="/login" style={{ color: sage, fontWeight: 600 }}>Sign in</Link> to join the conversation.</p>
             : <>
                 {error && <p style={{ color: '#DC2626', fontFamily: F.body, fontSize: 13, marginBottom: 8 }}>{error}</p>}
                 <textarea value={body} onChange={e => setBody(e.target.value)} placeholder="Share your thoughts with the group…" rows={3}

@@ -21,7 +21,7 @@ function AuthShell({ title, sub, children }) {
 function Field({ label, type='text', value, onChange, placeholder }) {
   return (
     <div style={{ marginBottom:14 }}>
-      <label style={{ fontFamily:F.body, fontSize:13, fontWeight:600, color:C.navy, display:'block', marginBottom:5 }}>{label}</label>
+      <label style={{ fontFamily:F.body, fontSize:13, fontWeight:600, color:'#E8E0D0', display:'block', marginBottom:5 }}>{label}</label>
       <input type={type} value={value} onChange={onChange} placeholder={placeholder} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:9, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', boxSizing:'border-box', background:'rgba(255,255,255,0.06)', color:'#E8E0D0' }}/>
     </div>
   )
@@ -66,7 +66,7 @@ export function RegisterPage() {
       <Field label="Email" type="email" value={form.email} onChange={set('email')} placeholder="you@example.com"/>
       <Field label="Password" type="password" value={form.password} onChange={set('password')} placeholder="At least 8 characters"/>
       <Btn variant="gold" onClick={submit} disabled={loading} style={{ width:'100%', padding:'12px', fontSize:15, marginTop:6 }}>{loading?'Creating account…':'Create free account'}</Btn>
-      <p style={{ fontFamily:F.body, fontSize:13, color:C.muted, textAlign:'center', marginTop:14 }}>Already a member? <Link to="/login" style={{ color:C.gold, fontWeight:600 }}>Sign in</Link></p>
+      <p style={{ fontFamily:F.body, fontSize:13, color:'rgba(255,255,255,0.6)', textAlign:'center', marginTop:14 }}>Already a member? <Link to="/login" style={{ color:C.gold, fontWeight:600 }}>Sign in</Link></p>
       <p style={{ fontFamily:F.body, fontSize:11.5, color:'rgba(255,255,255,0.3)', textAlign:'center', marginTop:12, lineHeight:1.6 }}>By joining you agree to our <Link to="/terms" style={{ color:C.gold }}>Terms of Use</Link> and <Link to="/privacy" style={{ color:C.gold }}>Privacy Policy</Link></p>
     </AuthShell>
   )
@@ -91,7 +91,7 @@ export function LoginPage() {
       <Field label="Email" type="email" value={form.email} onChange={set('email')} placeholder="you@example.com"/>
       <Field label="Password" type="password" value={form.password} onChange={set('password')} placeholder="Your password"/>
       <Btn variant="gold" onClick={submit} disabled={loading} style={{ width:'100%', padding:'12px', fontSize:15, marginTop:6 }}>{loading?'Signing in…':'Sign in'}</Btn>
-      <p style={{ fontFamily:F.body, fontSize:13, color:C.muted, textAlign:'center', marginTop:14 }}>New here? <Link to="/register" style={{ color:C.gold, fontWeight:600 }}>Join free</Link></p>
+      <p style={{ fontFamily:F.body, fontSize:13, color:'rgba(255,255,255,0.6)', textAlign:'center', marginTop:14 }}>New here? <Link to="/register" style={{ color:C.gold, fontWeight:600 }}>Join free</Link></p>
     </AuthShell>
   )
 }
@@ -134,7 +134,7 @@ export function ForgotPasswordPage() {
           <input type="email" value={email} onChange={e=>setEmail(e.target.value)} onKeyDown={e=>e.key==='Enter'&&submit()}
             placeholder="Your email address"
             style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:9, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', boxSizing:'border-box', background:'rgba(255,255,255,0.06)', color:'#E8E0D0', marginBottom:14 }}/>
-          <button onClick={submit} disabled={loading} style={{ width:'100%', background:`linear-gradient(135deg,${C.gold},#E8C97A)`, color:C.navy, border:'none', borderRadius:10, padding:'12px', fontFamily:F.body, fontSize:14.5, fontWeight:700, cursor:'pointer', opacity:loading?0.7:1, marginBottom:14 }}>
+          <button onClick={submit} disabled={loading} style={{ width:'100%', background:`linear-gradient(135deg,${C.gold},#E8C97A)`, color:'#E8E0D0', border:'none', borderRadius:10, padding:'12px', fontFamily:F.body, fontSize:14.5, fontWeight:700, cursor:'pointer', opacity:loading?0.7:1, marginBottom:14 }}>
             {loading ? 'Sending…' : 'Send Reset Link'}
           </button>
           <p style={{ fontFamily:F.body, fontSize:12.5, color:'rgba(255,255,255,0.35)', textAlign:'center' }}>
@@ -180,7 +180,7 @@ export function ChangePasswordPage() {
       <p style={{ fontFamily:F.body, fontSize:11.5, color:'rgba(255,255,255,0.35)', marginBottom:16, lineHeight:1.6 }}>
         At least 8 characters, one capital letter, one number or special character
       </p>
-      <button onClick={submit} disabled={loading} style={{ width:'100%', background:`linear-gradient(135deg,${C.gold},#E8C97A)`, color:C.navy, border:'none', borderRadius:10, padding:'12px', fontFamily:F.body, fontSize:14.5, fontWeight:700, cursor:'pointer', opacity:loading?0.7:1, marginBottom:14 }}>
+      <button onClick={submit} disabled={loading} style={{ width:'100%', background:`linear-gradient(135deg,${C.gold},#E8C97A)`, color:'#E8E0D0', border:'none', borderRadius:10, padding:'12px', fontFamily:F.body, fontSize:14.5, fontWeight:700, cursor:'pointer', opacity:loading?0.7:1, marginBottom:14 }}>
         {loading ? 'Updating…' : 'Change Password'}
       </button>
       <p style={{ fontFamily:F.body, fontSize:12.5, color:'rgba(255,255,255,0.35)', textAlign:'center' }}>

@@ -109,7 +109,7 @@ export default function ArmchairPage() {
           boxShadow: '0 8px 32px rgba(0,0,0,0.4)'
         }}>
           <button onClick={togglePlay} style={{
-            background: C.gold, color: C.navy, border: 'none', borderRadius: '50%',
+            background: C.gold, color: '#E8E0D0', border: 'none', borderRadius: '50%',
             width: 36, height: 36, fontSize: 14, cursor: 'pointer', flexShrink: 0,
             display: 'flex', alignItems: 'center', justifyContent: 'center'
           }}>{playing ? '⏸' : '▶'}</button>
@@ -177,7 +177,7 @@ export default function ArmchairPage() {
                     {new Date(featured.scheduled_at).toLocaleString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
                   </p>
                   <button onClick={() => navigate(`/armchair/session/${featured.id}`)} style={{
-                    background: C.gold, color: C.navy, border: 'none', borderRadius: 10,
+                    background: C.gold, color: '#E8E0D0', border: 'none', borderRadius: 10,
                     padding: '11px 22px', fontFamily: F.body, fontSize: 14, fontWeight: 700,
                     cursor: 'pointer', width: 'fit-content'
                   }}>

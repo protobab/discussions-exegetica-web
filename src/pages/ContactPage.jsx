@@ -36,18 +36,18 @@ export default function ContactPage() {
     setLoading(false)
   }
 
-  const inputStyle = { width: '100%', border: `1.5px solid ${C.border}`, borderRadius: 8, padding: '10px 13px', fontFamily: F.body, fontSize: 14, outline: 'none', boxSizing: 'border-box', marginBottom: 14 }
+  const inputStyle = { width: '100%', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 8, padding: '10px 13px', fontFamily: F.body, fontSize: 14, outline: 'none', boxSizing: 'border-box', marginBottom: 14 }
 
   return (
     <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px', background: C.parchment }}>
-      <div style={{ background: '#fff', borderRadius: 16, padding: '38px 32px', width: '100%', maxWidth: 520, boxShadow: '0 4px 32px rgba(0,0,0,0.08)' }}>
+      <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 16, padding: '38px 32px', width: '100%', maxWidth: 520, boxShadow: '0 4px 32px rgba(0,0,0,0.08)' }}>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 18 }}><Logo size={38}/></div>
-        <h1 style={{ fontFamily: F.display, fontSize: 22, fontWeight: 700, color: C.navy, textAlign: 'center', marginBottom: 6 }}>Get in Touch</h1>
-        <p style={{ fontFamily: F.body, fontSize: 13.5, color: C.muted, textAlign: 'center', marginBottom: 16, lineHeight: 1.6 }}>
+        <h1 style={{ fontFamily: F.display, fontSize: 22, fontWeight: 700, color: '#E8E0D0', textAlign: 'center', marginBottom: 6 }}>Get in Touch</h1>
+        <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.6)', textAlign: 'center', marginBottom: 16, lineHeight: 1.6 }}>
           Have a question, suggestion, or need help? We'd love to hear from you.
         </p>
         <div style={{ background:'rgba(201,168,76,0.08)', border:'1px solid rgba(201,168,76,0.2)', borderRadius:10, padding:'12px 16px', marginBottom:20, textAlign:'center' }}>
-          <p style={{ fontFamily: F.body, fontSize: 12.5, color: C.muted, margin:0, lineHeight:1.6 }}>
+          <p style={{ fontFamily: F.body, fontSize: 12.5, color: 'rgba(255,255,255,0.6)', margin:0, lineHeight:1.6 }}>
             Looking for our Privacy Policy or Terms of Use?
           </p>
           <div style={{ display:'flex', gap:16, justifyContent:'center', marginTop:8 }}>
@@ -72,7 +72,7 @@ export default function ContactPage() {
           {loading ? 'Sending…' : 'Send Message'}
         </Btn>
 
-        <p style={{ fontFamily: F.body, fontSize: 12.5, color: C.muted, textAlign: 'center', marginTop: 16 }}>
+        <p style={{ fontFamily: F.body, fontSize: 12.5, color: 'rgba(255,255,255,0.6)', textAlign: 'center', marginTop: 16 }}>
           <Link to="/" style={{ color: C.gold }}>← Back to home</Link>
         </p>
       </div>
