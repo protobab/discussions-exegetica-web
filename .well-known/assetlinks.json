@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.discussionsexegetica.app",
+      "sha256_cert_fingerprints": ["11:80:C5:15:83:F5:67:1E:C5:4A:A0:77:5F:A6:55:B0:C2:19:29:81:3D:5A:80:8F:11:69:BC:00:B8:AE:87:3A"]
+    }
+  }
+]
