@@ -114,7 +114,7 @@ export default function ArmchairSessionPage() {
         </div>
       )}
 
-      {/* ZOOM LINK BANNER */}
+      {/* ZOOM LINK BANNER */}}
       {session.zoom_link && isLive && (
         <div style={{ background: C.navyLight, borderRadius: 10, padding: '12px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
           <span style={{ fontFamily: F.body, fontSize: 13.5, color: '#fff' }}>
