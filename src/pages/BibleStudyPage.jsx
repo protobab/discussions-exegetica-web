@@ -75,6 +75,25 @@ export default function BibleStudyPage() {
   const chunksRef = useRef([])
 
   useEffect(() => {
+    // Detect if STEPBible iframe fails to load
+    const timer = setTimeout(() => {
+      const iframe = document.querySelector('iframe[title="Bible"]')
+      if (iframe) {
+        try {
+          // If contentDocument is null after 8s, show fallback
+          setTimeout(() => {
+            const fallback = document.getElementById('stepbible-fallback')
+            if (fallback && iframe) {
+              try { const d = iframe.contentDocument; if (!d || !d.body || !d.body.innerHTML) fallback.style.display = 'block' } catch { fallback.style.display = 'block' }
+            }
+          }, 8000)
+        } catch {}
+      }
+    }, 1000)
+    return () => clearTimeout(timer)
+  }, [stepUrl])
+
+  useEffect(() => {
     setTimeout(() => setVisible(true), 60)
     const params = new URLSearchParams(location.search)
     const ref = params.get('ref')
@@ -314,7 +333,20 @@ export default function BibleStudyPage() {
             {/* Bible viewer */}
             <div>
               <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
-                <iframe src={stepUrl} title="Bible" style={{ width: '100%', height: 560, border: 'none', display: 'block' }}/>
+                <iframe
+                  src={stepUrl}
+                  title="Bible"
+                  style={{ width: '100%', height: 560, border: 'none', display: 'block' }}
+                  onError={() => {}}
+                />
+                <div id="stepbible-fallback" style={{ display:'none', padding:'24px', background:'rgba(255,255,255,0.05)', borderRadius:8, textAlign:'center' }}>
+                  <p style={{ fontFamily:F.body, fontSize:14, color:'rgba(255,255,255,0.6)', marginBottom:12 }}>
+                    Unable to load STEPBible — your network may be blocking the connection.
+                  </p>
+                  <a href={stepUrl} target="_blank" rel="noreferrer" style={{ color:gold, fontFamily:F.body, fontSize:13.5, fontWeight:600 }}>
+                    Open STEPBible directly in a new tab →
+                  </a>
+                </div>
               </div>
               <p style={{ fontFamily: F.body, fontSize: 11, color: 'rgba(255,255,255,0.25)', marginTop: 6, textAlign: 'center' }}>
                 Powered by <a href="https://www.stepbible.org" target="_blank" rel="noreferrer" style={{ color: gold }}>STEPBible</a> — free scholarly Bible tool with Greek &amp; Hebrew
@@ -356,7 +388,16 @@ export default function BibleStudyPage() {
                         <p style={{ fontFamily: F.body, fontSize: 13, color: cream, margin: 0, lineHeight: 1.65 }}
                           dangerouslySetInnerHTML={{ __html: msg.role === 'assistant' ? renderMarkdown(msg.text) : msg.text }}/>
                       </div>
-                      {msg.time && <span style={{ fontFamily: F.body, fontSize: 10, color: 'rgba(255,255,255,0.25)', marginTop: 2, padding: '0 4px' }}>{msg.time}</span>}
+                      <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                        {msg.time && <span style={{ fontFamily: F.body, fontSize: 10, color: 'rgba(255,255,255,0.25)', padding: '0 4px' }}>{msg.time}</span>}
+                        {msg.role === 'assistant' && (
+                          <a href="https://discussionsexegetica.com/contact" target="_blank" rel="noreferrer"
+                            style={{ fontFamily: F.body, fontSize: 10, color: 'rgba(255,255,255,0.2)', textDecoration:'none' }}
+                            title="Report inappropriate AI response">
+                            ⚑ Report
+                          </a>
+                        )}
+                      </div>
                     </div>
                   ))}
                   {aiLoading && (
