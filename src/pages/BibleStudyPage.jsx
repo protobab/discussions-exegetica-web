@@ -392,7 +392,7 @@ export default function BibleStudyPage() {
                         {msg.time && <span style={{ fontFamily: F.body, fontSize: 10, color: 'rgba(255,255,255,0.25)', padding: '0 4px' }}>{msg.time}</span>}
                         {msg.role === 'assistant' && (
                           <a href="https://discussionsexegetica.com/contact" target="_blank" rel="noreferrer"
-                            style={{ fontFamily: F.body, fontSize: 10, color: 'rgba(255,255,255,0.2)', textDecoration:'none' }}
+                            style={{ fontFamily: F.body, fontSize: 11, color: 'rgba(239,68,68,0.6)', textDecoration:'none', border:'1px solid rgba(239,68,68,0.25)', borderRadius:4, padding:'1px 6px' }}
                             title="Report inappropriate AI response">
                             ⚑ Report
                           </a>
