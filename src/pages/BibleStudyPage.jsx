@@ -393,9 +393,7 @@ export default function BibleStudyPage() {
                         {msg.role === 'assistant' && (
                           <a href="https://discussionsexegetica.com/contact" target="_blank" rel="noreferrer"
                             style={{ fontFamily: F.body, fontSize: 11, color: 'rgba(239,68,68,0.6)', textDecoration:'none', border:'1px solid rgba(239,68,68,0.25)', borderRadius:4, padding:'1px 6px' }}
-                            title="Report inappropriate AI response">
-                            ⚑ Report
-                          </a>
+                            title="Report inappropriate AI response">⚑ Report</a>
                         )}
                       </div>
                     </div>
