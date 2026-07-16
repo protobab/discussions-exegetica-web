@@ -1,5 +1,11 @@
 {
   "version": 1,
-  "include": ["/api/*", "/thread/*", "/sitemap.xml", "/.well-known/*"],
+  "include": [
+    "/api/*",
+    "/thread/*", 
+    "/sitemap.xml",
+    "/.well-known/*",
+    "/assetlinks.json"
+  ],
   "exclude": []
 }
