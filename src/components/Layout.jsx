@@ -121,6 +121,7 @@ export default function Layout() {
       <main className="de-main">
         <Outlet/>
       </main>
+      <AmbientPlayer />
 
       {/* ── FOOTER ── */}
       <footer style={{
