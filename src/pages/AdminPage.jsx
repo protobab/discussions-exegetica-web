@@ -16,10 +16,10 @@ export default function AdminPage() {
   if (!isAdmin) return <Center>You do not have permission to view this page.</Center>
 
   return (
-    <div style={{ maxWidth:860, margin:'0 auto', padding:'36px 20px 80px' }}>
+    <div style={{ maxWidth:860, margin:'0 auto', padding:'36px 20px 80px', minHeight:'100vh', background:'#0a0f1e' }}>
       <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:24 }}>
         <Logo size={28}/>
-        <h1 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:C.navy }}>Admin Panel</h1>
+        <h1 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:'#fff' }}>Admin Panel</h1>
       </div>
       <div style={{ display:'flex', gap:7, marginBottom:26, flexWrap:'wrap' }}>
         {[['sessions','Live Sessions'],['posts','Blog Posts'],['daily','Daily Word'],['auto','Auto Content'],['digest','Email Digest'],['announce','Announcements'],['content','Content Manager'],['moderation','Moderation']].map(([k,l])=>(
@@ -239,7 +239,7 @@ function DailyWordTab({ token }) {
                   {new Date(w.posted_date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}
                 </span>
                 <div>
-                  <span style={{ fontFamily:F.body, fontSize:12.5, fontWeight:700, color:C.navy }}>{w.verse_ref}</span>
+                  <span style={{ fontFamily:F.body, fontSize:12.5, fontWeight:700, color:'#fff' }}>{w.verse_ref}</span>
                   <span style={{ fontFamily:F.body, fontSize:11, color:C.muted, marginLeft:8 }}>{w.theme}</span>
                   <p style={{ fontFamily:F.body, fontSize:12, color:'#E8E0D0', margin:'3px 0 0', lineHeight:1.5 }}>{w.verse_text.slice(0,90)}…</p>
                 </div>
@@ -707,5 +707,5 @@ function ContentManagerTab({ token }) {
 // ── Shared ────────────────────────────────────────────────────
 
 function Panel({ children }) {
-  return <div style={{ background:'#fff', borderRadius:14, padding:28, border:`1px solid ${C.border}` }}>{children}</div>
+  return <div style={{ background:'#1a2035', borderRadius:14, padding:28, border:'1px solid rgba(201,168,76,0.18)', position:'relative', isolation:'isolate', marginBottom:24 }}>{children}</div>
 }
