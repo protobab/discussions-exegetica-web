@@ -88,6 +88,19 @@ export default function Layout() {
 
         {/* Desktop user area */}
         <div className="de-user-desktop" style={{ gap: 8, alignItems: 'center', flexShrink: 0 }}>
+          {/* Night mode toggle */}
+          <button
+            onClick={() => setNightMode(m => !m)}
+            title={nightMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            style={{
+              background: 'none', border: '1px solid rgba(255,255,255,0.15)',
+              borderRadius: 20, padding: '5px 12px',
+              color: 'rgba(255,255,255,0.6)', fontFamily: F.body,
+              fontSize: 13, cursor: 'pointer', marginRight: 8,
+              display: 'flex', alignItems: 'center', gap: 5,
+            }}>
+            {nightMode ? '☀️ Light' : '🌙 Dark'}
+          </button>
           {user ? (
             <>
               <NotificationBell/>
@@ -218,7 +231,20 @@ export default function Layout() {
                   }}>{l}</Link>
                 ))}
               </div>
-              {user ? (
+              {/* Night mode toggle */}
+          <button
+            onClick={() => setNightMode(m => !m)}
+            title={nightMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            style={{
+              background: 'none', border: '1px solid rgba(255,255,255,0.15)',
+              borderRadius: 20, padding: '5px 12px',
+              color: 'rgba(255,255,255,0.6)', fontFamily: F.body,
+              fontSize: 13, cursor: 'pointer', marginRight: 8,
+              display: 'flex', alignItems: 'center', gap: 5,
+            }}>
+            {nightMode ? '☀️ Light' : '🌙 Dark'}
+          </button>
+          {user ? (
                 <button onClick={() => { logout(); navigate('/'); setMenuOpen(false) }} style={{
                   width: '100%', background: 'rgba(239,68,68,0.15)',
                   border: '1px solid rgba(239,68,68,0.3)', borderRadius: 10,

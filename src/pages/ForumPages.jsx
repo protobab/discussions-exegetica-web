@@ -257,6 +257,32 @@ export function ThreadPage() {
 
   usePageTitle(thread?.title)
 
+  const saveThreadEdit = async () => {
+    if (!editTitle.trim() || !editBody.trim()) return
+    setSubmitting(true)
+    const res = await fetch(`${API}/threads/${id}/edit`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ title: editTitle, body: editBody })
+    })
+    const data = await res.json()
+    if (data.ok) { setEditingThread(false); load() }
+    setSubmitting(false)
+  }
+
+  const saveReplyEdit = async (replyId) => {
+    if (!editReplyBody.trim()) return
+    setSubmitting(true)
+    const res = await fetch(`${API}/threads/${id}/replies/${replyId}/edit`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ body: editReplyBody })
+    })
+    const data = await res.json()
+    if (data.ok) { setEditingReply(null); load() }
+    setSubmitting(false)
+  }
+
   const load = () => {
     fetch(`${API}/threads/${id}/replies`)
       .then(r => r.json())
@@ -406,7 +432,7 @@ export function NewThreadPage() {
         <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
           {ALL_CATS.filter(c => c.slug !== 'all').map(cat => (
             <button key={cat.slug} onClick={() => setForm(f => ({ ...f, category_slug: cat.slug }))}
-              style={{ background: form.category_slug === cat.slug ? C.navy : '#fff', color: form.category_slug === cat.slug ? '#fff' : C.muted, border: `1.5px solid ${form.category_slug === cat.slug ? C.navy : C.border}`, borderRadius: 20, padding: '6px 14px', fontFamily: F.body, fontSize: 12.5, cursor: 'pointer' }}>
+              style={{ background: form.category_slug === cat.slug ? C.gold : 'rgba(255,255,255,0.08)', color: form.category_slug === cat.slug ? '#0a0f1e' : C.text, border: `1.5px solid ${form.category_slug === cat.slug ? C.gold : 'rgba(255,255,255,0.15)'}`, borderRadius: 20, padding: '6px 14px', fontFamily: F.body, fontSize: 12.5, cursor: 'pointer', fontWeight: form.category_slug === cat.slug ? 700 : 400 }}>
               {cat.icon} {cat.label}
             </button>
           ))}
