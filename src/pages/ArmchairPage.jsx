@@ -41,9 +41,9 @@ export default function ArmchairPage() {
       if (audioRef.current) {
         audioRef.current.volume = vol
         audioRef.current.play()
-          .then(() => setPlaying(true))
+          .then(() => { setPlaying(true); setHasFiles(true) })
           .catch(() => {
-            // Autoplay blocked by browser — show player but don't force
+            // Autoplay blocked by browser — show player for manual play
             setPlaying(false)
           })
       }
@@ -75,19 +75,13 @@ export default function ArmchairPage() {
   return (
     <div style={{ position: 'relative', minHeight: '100vh', overflow: 'hidden' }}>
 
-      {/* FULL-SCREEN BACKGROUND */}
-      <div style={{
-        position: 'fixed', inset: 0, zIndex: 0,
-        backgroundImage: `url(/ambient/bg-loop.jpg), url(https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=1600&q=75)`,
-        backgroundSize: 'cover, cover',
-        backgroundSize: 'cover', backgroundPosition: 'center',
-        filter: 'brightness(0.45)',
-        transition: 'filter 0.8s ease',
-      }}/>
+      {/* FULL-SCREEN BACKGROUND — deep blue gradient always shows, bg-loop.jpg overlays it */}
+      <div style={{ position: 'fixed', inset: 0, zIndex: 0, background: 'linear-gradient(180deg, #0a1628 0%, #1a2a4a 35%, #2a4a6a 65%, #0a1020 100%)' }}/>
+      <div style={{ position: 'fixed', inset: 0, zIndex: 1, backgroundImage: `url(/ambient/bg-loop.jpg)`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'brightness(0.45)' }}/>
 
       {/* OVERLAY GRADIENT */}
       <div style={{
-        position: 'fixed', inset: 0, zIndex: 1,
+        position: 'fixed', inset: 0, zIndex: 2,
         background: `linear-gradient(to bottom, rgba(27,42,74,0.55) 0%, rgba(27,42,74,0.35) 40%, rgba(27,42,74,0.75) 100%)`,
       }}/>
 
@@ -100,9 +94,9 @@ export default function ArmchairPage() {
       />
 
       {/* AMBIENT MUSIC PLAYER — floating bottom left */}
-      {showPlayer && !isLive && hasFiles && (
+      {showPlayer && !isLive && (
         <div style={{
-          position: 'fixed', bottom: 24, left: 24, zIndex: 100,
+          position: 'fixed', bottom: 24, left: 24, zIndex: 200,
           background: 'rgba(27,42,74,0.88)', backdropFilter: 'blur(8px)',
           borderRadius: 14, padding: '12px 16px', border: `1px solid rgba(201,168,76,0.3)`,
           display: 'flex', alignItems: 'center', gap: 12, minWidth: 240,
@@ -143,7 +137,7 @@ export default function ArmchairPage() {
           <p style={{ fontFamily: F.body, fontSize: 16, color: 'rgba(255,255,255,0.72)', maxWidth: 500, margin: '0 auto 32px', lineHeight: 1.75 }}>
             Live audio conversations with guests, auto-saved recordings, and reflections in writing — all in one place.
           </p>
-          {!playing && hasFiles && !isLive && (
+          {!playing && !isLive && (
             <button onClick={togglePlay} style={{
               background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)',
               borderRadius: 30, padding: '8px 20px', fontFamily: F.body, fontSize: 13, cursor: 'pointer'
