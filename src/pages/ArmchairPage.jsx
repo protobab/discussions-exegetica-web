@@ -4,7 +4,6 @@ import { C, F, API } from '../lib/tokens.js'
 import { Card, Avatar, Spinner, Btn } from '../components/ui.jsx'
 import { usePageTitle } from '../lib/usePageTitle.js'
 import { IMAGES } from '../lib/images.js'
-import AmbientPlayer from '../components/AmbientPlayer.jsx'
 
 const FB = 'https://images.unsplash.com/photo-1490127252417-7c393f993ee4?w=800&q=60'
 
@@ -164,8 +163,6 @@ export default function ArmchairPage() {
       <style>{`
         @media(max-width:640px){ .ac-grid{ grid-template-columns:1fr !important; } }
       `}</style>
-      {/* Floating ambient player — fixed bottom left, only when not live */}
-      {!isLive && <AmbientPlayer />}
     </div>
   )
 }

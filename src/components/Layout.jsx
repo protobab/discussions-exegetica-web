@@ -5,6 +5,7 @@ import { Logo } from './ui.jsx'
 import NotificationBell from './NotificationBell.jsx'
 import AnnouncementBanner from './AnnouncementBanner.jsx'
 import { useState } from 'react'
+import AmbientPlayer from './AmbientPlayer.jsx'
 
 const NAV_ITEMS = [
   { label: 'Home',       path: '/',           icon: '⌂' },

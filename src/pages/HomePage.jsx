@@ -289,7 +289,7 @@ export default function HomePage() {
             ))}
             {!armchair?.posts?.length && (
               <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '24px', textAlign: 'center' }}>
-                <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.4)', marginBottom: 12 }}>🎵 Ambient worship music playing</p>
+                <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.4)', marginBottom: 12 }}>Live conversations and recorded sessions — all in one place.</p>
                 <Link to="/armchair" style={{ color: C.gold, fontFamily: F.body, fontSize: 13, fontWeight: 600 }}>Enter The Armchair →</Link>
               </div>
             )}
