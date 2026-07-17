@@ -22,11 +22,13 @@ export default function AdminPage() {
         <h1 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:'#fff' }}>Admin Panel</h1>
       </div>
       <div style={{ display:'flex', gap:7, marginBottom:26, flexWrap:'wrap' }}>
-        {[['sessions','Live Sessions'],['posts','Blog Posts'],['daily','Daily Word'],['auto','Auto Content'],['digest','Email Digest'],['announce','Announcements'],['content','Content Manager'],['moderation','Moderation']].map(([k,l])=>(
+        {[['sessions','Live Sessions'],['posts','Blog Posts'],['daily','Daily Word'],['auto','Auto Content'],['digest','Email Digest'],['announce','Announcements'],['content','Content Manager'],['moderation','Moderation'],['music','🎵 Music'],['users','👥 Users']].map(([k,l])=>(
           <button key={k} onClick={()=>setTab(k)} style={{ background:tab===k?C.gold:'rgba(255,255,255,0.08)', color:tab===k?C.navy:'rgba(255,255,255,0.75)', border:`1.5px solid ${tab===k?C.gold:'rgba(255,255,255,0.15)'}`, borderRadius:8, padding:'8px 16px', fontFamily:F.body, fontSize:13, fontWeight:600, cursor:'pointer' }}>{l}</button>
         ))}
       </div>
       {tab === 'sessions'    && <SessionsTab token={token}/>}
+      {tab === 'music'       && <MusicTab token={token}/>}
+      {tab === 'users'       && <UsersTab token={token}/>}
       {tab === 'posts'       && <PostsTab token={token}/>}
       {tab === 'daily'       && <DailyWordTab token={token}/>}
       {tab === 'auto'        && <AutoContentTab token={token}/>}
@@ -730,4 +732,158 @@ function ContentManagerTab({ token }) {
 
 function Panel({ children }) {
   return <div style={{ background:'#1a2035', borderRadius:14, padding:28, border:'1px solid rgba(201,168,76,0.18)', position:'relative', isolation:'isolate', marginBottom:24 }}>{children}</div>
+}
+
+// ── Music Settings ────────────────────────────────────────────
+function MusicTab({ token }) {
+  const [mode, setMode] = useState('local')
+  const [loading, setLoading] = useState(true)
+  const [msg, setMsg] = useState('')
+
+  useEffect(() => {
+    fetch('/api/music-mode').then(r=>r.json())
+      .then(d=>{ setMode(d.mode); setLoading(false) })
+      .catch(()=>setLoading(false))
+  }, [])
+
+  const save = async (newMode) => {
+    setMsg('')
+    const res = await fetch('/api/music-mode', {
+      method:'POST',
+      headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+      body: JSON.stringify({ mode: newMode })
+    })
+    const data = await res.json()
+    if (data.ok) { setMode(newMode); setMsg('✅ Updated — takes effect on next page load for visitors.') }
+    else setMsg(`❌ ${data.error}`)
+  }
+
+  if (loading) return <Panel><p style={{ fontFamily:F.body, color:'rgba(255,255,255,0.5)' }}>Loading…</p></Panel>
+
+  return (
+    <Panel>
+      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'#fff', marginBottom:6 }}>🎵 Ambient Music</h2>
+      <p style={{ fontFamily:F.body, fontSize:13.5, color:'rgba(255,255,255,0.55)', marginBottom:24, lineHeight:1.6 }}>
+        Choose what plays in the sitewide ambient player.
+      </p>
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:20 }}>
+        {[
+          { id:'local', title:'Your Uploaded Files', desc:'Plays track1.mp3, track2.mp3, track3.mp3 from public/ambient/. Reliable and fully under your control.' },
+          { id:'jamendo', title:'Jamendo Streaming', desc:'Streams ambient instrumental tracks from Jamendo. Variety changes automatically. May occasionally include non-worship tracks.' },
+        ].map(opt => (
+          <div key={opt.id} onClick={()=>save(opt.id)} style={{
+            background: mode===opt.id ? 'rgba(201,168,76,0.12)' : 'rgba(255,255,255,0.05)',
+            border:`2px solid ${mode===opt.id ? C.gold : 'rgba(255,255,255,0.1)'}`,
+            borderRadius:14, padding:'20px 18px', cursor:'pointer', transition:'all 0.2s',
+          }}>
+            <p style={{ fontFamily:F.display, fontSize:15, fontWeight:700, color:mode===opt.id?C.gold:'#fff', marginBottom:8 }}>
+              {mode===opt.id ? '✅ ' : ''}{opt.title}
+            </p>
+            <p style={{ fontFamily:F.body, fontSize:13, color:'rgba(255,255,255,0.5)', lineHeight:1.6, margin:0 }}>{opt.desc}</p>
+          </div>
+        ))}
+      </div>
+      {msg && <p style={{ fontFamily:F.body, fontSize:13, color:msg.startsWith('✅')?'#4ade80':'#f87171' }}>{msg}</p>}
+      <p style={{ fontFamily:F.body, fontSize:11.5, color:'rgba(255,255,255,0.3)', marginTop:16, lineHeight:1.7 }}>
+        To update your uploaded tracks: GitHub → public/ambient/ → replace track1.mp3, track2.mp3, track3.mp3 with your chosen instrumental worship files.
+      </p>
+    </Panel>
+  )
+}
+
+// ── Users ─────────────────────────────────────────────────────
+function UsersTab({ token }) {
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
+  const [msg, setMsg] = useState('')
+  const [page, setPage] = useState(1)
+  const PER_PAGE = 20
+
+  const load = () => {
+    setLoading(true)
+    fetch(`/api/admin/users?page=${page}&search=${encodeURIComponent(search)}`, {
+      headers: { Authorization:`Bearer ${token}` }
+    }).then(r=>r.json())
+      .then(d=>{ setUsers(d.users||[]); setLoading(false) })
+      .catch(()=>setLoading(false))
+  }
+
+  useEffect(load, [page])
+
+  const action = async (userId, act) => {
+    setMsg('')
+    const res = await fetch('/api/admin/users', {
+      method:'POST',
+      headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+      body: JSON.stringify({ user_id:userId, action:act })
+    })
+    const data = await res.json()
+    if (data.ok) { setMsg(`✅ Done`); load() }
+    else setMsg(`❌ ${data.error}`)
+  }
+
+  const STATUS_COLOR = { active:'#4ade80', suspended:'#f87171', banned:'#ef4444' }
+
+  return (
+    <Panel>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:16, flexWrap:'wrap', gap:10 }}>
+        <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'#fff' }}>👥 Registered Users</h2>
+        <div style={{ display:'flex', gap:8 }}>
+          <input value={search} onChange={e=>setSearch(e.target.value)}
+            onKeyDown={e=>e.key==='Enter'&&load()}
+            placeholder="Search username or email…"
+            style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.15)', borderRadius:8, padding:'7px 12px', fontFamily:F.body, fontSize:13, color:'#fff', colorScheme:'dark', width:200 }}
+          />
+          <Btn variant="ghost" onClick={load}>Search</Btn>
+        </div>
+      </div>
+
+      {msg && <p style={{ fontFamily:F.body, fontSize:13, color:msg.startsWith('✅')?'#4ade80':'#f87171', marginBottom:12 }}>{msg}</p>}
+
+      {loading ? <p style={{ fontFamily:F.body, color:'rgba(255,255,255,0.4)' }}>Loading…</p> : (
+        <div style={{ display:'grid', gap:8 }}>
+          {users.length === 0 && <p style={{ fontFamily:F.body, color:'rgba(255,255,255,0.4)' }}>No users found.</p>}
+          {users.map(u => (
+            <div key={u.id} style={{ background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:10, padding:'12px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, flexWrap:'wrap' }}>
+              <div style={{ display:'flex', alignItems:'center', gap:10, flex:1, minWidth:0 }}>
+                <div style={{ width:34, height:34, borderRadius:'50%', background:u.avatar_color||C.gold, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:F.body, fontSize:13, fontWeight:700, color:'#fff', flexShrink:0 }}>
+                  {u.display_name?.[0]?.toUpperCase()||'?'}
+                </div>
+                <div style={{ minWidth:0 }}>
+                  <p style={{ fontFamily:F.body, fontSize:13.5, fontWeight:600, color:'#fff', margin:'0 0 2px', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                    {u.display_name} <span style={{ color:'rgba(255,255,255,0.4)', fontWeight:400 }}>@{u.username}</span>
+                  </p>
+                  <p style={{ fontFamily:F.body, fontSize:11.5, color:'rgba(255,255,255,0.4)', margin:0 }}>
+                    {u.email} · Joined {new Date(u.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}
+                    {u.post_count > 0 && ` · ${u.post_count} posts`}
+                  </p>
+                </div>
+              </div>
+              <div style={{ display:'flex', alignItems:'center', gap:8, flexShrink:0 }}>
+                <span style={{ fontFamily:F.body, fontSize:11, fontWeight:600, color:STATUS_COLOR[u.status||'active']||'#4ade80', background:'rgba(255,255,255,0.06)', borderRadius:6, padding:'2px 8px' }}>
+                  {u.status||'active'}
+                </span>
+                {u.badge && <span style={{ fontFamily:F.body, fontSize:11, color:C.gold, background:'rgba(201,168,76,0.12)', borderRadius:6, padding:'2px 8px' }}>{u.badge}</span>}
+                <button onClick={()=>action(u.id, u.status==='suspended'?'unsuspend':'suspend')}
+                  style={{ background:'none', border:'1px solid rgba(255,193,7,0.4)', borderRadius:6, color:'#fbbf24', fontFamily:F.body, fontSize:11.5, cursor:'pointer', padding:'3px 10px' }}>
+                  {u.status==='suspended'?'Unsuspend':'Suspend'}
+                </button>
+                <button onClick={()=>{ if(confirm(`Delete @${u.username}?`)) action(u.id,'delete') }}
+                  style={{ background:'none', border:'1px solid rgba(239,68,68,0.4)', borderRadius:6, color:'#f87171', fontFamily:F.body, fontSize:11.5, cursor:'pointer', padding:'3px 10px' }}>
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div style={{ display:'flex', gap:8, marginTop:16 }}>
+        <Btn variant="ghost" onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page===1}>← Prev</Btn>
+        <span style={{ fontFamily:F.body, fontSize:13, color:'rgba(255,255,255,0.4)', padding:'8px 4px' }}>Page {page}</span>
+        <Btn variant="ghost" onClick={()=>setPage(p=>p+1)} disabled={users.length<PER_PAGE}>Next →</Btn>
+      </div>
+    </Panel>
+  )
 }
