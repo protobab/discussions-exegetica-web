@@ -69,9 +69,6 @@ export default function ArmchairPage() {
         {/* FEATURED SESSION or NO SESSION card */}
         <div style={{ maxWidth: 980, margin: '0 auto', padding: '0 20px 60px' }}>
 
-          {/* Ambient player shown when no live session */}
-          {!isLive && <AmbientPlayer />}
-
           {featured ? (
             <div style={{
               background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(12px)',
@@ -167,6 +164,8 @@ export default function ArmchairPage() {
       <style>{`
         @media(max-width:640px){ .ac-grid{ grid-template-columns:1fr !important; } }
       `}</style>
+      {/* Floating ambient player — fixed bottom left, only when not live */}
+      {!isLive && <AmbientPlayer />}
     </div>
   )
 }
