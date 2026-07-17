@@ -1,27 +1,17 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { C, F, API } from '../lib/tokens.js'
 import { Card, Avatar, Spinner, Btn } from '../components/ui.jsx'
 import { usePageTitle } from '../lib/usePageTitle.js'
 import { IMAGES } from '../lib/images.js'
+import AmbientPlayer from '../components/AmbientPlayer.jsx'
 
-const TRACKS = [
-  { src: '/ambient/track1.mp3', label: 'Reflective Piano' },
-  { src: '/ambient/track2.mp3', label: 'Gentle Strings' },
-  { src: '/ambient/track3.mp3', label: 'Quiet Worship Pads' },
-]
 const FB = 'https://images.unsplash.com/photo-1490127252417-7c393f993ee4?w=800&q=60'
 
 export default function ArmchairPage() {
   usePageTitle('The Armchair')
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [playing, setPlaying] = useState(false)
-  const [trackIdx, setTrackIdx] = useState(0)
-  const [vol, setVol] = useState(0.35)
-  const [showPlayer, setShowPlayer] = useState(false)
-  const [hasFiles, setHasFiles] = useState(true)
-  const audioRef = useRef(null)
   const navigate = useNavigate()
 
   useEffect(() => {
