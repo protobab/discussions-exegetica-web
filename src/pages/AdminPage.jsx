@@ -468,18 +468,18 @@ function AnnouncementTab({ token }) {
         <div>
           <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:C.navy, display:'block', marginBottom:6 }}>Announcement text *</label>
           <textarea value={text} onChange={e=>setText(e.target.value)} placeholder="e.g. 🎙 Our next Armchair session is this Sunday at 7pm — join us live!" rows={3}
-            style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', resize:'vertical', boxSizing:'border-box', background:'rgba(255,255,255,0.07)', color:'#fff' }}/>
+            style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', resize:'vertical', boxSizing:'border-box', background:'rgba(255,255,255,0.08)', color:'#fff', colorScheme:'dark', pointerEvents:'auto', colorScheme:'dark', pointerEvents:'auto' }}/>
         </div>
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
           <div>
             <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:C.navy, display:'block', marginBottom:6 }}>Style</label>
-            <select value={type} onChange={e=>setType(e.target.value)} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:13.5, outline:'none', background:'rgba(255,255,255,0.07)', color:'#fff' }}>
+            <select value={type} onChange={e=>setType(e.target.value)} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:13.5, outline:'none', background:'rgba(255,255,255,0.08)', color:'#fff', colorScheme:'dark', pointerEvents:'auto', colorScheme:'dark', pointerEvents:'auto' }}>
               {TYPE_OPTS.map(o=><option key={o.v} value={o.v}>{o.l}</option>)}
             </select>
           </div>
           <div>
             <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:C.navy, display:'block', marginBottom:6 }}>Auto-expire after</label>
-            <select value={hours} onChange={e=>setHours(parseInt(e.target.value))} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:13.5, outline:'none', background:'rgba(255,255,255,0.07)', color:'#fff' }}>
+            <select value={hours} onChange={e=>setHours(parseInt(e.target.value))} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:13.5, outline:'none', background:'rgba(255,255,255,0.08)', color:'#fff', colorScheme:'dark', pointerEvents:'auto', colorScheme:'dark', pointerEvents:'auto' }}>
               {[[1,'1 hour'],[6,'6 hours'],[12,'12 hours'],[24,'24 hours'],[48,'2 days'],[168,'1 week']].map(([v,l])=><option key={v} value={v}>{l}</option>)}
             </select>
           </div>

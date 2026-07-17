@@ -90,7 +90,7 @@ export function Field({ label, type='text', value, onChange, placeholder, style:
   return (
     <div style={{ marginBottom:14, ...ex }}>
       {label && <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:C.gold, display:'block', marginBottom:5 }}>{label}</label>}
-      <input type={type} value={value} onChange={onChange} placeholder={placeholder} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:9, padding:'10px 13px', fontFamily:F.body, fontSize:13.5, outline:'none', boxSizing:'border-box', background:'rgba(255,255,255,0.05)', color:'#E8E0D0' }}/>
+      <input type={type} value={value} onChange={onChange} placeholder={placeholder} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:9, padding:'10px 13px', fontFamily:F.body, fontSize:13.5, outline:'none', boxSizing:'border-box', background:'rgba(255,255,255,0.08)', color:'#E8E0D0', colorScheme:'dark', pointerEvents:'auto', position:'relative', zIndex:1 }}/>
     </div>
   )
 }
@@ -99,7 +99,7 @@ export function TextArea({ label, value, onChange, placeholder, rows=4 }) {
   return (
     <div style={{ marginBottom:14 }}>
       {label && <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:C.gold, display:'block', marginBottom:5 }}>{label}</label>}
-      <textarea value={value} onChange={onChange} placeholder={placeholder} rows={rows} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:9, padding:'10px 13px', fontFamily:F.body, fontSize:13.5, outline:'none', resize:'vertical', lineHeight:1.6, boxSizing:'border-box', background:'rgba(255,255,255,0.05)', color:'#E8E0D0' }}/>
+      <textarea value={value} onChange={onChange} placeholder={placeholder} rows={rows} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:9, padding:'10px 13px', fontFamily:F.body, fontSize:13.5, outline:'none', resize:'vertical', lineHeight:1.6, boxSizing:'border-box', background:'rgba(255,255,255,0.08)', color:'#E8E0D0', colorScheme:'dark', pointerEvents:'auto', position:'relative', zIndex:1 }}/>
     </div>
   )
 }
