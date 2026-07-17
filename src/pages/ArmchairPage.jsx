@@ -31,41 +31,13 @@ export default function ArmchairPage() {
       .catch(() => setLoading(false))
   }, [])
 
-  // Auto-play ambient music on entry (after brief delay, respects browser autoplay policy)
-  useEffect(() => {
-    if (loading) return
-    const isLive = data?.featured?.status === 'live'
-    if (isLive) return // don't autoplay during live session
-    const timer = setTimeout(() => {
-      setShowPlayer(true)
-      if (audioRef.current) {
-        audioRef.current.volume = vol
-        audioRef.current.play()
-          .then(() => { setPlaying(true); setHasFiles(true) })
-          .catch(() => {
-            // Autoplay blocked by browser — show player for manual play
-            setPlaying(false)
-          })
-      }
-    }, 800)
-    return () => clearTimeout(timer)
-  }, [loading, data])
 
-  useEffect(() => {
-    if (audioRef.current) audioRef.current.volume = vol
-  }, [vol])
 
-  const togglePlay = () => {
-    if (!audioRef.current) return
-    if (playing) { audioRef.current.pause(); setPlaying(false) }
-    else { audioRef.current.play().then(() => setPlaying(true)).catch(() => setHasFiles(false)) }
-  }
 
-  const nextTrack = () => {
-    const n = (trackIdx + 1) % TRACKS.length
-    setTrackIdx(n)
-    setTimeout(() => { if (playing && audioRef.current) audioRef.current.play().catch(() => {}) }, 80)
-  }
+
+
+
+
 
   if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Spinner /></div>
 
@@ -82,46 +54,10 @@ export default function ArmchairPage() {
       {/* OVERLAY GRADIENT */}
       <div style={{
         position: 'fixed', inset: 0, zIndex: 2,
-        background: `linear-gradient(to bottom, rgba(27,42,74,0.55) 0%, rgba(27,42,74,0.35) 40%, rgba(27,42,74,0.75) 100%)`,
+        background: `linear-gradient(to bottom, rgba(10,20,40,0.45) 0%, rgba(10,20,40,0.25) 40%, rgba(10,20,40,0.65) 100%)`,
       }}/>
 
-      {/* AUDIO ELEMENT */}
-      <audio
-        ref={audioRef}
-        src={TRACKS[trackIdx].src}
-        loop
-        onError={() => setHasFiles(false)}
-      />
 
-      {/* AMBIENT MUSIC PLAYER — floating bottom left */}
-      {showPlayer && !isLive && (
-        <div style={{
-          position: 'fixed', bottom: 24, left: 24, zIndex: 200,
-          background: 'rgba(27,42,74,0.88)', backdropFilter: 'blur(8px)',
-          borderRadius: 14, padding: '12px 16px', border: `1px solid rgba(201,168,76,0.3)`,
-          display: 'flex', alignItems: 'center', gap: 12, minWidth: 240,
-          boxShadow: '0 8px 32px rgba(0,0,0,0.4)'
-        }}>
-          <button onClick={togglePlay} style={{
-            background: C.gold, color: '#E8E0D0', border: 'none', borderRadius: '50%',
-            width: 36, height: 36, fontSize: 14, cursor: 'pointer', flexShrink: 0,
-            display: 'flex', alignItems: 'center', justifyContent: 'center'
-          }}>{playing ? '⏸' : '▶'}</button>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ fontFamily: F.body, fontSize: 11, color: 'rgba(255,255,255,0.55)', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-              {playing ? 'Now playing' : 'Ambient music'}
-            </p>
-            <p style={{ fontFamily: F.body, fontSize: 12.5, color: '#fff', margin: 0, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {TRACKS[trackIdx].label}
-            </p>
-          </div>
-          <button onClick={nextTrack} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.6)', cursor: 'pointer', fontSize: 16, padding: 4 }}>⏭</button>
-          <input type="range" min="0" max="1" step="0.05" value={vol}
-            onChange={e => setVol(parseFloat(e.target.value))}
-            style={{ width: 56, accentColor: C.gold }}
-          />
-        </div>
-      )}
 
       {/* MAIN CONTENT — scrollable over background */}
       <div style={{ position: 'relative', zIndex: 10 }}>
@@ -137,18 +73,14 @@ export default function ArmchairPage() {
           <p style={{ fontFamily: F.body, fontSize: 16, color: 'rgba(255,255,255,0.72)', maxWidth: 500, margin: '0 auto 32px', lineHeight: 1.75 }}>
             Live audio conversations with guests, auto-saved recordings, and reflections in writing — all in one place.
           </p>
-          {!playing && !isLive && (
-            <button onClick={togglePlay} style={{
-              background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)',
-              borderRadius: 30, padding: '8px 20px', fontFamily: F.body, fontSize: 13, cursor: 'pointer'
-            }}>
-              🎵 Play ambient music
-            </button>
-          )}
+
         </div>
 
         {/* FEATURED SESSION or NO SESSION card */}
         <div style={{ maxWidth: 980, margin: '0 auto', padding: '0 20px 60px' }}>
+
+          {/* Ambient player shown when no live session */}
+          {!isLive && <AmbientPlayer />}
 
           {featured ? (
             <div style={{
