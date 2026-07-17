@@ -4,7 +4,7 @@ import { C, F } from '../lib/tokens.js'
 import { Logo } from './ui.jsx'
 import NotificationBell from './NotificationBell.jsx'
 import AnnouncementBanner from './AnnouncementBanner.jsx'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AmbientPlayer from './AmbientPlayer.jsx'
 
 const NAV_ITEMS = [
@@ -21,6 +21,16 @@ export default function Layout() {
   const navigate = useNavigate()
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [nightMode, setNightMode] = useState(true)
+  useEffect(() => {
+    try { if (localStorage.getItem('de_nightmode') === 'light') setNightMode(false) } catch {}
+  }, [])
+  const toggleNight = () => {
+    const n = !nightMode
+    setNightMode(n)
+    try { localStorage.setItem('de_nightmode', n ? 'dark' : 'light') } catch {}
+    document.body.style.background = n ? '' : '#f5f0e8'
+  }
 
   const isActive = (path) =>
     path === '/' ? location.pathname === '/' : location.pathname.startsWith(path)
@@ -88,19 +98,6 @@ export default function Layout() {
 
         {/* Desktop user area */}
         <div className="de-user-desktop" style={{ gap: 8, alignItems: 'center', flexShrink: 0 }}>
-          {/* Night mode toggle */}
-          <button
-            onClick={() => setNightMode(m => !m)}
-            title={nightMode ? 'Switch to light mode' : 'Switch to dark mode'}
-            style={{
-              background: 'none', border: '1px solid rgba(255,255,255,0.15)',
-              borderRadius: 20, padding: '5px 12px',
-              color: 'rgba(255,255,255,0.6)', fontFamily: F.body,
-              fontSize: 13, cursor: 'pointer', marginRight: 8,
-              display: 'flex', alignItems: 'center', gap: 5,
-            }}>
-            {nightMode ? '☀️ Light' : '🌙 Dark'}
-          </button>
           {user ? (
             <>
               <NotificationBell/>
@@ -134,7 +131,6 @@ export default function Layout() {
       <main className="de-main">
         <Outlet/>
       </main>
-      <AmbientPlayer />
 
       {/* ── FOOTER ── */}
       <footer style={{
@@ -231,20 +227,7 @@ export default function Layout() {
                   }}>{l}</Link>
                 ))}
               </div>
-              {/* Night mode toggle */}
-          <button
-            onClick={() => setNightMode(m => !m)}
-            title={nightMode ? 'Switch to light mode' : 'Switch to dark mode'}
-            style={{
-              background: 'none', border: '1px solid rgba(255,255,255,0.15)',
-              borderRadius: 20, padding: '5px 12px',
-              color: 'rgba(255,255,255,0.6)', fontFamily: F.body,
-              fontSize: 13, cursor: 'pointer', marginRight: 8,
-              display: 'flex', alignItems: 'center', gap: 5,
-            }}>
-            {nightMode ? '☀️ Light' : '🌙 Dark'}
-          </button>
-          {user ? (
+              {user ? (
                 <button onClick={() => { logout(); navigate('/'); setMenuOpen(false) }} style={{
                   width: '100%', background: 'rgba(239,68,68,0.15)',
                   border: '1px solid rgba(239,68,68,0.3)', borderRadius: 10,
