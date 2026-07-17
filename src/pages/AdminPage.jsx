@@ -301,7 +301,7 @@ function ModerationTab({ token }) {
         : flagged.length === 0 ? <p style={{ fontFamily:F.body, fontSize:13.5, color:C.muted }}>No flagged messages — all clear! ✅</p>
         : <div style={{ display:'grid', gap:10 }}>
             {flagged.map(m=>(
-              <div key={m.id} style={{ padding:'12px 16px', background:m.is_hidden?'#FEF2F2':C.parchment, borderRadius:10, border:`1px solid ${m.is_hidden?'#FECACA':C.border}` }}>
+              <div key={m.id} style={{ padding:'12px 16px', background:m.is_hidden?'rgba(220,38,38,0.1)':'rgba(255,255,255,0.05)', borderRadius:10, border:`1px solid ${m.is_hidden?'rgba(220,38,38,0.3)':'rgba(255,255,255,0.08)'}` }}>
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:10, flexWrap:'wrap' }}>
                   <div>
                     <p style={{ fontFamily:F.body, fontSize:12, color:'rgba(255,255,255,0.5)', marginBottom:4 }}>{m.display_name} · {m.flag_count} flag{m.flag_count!==1?'s':''} {m.is_hidden?'· HIDDEN':''}</p>
@@ -376,7 +376,7 @@ function AutoContentTab({ token }) {
         </div>
         <div>
           <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'#fff', display:'block', marginBottom:6 }}>Category focus</label>
-          <select value={category} onChange={e=>setCategory(e.target.value)} style={{ width:'100%', border:`1.5px solid ${C.border}`, borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:14, outline:'none', background:'#fff' }}>
+          <select value={category} onChange={e=>setCategory(e.target.value)} style={{ width:'100%', border:`1.5px solid ${C.border}`, borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:14, outline:'none', background:'rgba(255,255,255,0.08)', color:'#fff', colorScheme:'dark' }}>
             {CATS.map(c=><option key={c.slug} value={c.slug}>{c.label}</option>)}
           </select>
         </div>
@@ -421,7 +421,7 @@ function AutoContentTab({ token }) {
               </p>
               <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
                 {DOMAINS.map((d,i) => (
-                  <span key={d} style={{ background: d===thisWeek ? C.navy : '#fff', color: d===thisWeek ? '#fff' : C.muted, border:`1px solid ${d===thisWeek ? C.navy : C.border}`, borderRadius:6, padding:'3px 10px', fontFamily:F.body, fontSize:11.5, fontWeight: d===thisWeek ? 700 : 400 }}>
+                  <span key={d} style={{ background: d===thisWeek ? C.gold : 'rgba(255,255,255,0.08)', color: d===thisWeek ? '#0a0f1e' : 'rgba(255,255,255,0.6)', border:`1px solid ${d===thisWeek ? C.gold : 'rgba(255,255,255,0.15)'}`, borderRadius:6, padding:'3px 10px', fontFamily:F.body, fontSize:11.5, fontWeight: d===thisWeek ? 700 : 400 }}>
                     Week {(weekNum % 5 === i) ? '▶ ' : ''}{LABELS[d]}
                   </span>
                 ))}
@@ -656,7 +656,7 @@ function ContentManagerTab({ token }) {
       <div style={{ display:'flex', gap:6, marginBottom:16, flexWrap:'wrap' }}>
         {TYPES.map(t => (
           <button key={t.key} onClick={() => { setType(t.key); setPage(1); setSearch('') }}
-            style={{ background:type===t.key?C.navy:'#fff', color:type===t.key?'#fff':C.muted, border:`1.5px solid ${type===t.key?C.navy:C.border}`, borderRadius:7, padding:'6px 14px', fontFamily:F.body, fontSize:12.5, fontWeight:600, cursor:'pointer' }}>
+            style={{ background:type===t.key?C.gold:'rgba(255,255,255,0.08)', color:type===t.key?'#0a0f1e':'rgba(255,255,255,0.7)', border:`1.5px solid ${type===t.key?C.gold:'rgba(255,255,255,0.15)'}`, borderRadius:7, padding:'6px 14px', fontFamily:F.body, fontSize:12.5, fontWeight:600, cursor:'pointer' }}>
             {t.label} {type===t.key && total > 0 ? `(${total})` : ''}
           </button>
         ))}
