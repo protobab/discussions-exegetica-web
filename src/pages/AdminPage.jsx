@@ -52,6 +52,12 @@ function SessionsTab({ token }) {
   const [loading, setLoading] = useState(false)
   const [editSession, setEditSession] = useState(null)
 
+  const openEdit = (s) => {
+    setEditSession(s)
+    setForm({ title:s.title||'', description:s.description||'', guest_name:s.guest_name||'', guest_bio:s.guest_bio||'', cover_image:s.cover_image||'', scheduled_at:s.scheduled_at||'', zoom_link:s.zoom_link||'' })
+    setShowForm(true)
+  }
+
   const deleteSession = async (id) => {
     if (!window.confirm('Delete this session and all its messages? This cannot be undone.')) return
     await fetch(`/api/armchair/manage?session_id=${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } })
@@ -112,21 +118,27 @@ function SessionsTab({ token }) {
         <div style={{ marginBottom: showForm ? 24 : 0 }}>
           <div style={{ display:'grid', gap:10 }}>
             {sessions.map(s=>(
-              <div key={s.id} style={{ padding:'14px 16px', background:'rgba(255,255,255,0.06)', borderRadius:10, border:`1px solid ${C.border}`, display:'flex', alignItems:'center', justifyContent:'space-between', gap:10, flexWrap:'wrap' }}>
+              <div key={s.id} style={{ borderRadius:12, overflow:'hidden', border:'1px solid rgba(255,255,255,0.1)', background:'rgba(255,255,255,0.06)', display:'flex', alignItems:'stretch', gap:0, flexWrap:'wrap' }}>
+                {s.cover_image && (
+                  <div style={{ width:80, minHeight:70, backgroundImage:`url(${s.cover_image})`, backgroundSize:'cover', backgroundPosition:'center', flexShrink:0 }}/>
+                )}
+                <div style={{ flex:1, padding:'12px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:10, flexWrap:'wrap' }}>
                 <div>
                   <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:4 }}>
                     <span style={{ background:STATUS_COLOR[s.status]+'22', color:STATUS_COLOR[s.status], border:`1px solid ${STATUS_COLOR[s.status]}55`, borderRadius:4, padding:'1px 8px', fontSize:11, fontFamily:F.body, fontWeight:700 }}>{STATUS_LABEL[s.status]}</span>
                   </div>
-                  <p style={{ fontFamily:F.display, fontSize:14.5, fontWeight:700, color:C.navy, marginBottom:2 }}>{s.title}</p>
-                  {s.guest_name && <p style={{ fontFamily:F.body, fontSize:12, color:C.muted }}>with {s.guest_name}</p>}
+                  <p style={{ fontFamily:F.display, fontSize:14.5, fontWeight:700, color:'#fff', marginBottom:2 }}>{s.title}</p>
+                  {s.guest_name && <p style={{ fontFamily:F.body, fontSize:12, color:'rgba(255,255,255,0.55)' }}>with {s.guest_name}</p>}
+                  {s.scheduled_at && <p style={{ fontFamily:F.body, fontSize:11, color:'rgba(255,255,255,0.4)', marginTop:2 }}>{new Date(s.scheduled_at).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}</p>}
                 </div>
                 <div style={{ display:'flex', gap:7, alignItems:'center', flexWrap:'wrap' }}>
                   {s.status === 'scheduled' && <Btn variant="primary" onClick={()=>updateStatus(s.id,'live')}>🔴 Go Live</Btn>}
                   {s.status === 'live'      && <Btn variant="outline" onClick={()=>updateStatus(s.id,'ended')}>⏹ End Session</Btn>}
                   {s.status === 'ended'     && <span style={{ fontFamily:F.body, fontSize:12, color:C.muted }}>Complete</span>}
                   <button onClick={()=>navigate(`/armchair/session/${s.id}`)} style={{ background:'none', border:'none', color:C.gold, fontFamily:F.body, fontSize:12.5, fontWeight:600, cursor:'pointer', padding:0 }}>Open →</button>
-                  <button onClick={()=>setEditSession(s)} style={{ background:'none', border:`1px solid ${C.border}`, borderRadius:6, color:C.muted, fontFamily:F.body, fontSize:12, cursor:'pointer', padding:'3px 9px' }}>Edit</button>
+                  <button onClick={()=>openEdit(s)} style={{ background:'none', border:'1px solid rgba(255,255,255,0.2)', borderRadius:6, color:'rgba(255,255,255,0.7)', fontFamily:F.body, fontSize:12, cursor:'pointer', padding:'3px 9px' }}>Edit</button>
                   <button onClick={()=>deleteSession(s.id)} style={{ background:'none', border:'1px solid #FECACA', borderRadius:6, color:'#DC2626', fontFamily:F.body, fontSize:12, cursor:'pointer', padding:'3px 9px' }}>Delete</button>
+                </div>
                 </div>
               </div>
             ))}
@@ -141,7 +153,7 @@ function SessionsTab({ token }) {
       {/* Create form */}
       {showForm && (
         <div style={{ borderTop: sessions.length > 0 ? `1px solid ${C.border}` : 'none', paddingTop: sessions.length > 0 ? 22 : 0 }}>
-          <h3 style={{ fontFamily:F.display, fontSize:16, fontWeight:700, color:'#fff', marginBottom:14 }}>New Session</h3>
+          {editSession ? <h3 style={{ fontFamily:F.display, fontSize:16, fontWeight:700, color:C.gold, marginBottom:14 }}>Edit Session</h3> : <h3 style={{ fontFamily:F.display, fontSize:16, fontWeight:700, color:'#fff', marginBottom:14 }}>New Session</h3>}
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:12 }}>
             <Field label="Title *" value={form.title} onChange={set('title')} placeholder="e.g. The Heart of the Gospel"/>
             <Field label="Date & time *" type="datetime-local" value={form.scheduled_at} onChange={set('scheduled_at')}/>
@@ -151,7 +163,17 @@ function SessionsTab({ token }) {
           <ImagePicker currentImage={form.cover_image} onSelect={url=>setForm(f=>({...f,cover_image:url}))}/>
           <TextArea label="Description" value={form.description} onChange={set('description')} placeholder="What will this conversation cover?"/>
           <TextArea label="Guest bio" value={form.guest_bio} onChange={set('guest_bio')} placeholder="Short bio for the guest"/>
-          <Btn variant="gold" onClick={create} disabled={loading}>{loading?'Scheduling…':'Schedule Session'}</Btn>
+          <Btn variant="gold" onClick={async ()=>{
+            if (editSession) {
+              setLoading(true)
+              const res = await fetch('/api/armchair/manage', { method:'PATCH', headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`}, body:JSON.stringify({id:editSession.id,...form}) })
+              const data = await res.json()
+              if (data.ok) { setMsg('✅ Session updated!'); setShowForm(false); setEditSession(null); setForm({ title:'', description:'', guest_name:'', guest_bio:'', cover_image:'', scheduled_at:'', zoom_link:'' }); loadSessions() }
+              else setMsg(`❌ ${data.error}`)
+              setLoading(false)
+            } else { create() }
+          }} disabled={loading}>{loading ? 'Saving…' : editSession ? 'Save Changes' : 'Schedule Session'}</Btn>
+          {editSession && <Btn variant="ghost" onClick={()=>{ setEditSession(null); setShowForm(false); setForm({ title:'', description:'', guest_name:'', guest_bio:'', cover_image:'', scheduled_at:'', zoom_link:'' }) }} style={{ marginLeft:8 }}>Cancel Edit</Btn>}
           <p style={{ fontFamily:F.body, fontSize:12, color:'rgba(255,255,255,0.5)', marginTop:12, lineHeight:1.6 }}>
             Tip: run your audio via this platform's live streaming. Guests can join via browser. The session page handles everything — live chat, Q&amp;A, and auto-recording.
           </p>
@@ -231,16 +253,16 @@ function DailyWordTab({ token }) {
 
       {upcoming.length > 0 && (
         <div style={{ marginTop:24 }}>
-          <h3 style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:C.muted, textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:12 }}>Upcoming ({upcoming.length})</h3>
+          <h3 style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.6)', textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:12 }}>Upcoming ({upcoming.length})</h3>
           <div style={{ display:'grid', gap:8 }}>
             {upcoming.slice(0,10).map((w,i)=>(
               <div key={i} style={{ display:'flex', gap:12, alignItems:'flex-start', padding:'10px 14px', background:'rgba(255,255,255,0.06)', borderRadius:8 }}>
-                <span style={{ background:C.gold, color:C.navy, borderRadius:5, padding:'2px 9px', fontFamily:F.body, fontSize:11, fontWeight:700, whiteSpace:'nowrap', flexShrink:0 }}>
+                <span style={{ background:C.gold, color:'#fff', borderRadius:5, padding:'2px 9px', fontFamily:F.body, fontSize:11, fontWeight:700, whiteSpace:'nowrap', flexShrink:0 }}>
                   {new Date(w.posted_date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}
                 </span>
                 <div>
                   <span style={{ fontFamily:F.body, fontSize:12.5, fontWeight:700, color:'#fff' }}>{w.verse_ref}</span>
-                  <span style={{ fontFamily:F.body, fontSize:11, color:C.muted, marginLeft:8 }}>{w.theme}</span>
+                  <span style={{ fontFamily:F.body, fontSize:11, color:'rgba(255,255,255,0.6)', marginLeft:8 }}>{w.theme}</span>
                   <p style={{ fontFamily:F.body, fontSize:12, color:'#E8E0D0', margin:'3px 0 0', lineHeight:1.5 }}>{w.verse_text.slice(0,90)}…</p>
                 </div>
               </div>
@@ -346,12 +368,12 @@ function AutoContentTab({ token }) {
 
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14, marginBottom:18 }}>
         <div>
-          <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:C.navy, display:'block', marginBottom:6 }}>Number to generate (1–5)</label>
+          <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'#fff', display:'block', marginBottom:6 }}>Number to generate (1–5)</label>
           <input type="number" min={1} max={5} value={count} onChange={e=>setCount(Math.min(5,Math.max(1,parseInt(e.target.value)||1)))}
             style={{ width:'100%', border:`1.5px solid ${C.border}`, borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:14, outline:'none' }}/>
         </div>
         <div>
-          <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:C.navy, display:'block', marginBottom:6 }}>Category focus</label>
+          <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'#fff', display:'block', marginBottom:6 }}>Category focus</label>
           <select value={category} onChange={e=>setCategory(e.target.value)} style={{ width:'100%', border:`1.5px solid ${C.border}`, borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:14, outline:'none', background:'#fff' }}>
             {CATS.map(c=><option key={c.slug} value={c.slug}>{c.label}</option>)}
           </select>
@@ -369,7 +391,7 @@ function AutoContentTab({ token }) {
             {results.map((t,i)=>(
               <div key={i} style={{ padding:'10px 14px', background:'rgba(255,255,255,0.06)', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
                 <div>
-                  <span style={{ fontFamily:F.body, fontSize:11, color:C.muted, textTransform:'uppercase', letterSpacing:'0.06em' }}>{t.category}</span>
+                  <span style={{ fontFamily:F.body, fontSize:11, color:'rgba(255,255,255,0.6)', textTransform:'uppercase', letterSpacing:'0.06em' }}>{t.category}</span>
                   <p style={{ fontFamily:F.display, fontSize:14, fontWeight:700, color:'#fff', margin:'2px 0 0' }}>{t.title}</p>
                 </div>
                 <a href={`/thread/${t.id}`} target="_blank" rel="noreferrer" style={{ color:C.gold, fontFamily:F.body, fontSize:12.5, fontWeight:600, whiteSpace:'nowrap', marginLeft:12 }}>View →</a>
@@ -454,7 +476,7 @@ function AnnouncementTab({ token }) {
 
       {current && (
         <div style={{ background:'rgba(255,255,255,0.06)', border:`1px solid ${C.gold}55`, borderRadius:10, padding:'14px 16px', marginBottom:20 }}>
-          <p style={{ fontFamily:F.body, fontSize:12, fontWeight:700, color:C.muted, textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:6 }}>Currently live</p>
+          <p style={{ fontFamily:F.body, fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.6)', textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:6 }}>Currently live</p>
           <p style={{ fontFamily:F.body, fontSize:14, color:'#E8E0D0', marginBottom:8 }}>{current.text}</p>
           <div style={{ display:'flex', gap:10, alignItems:'center', flexWrap:'wrap' }}>
             <span style={{ fontFamily:F.body, fontSize:12, color:C.muted }}>Type: {current.type} · Posted: {new Date(current.created_at).toLocaleString('en-GB')}</span>
@@ -466,19 +488,19 @@ function AnnouncementTab({ token }) {
 
       <div style={{ display:'grid', gap:12, marginBottom:16 }}>
         <div>
-          <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:C.navy, display:'block', marginBottom:6 }}>Announcement text *</label>
+          <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'#fff', display:'block', marginBottom:6 }}>Announcement text *</label>
           <textarea value={text} onChange={e=>setText(e.target.value)} placeholder="e.g. 🎙 Our next Armchair session is this Sunday at 7pm — join us live!" rows={3}
             style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', resize:'vertical', boxSizing:'border-box', background:'rgba(255,255,255,0.08)', color:'#fff', colorScheme:'dark', pointerEvents:'auto', colorScheme:'dark', pointerEvents:'auto' }}/>
         </div>
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
           <div>
-            <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:C.navy, display:'block', marginBottom:6 }}>Style</label>
+            <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'#fff', display:'block', marginBottom:6 }}>Style</label>
             <select value={type} onChange={e=>setType(e.target.value)} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:13.5, outline:'none', background:'rgba(255,255,255,0.08)', color:'#fff', colorScheme:'dark', pointerEvents:'auto', colorScheme:'dark', pointerEvents:'auto' }}>
               {TYPE_OPTS.map(o=><option key={o.v} value={o.v}>{o.l}</option>)}
             </select>
           </div>
           <div>
-            <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:C.navy, display:'block', marginBottom:6 }}>Auto-expire after</label>
+            <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'#fff', display:'block', marginBottom:6 }}>Auto-expire after</label>
             <select value={hours} onChange={e=>setHours(parseInt(e.target.value))} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:13.5, outline:'none', background:'rgba(255,255,255,0.08)', color:'#fff', colorScheme:'dark', pointerEvents:'auto', colorScheme:'dark', pointerEvents:'auto' }}>
               {[[1,'1 hour'],[6,'6 hours'],[12,'12 hours'],[24,'24 hours'],[48,'2 days'],[168,'1 week']].map(([v,l])=><option key={v} value={v}>{l}</option>)}
             </select>
@@ -522,7 +544,7 @@ function DigestTab({ token }) {
       {info && (
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:20 }}>
           <div style={{ background:'rgba(255,255,255,0.06)', borderRadius:10, padding:'14px 16px' }}>
-            <p style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:C.navy, margin:'0 0 2px' }}>{info.subscriberCount}</p>
+            <p style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:'#fff', margin:'0 0 2px' }}>{info.subscriberCount}</p>
             <p style={{ fontFamily:F.body, fontSize:12.5, color:'rgba(255,255,255,0.55)', margin:0 }}>Email subscribers</p>
           </div>
           <div style={{ background:'rgba(255,255,255,0.06)', borderRadius:10, padding:'14px 16px' }}>
@@ -540,7 +562,7 @@ function DigestTab({ token }) {
           <p style={{ fontFamily:F.body, fontSize:13, color:'#991B1B', lineHeight:1.6, margin:0 }}>
             1. Sign up free at <strong>resend.com</strong> (3,000 emails/month free)<br/>
             2. Add your domain and get an API key<br/>
-            3. Add <code style={{ background:'#fff', padding:'1px 5px', borderRadius:3 }}>RESEND_API_KEY</code> to Cloudflare environment variables<br/>
+            3. Add <code style={{ background:'rgba(255,255,255,0.06)', padding:'1px 5px', borderRadius:3 }}>RESEND_API_KEY</code> to Cloudflare environment variables<br/>
             4. Verify <code>noreply@discussionsexegetica.com</code> as your sender
           </p>
         </div>
@@ -554,7 +576,7 @@ function DigestTab({ token }) {
         <p style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:'#fff', marginBottom:6 }}>⚙️ Automate weekly sends</p>
         <p style={{ fontFamily:F.body, fontSize:12.5, color:'rgba(255,255,255,0.55)', lineHeight:1.6 }}>
           Add a GitHub Actions scheduled job to send automatically every Sunday at 7am UTC.<br/>
-          Cron: <code style={{ background:'#fff', padding:'1px 5px', borderRadius:3 }}>0 7 * * 0</code> → POST to <code style={{ background:'#fff', padding:'1px 5px', borderRadius:3 }}>/api/admin/digest</code> with header <code>X-Cron-Secret</code>
+          Cron: <code style={{ background:'rgba(255,255,255,0.06)', padding:'1px 5px', borderRadius:3 }}>0 7 * * 0</code> → POST to <code style={{ background:'rgba(255,255,255,0.06)', padding:'1px 5px', borderRadius:3 }}>/api/admin/digest</code> with header <code>X-Cron-Secret</code>
         </p>
       </div>
     </Panel>
@@ -661,16 +683,16 @@ function ContentManagerTab({ token }) {
 
       {/* Items list */}
       {loading ? <p style={{ fontFamily:F.body, color:C.muted }}>Loading…</p> : items.length === 0
-        ? <p style={{ fontFamily:F.body, color:C.muted, fontSize:14 }}>No {type} found.</p>
+        ? <p style={{ fontFamily:F.body, color:'rgba(255,255,255,0.6)', fontSize:14 }}>No {type} found.</p>
         : (
           <div style={{ display:'grid', gap:8 }}>
             {items.map(item => (
               <div key={item.id} style={{ padding:'12px 14px', background:'rgba(255,255,255,0.06)', borderRadius:9, border:`1px solid ${C.border}`, display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12 }}>
                 <div style={{ flex:1, minWidth:0 }}>
-                  <p style={{ fontFamily:F.body, fontSize:13.5, fontWeight:600, color:C.navy, margin:'0 0 2px', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                  <p style={{ fontFamily:F.body, fontSize:13.5, fontWeight:600, color:'#fff', margin:'0 0 2px', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
                     {getLabel(item)}
                   </p>
-                  <p style={{ fontFamily:F.body, fontSize:11.5, color:C.muted, margin:0 }}>
+                  <p style={{ fontFamily:F.body, fontSize:11.5, color:'rgba(255,255,255,0.6)', margin:0 }}>
                     {item.display_name && `By ${item.display_name} · `}
                     {item.reply_count !== undefined && `${item.reply_count} replies · `}
                     {item.thread_count !== undefined && `${item.thread_count} threads · `}
@@ -678,7 +700,7 @@ function ContentManagerTab({ token }) {
                     {item.created_at && new Date(item.created_at).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'})}
                   </p>
                   {type === 'replies' && item.thread_title && (
-                    <p style={{ fontFamily:F.body, fontSize:11, color:C.muted, margin:'3px 0 0' }}>In: {item.thread_title}</p>
+                    <p style={{ fontFamily:F.body, fontSize:11, color:'rgba(255,255,255,0.6)', margin:'3px 0 0' }}>In: {item.thread_title}</p>
                   )}
                 </div>
                 <button
