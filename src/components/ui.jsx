@@ -41,7 +41,7 @@ export function BadgeTag({ label }) {
 
 export function Btn({ children, onClick, variant='primary', style:ex={}, disabled }) {
   const s = {
-    primary:{ background:'linear-gradient(135deg,#1B2A4A,#2E4270)', color:'var(--fg-100)', border:'1px solid var(--fg-1)' },
+    primary:{ background:'linear-gradient(135deg,var(--surface-elevated-b),var(--surface-solid-b))', color:'var(--fg-100)', border:'1px solid var(--fg-1)' },
     gold:   { background:`linear-gradient(135deg,${C.gold},var(--c-gold-light))`, color:'#0a0f1e', border:'none' },
     outline:{ background:'transparent', color:C.gold, border:`1.5px solid ${C.gold}` },
     ghost:  { background:'var(--fg-06)', color:'var(--fg-6)', border:'1px solid var(--fg-1)' }

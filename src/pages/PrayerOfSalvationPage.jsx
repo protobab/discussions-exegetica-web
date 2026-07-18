@@ -62,7 +62,7 @@ export default function PrayerOfSalvationPage() {
   const isPrayer = current.id === 'pray'
 
   return (
-    <div style={{ minHeight: '100vh', background: `linear-gradient(to bottom, #1B2A4A 0%, #0d1b2e 60%, #1B2A4A 100%)`, position: 'relative', overflow: 'hidden' }}>
+    <div style={{ minHeight: '100vh', background: `linear-gradient(to bottom, var(--surface-elevated-b) 0%, var(--ov-92) 60%, var(--surface-elevated-b) 100%)`, position: 'relative', overflow: 'hidden' }}>
 
       {/* Decorative rings */}
       {[280, 460, 640].map((r, i) => (

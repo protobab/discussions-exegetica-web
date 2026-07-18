@@ -195,7 +195,7 @@ export function DemoArmchair() {
   return (
     <div>
       <div style={{ borderRadius: 12, overflow: 'hidden', marginBottom: 12, position: 'relative' }}>
-        <div style={{ background: 'linear-gradient(135deg, #0a1628, #1a2a4a)', padding: '20px', textAlign: 'center' }}>
+        <div style={{ background: 'linear-gradient(135deg, var(--surface-elevated-b), var(--surface-solid-b))', padding: '20px', textAlign: 'center' }}>
           <p style={{ fontFamily: F.body, fontSize: 10, color: GOLD, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Upcoming Session</p>
           <p style={{ fontFamily: F.display, fontSize: 16, fontWeight: 700, color: 'var(--fg-100)', marginBottom: 4 }}>The Holiness of God</p>
           <p style={{ fontFamily: F.body, fontSize: 12, color: 'var(--fg-55)' }}>with Hubby · Tuesday 21 July, 14:00</p>

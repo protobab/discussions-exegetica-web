@@ -333,6 +333,8 @@ export default function Layout() {
           </>
         )}
       </nav>
+
+      <AmbientPlayer/>
     </div>
   )
 }

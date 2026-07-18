@@ -7,6 +7,7 @@ import { usePageTitle } from '../lib/usePageTitle.js'
 import ImagePicker from '../components/ImagePicker.jsx'
 
 const FB = 'https://images.unsplash.com/photo-1490127252417-7c393f993ee4?w=1200&q=60'
+const ADMIN_USERS = ['eki']
 
 export default function ArmchairPostPage() {
   const { id } = useParams()
@@ -59,7 +60,7 @@ export default function ArmchairPostPage() {
         ) : (
           <h1 style={{ fontFamily:F.display, fontSize:26, fontWeight:700, color:'var(--fg-100)', lineHeight:1.3, margin:0 }}>{post.title}</h1>
         )}
-        {user && post.author_id === user.id && !editing && (
+        {user && (String(post.author_id) === String(user.id) || ADMIN_USERS.includes(user.username)) && !editing && (
           <button onClick={()=>{ setEditTitle(post.title); setEditBody(post.body); setEditCoverImage(post.cover_image||''); setEditing(true) }}
             style={{ background:'none', border:'1px solid var(--fg-15)', borderRadius:7, color:'var(--fg-5)', fontFamily:F.body, fontSize:12.5, cursor:'pointer', padding:'6px 12px', whiteSpace:'nowrap', flexShrink:0 }}>
             ✏️ Edit
