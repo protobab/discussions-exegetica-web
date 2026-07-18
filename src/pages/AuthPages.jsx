@@ -7,11 +7,11 @@ import { usePageTitle } from '../lib/usePageTitle.js'
 
 function AuthShell({ title, sub, children }) {
   return (
-    <div style={{ minHeight:'80vh', display:'flex', alignItems:'center', justifyContent:'center', padding:'40px 20px', background:'#0a0f1e' }}>
-      <div style={{ background:'rgba(17,24,39,0.95)', backdropFilter:'blur(16px)', border:'1px solid rgba(201,168,76,0.2)', borderRadius:16, padding:'38px 32px', width:'100%', maxWidth:420, boxShadow:'0 8px 40px rgba(0,0,0,0.5)' }}>
+    <div style={{ minHeight:'80vh', display:'flex', alignItems:'center', justifyContent:'center', padding:'40px 20px', background:'var(--bg-page)' }}>
+      <div style={{ background:'var(--surface-authcard)', backdropFilter:'blur(16px)', border:'1px solid rgba(201,168,76,0.2)', borderRadius:16, padding:'38px 32px', width:'100%', maxWidth:420, boxShadow:'0 8px 40px rgba(0,0,0,0.5)' }}>
         <div style={{ display:'flex', justifyContent:'center', marginBottom:18 }}><Logo size={38}/></div>
-        <h1 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:'#fff', textAlign:'center', marginBottom:6 }}>{title}</h1>
-        <p style={{ fontFamily:F.body, fontSize:13.5, color:'rgba(255,255,255,0.5)', textAlign:'center', marginBottom:24 }}>{sub}</p>
+        <h1 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:'var(--fg-100)', textAlign:'center', marginBottom:6 }}>{title}</h1>
+        <p style={{ fontFamily:F.body, fontSize:13.5, color:'var(--fg-5)', textAlign:'center', marginBottom:24 }}>{sub}</p>
         {children}
       </div>
     </div>
@@ -21,8 +21,8 @@ function AuthShell({ title, sub, children }) {
 function Field({ label, type='text', value, onChange, placeholder }) {
   return (
     <div style={{ marginBottom:14 }}>
-      <label style={{ fontFamily:F.body, fontSize:13, fontWeight:600, color:'#E8E0D0', display:'block', marginBottom:5 }}>{label}</label>
-      <input type={type} value={value} onChange={onChange} placeholder={placeholder} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:9, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', boxSizing:'border-box', background:'rgba(255,255,255,0.06)', color:'#E8E0D0' }}/>
+      <label style={{ fontFamily:F.body, fontSize:13, fontWeight:600, color:'var(--c-text)', display:'block', marginBottom:5 }}>{label}</label>
+      <input type={type} value={value} onChange={onChange} placeholder={placeholder} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:9, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', boxSizing:'border-box', background:'var(--fg-06)', color:'var(--c-text)' }}/>
     </div>
   )
 }
@@ -66,8 +66,8 @@ export function RegisterPage() {
       <Field label="Email" type="email" value={form.email} onChange={set('email')} placeholder="you@example.com"/>
       <Field label="Password" type="password" value={form.password} onChange={set('password')} placeholder="At least 8 characters"/>
       <Btn variant="gold" onClick={submit} disabled={loading} style={{ width:'100%', padding:'12px', fontSize:15, marginTop:6 }}>{loading?'Creating account…':'Create free account'}</Btn>
-      <p style={{ fontFamily:F.body, fontSize:13, color:'rgba(255,255,255,0.6)', textAlign:'center', marginTop:14 }}>Already a member? <Link to="/login" style={{ color:C.gold, fontWeight:600 }}>Sign in</Link></p>
-      <p style={{ fontFamily:F.body, fontSize:11.5, color:'rgba(255,255,255,0.3)', textAlign:'center', marginTop:12, lineHeight:1.6 }}>By joining you agree to our <Link to="/terms" style={{ color:C.gold }}>Terms of Use</Link> and <Link to="/privacy" style={{ color:C.gold }}>Privacy Policy</Link></p>
+      <p style={{ fontFamily:F.body, fontSize:13, color:'var(--fg-6)', textAlign:'center', marginTop:14 }}>Already a member? <Link to="/login" style={{ color:C.gold, fontWeight:600 }}>Sign in</Link></p>
+      <p style={{ fontFamily:F.body, fontSize:11.5, color:'var(--fg-3)', textAlign:'center', marginTop:12, lineHeight:1.6 }}>By joining you agree to our <Link to="/terms" style={{ color:C.gold }}>Terms of Use</Link> and <Link to="/privacy" style={{ color:C.gold }}>Privacy Policy</Link></p>
     </AuthShell>
   )
 }
@@ -91,7 +91,7 @@ export function LoginPage() {
       <Field label="Email" type="email" value={form.email} onChange={set('email')} placeholder="you@example.com"/>
       <Field label="Password" type="password" value={form.password} onChange={set('password')} placeholder="Your password"/>
       <Btn variant="gold" onClick={submit} disabled={loading} style={{ width:'100%', padding:'12px', fontSize:15, marginTop:6 }}>{loading?'Signing in…':'Sign in'}</Btn>
-      <p style={{ fontFamily:F.body, fontSize:13, color:'rgba(255,255,255,0.6)', textAlign:'center', marginTop:14 }}>New here? <Link to="/register" style={{ color:C.gold, fontWeight:600 }}>Join free</Link></p>
+      <p style={{ fontFamily:F.body, fontSize:13, color:'var(--fg-6)', textAlign:'center', marginTop:14 }}>New here? <Link to="/register" style={{ color:C.gold, fontWeight:600 }}>Join free</Link></p>
     </AuthShell>
   )
 }
@@ -123,7 +123,7 @@ export function ForgotPasswordPage() {
         <div style={{ textAlign:'center' }}>
           <p style={{ fontFamily:F.body, fontSize:32, marginBottom:12 }}>📨</p>
           <p style={{ fontFamily:F.body, fontSize:15, color:'#4ade80', marginBottom:8 }}>Reset link sent!</p>
-          <p style={{ fontFamily:F.body, fontSize:13.5, color:'rgba(255,255,255,0.5)', marginBottom:20, lineHeight:1.6 }}>
+          <p style={{ fontFamily:F.body, fontSize:13.5, color:'var(--fg-5)', marginBottom:20, lineHeight:1.6 }}>
             Check your inbox for a link from noreply@discussionsexegetica.com — it expires in 1 hour.
           </p>
           <Link to="/login" style={{ color:C.gold, fontFamily:F.body, fontSize:13.5, fontWeight:600 }}>← Back to sign in</Link>
@@ -133,11 +133,11 @@ export function ForgotPasswordPage() {
           {msg && <div style={{ background:'rgba(220,38,38,0.15)', border:'1px solid rgba(220,38,38,0.4)', borderRadius:8, padding:'10px 14px', fontFamily:F.body, fontSize:13, color:'#f87171', marginBottom:14 }}>{msg}</div>}
           <input type="email" value={email} onChange={e=>setEmail(e.target.value)} onKeyDown={e=>e.key==='Enter'&&submit()}
             placeholder="Your email address"
-            style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:9, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', boxSizing:'border-box', background:'rgba(255,255,255,0.06)', color:'#E8E0D0', marginBottom:14 }}/>
-          <button onClick={submit} disabled={loading} style={{ width:'100%', background:`linear-gradient(135deg,${C.gold},#E8C97A)`, color:'#E8E0D0', border:'none', borderRadius:10, padding:'12px', fontFamily:F.body, fontSize:14.5, fontWeight:700, cursor:'pointer', opacity:loading?0.7:1, marginBottom:14 }}>
+            style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:9, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', boxSizing:'border-box', background:'var(--fg-06)', color:'var(--c-text)', marginBottom:14 }}/>
+          <button onClick={submit} disabled={loading} style={{ width:'100%', background:`linear-gradient(135deg,${C.gold},var(--c-gold-light))`, color:'#0a0f1e', border:'none', borderRadius:10, padding:'12px', fontFamily:F.body, fontSize:14.5, fontWeight:700, cursor:'pointer', opacity:loading?0.7:1, marginBottom:14 }}>
             {loading ? 'Sending…' : 'Send Reset Link'}
           </button>
-          <p style={{ fontFamily:F.body, fontSize:12.5, color:'rgba(255,255,255,0.35)', textAlign:'center' }}>
+          <p style={{ fontFamily:F.body, fontSize:12.5, color:'var(--fg-35)', textAlign:'center' }}>
             <Link to="/login" style={{ color:C.gold }}>← Back to sign in</Link>
           </p>
         </>
@@ -175,15 +175,15 @@ export function ChangePasswordPage() {
       {['current','next','confirm'].map((k,i)=>(
         <input key={k} type="password" value={form[k]} onChange={e=>setForm(f=>({...f,[k]:e.target.value}))}
           placeholder={['Current password','New password','Confirm new password'][i]}
-          style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:9, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', boxSizing:'border-box', background:'rgba(255,255,255,0.06)', color:'#E8E0D0', marginBottom:12 }}/>
+          style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:9, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', boxSizing:'border-box', background:'var(--fg-06)', color:'var(--c-text)', marginBottom:12 }}/>
       ))}
-      <p style={{ fontFamily:F.body, fontSize:11.5, color:'rgba(255,255,255,0.35)', marginBottom:16, lineHeight:1.6 }}>
+      <p style={{ fontFamily:F.body, fontSize:11.5, color:'var(--fg-35)', marginBottom:16, lineHeight:1.6 }}>
         At least 8 characters, one capital letter, one number or special character
       </p>
-      <button onClick={submit} disabled={loading} style={{ width:'100%', background:`linear-gradient(135deg,${C.gold},#E8C97A)`, color:'#E8E0D0', border:'none', borderRadius:10, padding:'12px', fontFamily:F.body, fontSize:14.5, fontWeight:700, cursor:'pointer', opacity:loading?0.7:1, marginBottom:14 }}>
+      <button onClick={submit} disabled={loading} style={{ width:'100%', background:`linear-gradient(135deg,${C.gold},var(--c-gold-light))`, color:'#0a0f1e', border:'none', borderRadius:10, padding:'12px', fontFamily:F.body, fontSize:14.5, fontWeight:700, cursor:'pointer', opacity:loading?0.7:1, marginBottom:14 }}>
         {loading ? 'Updating…' : 'Change Password'}
       </button>
-      <p style={{ fontFamily:F.body, fontSize:12.5, color:'rgba(255,255,255,0.35)', textAlign:'center' }}>
+      <p style={{ fontFamily:F.body, fontSize:12.5, color:'var(--fg-35)', textAlign:'center' }}>
         <button onClick={()=>navigate(-1)} style={{ background:'none', border:'none', color:C.gold, fontFamily:F.body, fontSize:12.5, cursor:'pointer' }}>← Cancel</button>
       </p>
     </AuthShell>

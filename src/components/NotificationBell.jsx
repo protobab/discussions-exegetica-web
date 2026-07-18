@@ -36,19 +36,19 @@ export default function NotificationBell() {
     <div ref={ref} style={{ position:'relative' }}>
       <button onClick={openPanel} style={{ background:'none', border:'none', cursor:'pointer', position:'relative', padding:6 }}>
         <span style={{ fontSize:18 }}>🔔</span>
-        {unread > 0 && <span style={{ position:'absolute', top:0, right:0, background:'#EF4444', color:'#fff', borderRadius:'50%', width:16, height:16, fontSize:10, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:F.body }}>{unread}</span>}
+        {unread > 0 && <span style={{ position:'absolute', top:0, right:0, background:'#EF4444', color:'var(--fg-100)', borderRadius:'50%', width:16, height:16, fontSize:10, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:F.body }}>{unread}</span>}
       </button>
       {open && (
-        <div style={{ position:'absolute', top:'110%', right:0, width:300, background:'#fff', borderRadius:10, boxShadow:'0 8px 32px rgba(0,0,0,0.18)', border:`1px solid ${C.border}`, zIndex:200, maxHeight:360, overflowY:'auto' }}>
-          <div style={{ padding:'12px 16px', borderBottom:`1px solid ${C.border}` }}>
+        <div style={{ position:'absolute', top:'110%', right:0, width:300, background:'#fff', borderRadius:10, boxShadow:'0 8px 32px rgba(0,0,0,0.18)', border:'1px solid #E5E0D5', zIndex:200, maxHeight:360, overflowY:'auto' }}>
+          <div style={{ padding:'12px 16px', borderBottom:'1px solid #E5E0D5' }}>
             <span style={{ fontFamily:F.display, fontSize:14, fontWeight:700, color:C.navy }}>Notifications</span>
           </div>
           {notifs.length === 0
-            ? <p style={{ fontFamily:F.body, fontSize:13, color:C.muted, padding:'20px 16px', textAlign:'center' }}>Nothing yet — replies to your posts will appear here.</p>
+            ? <p style={{ fontFamily:F.body, fontSize:13, color:'#6b6357', padding:'20px 16px', textAlign:'center' }}>Nothing yet — replies to your posts will appear here.</p>
             : notifs.map(n => (
-              <Link key={n.id} to={n.thread_id?`/thread/${n.thread_id}`:'#'} onClick={()=>setOpen(false)} style={{ display:'block', padding:'12px 16px', borderBottom:`1px solid ${C.border}`, background:n.is_read?'#fff':C.mist }}>
-                <p style={{ fontFamily:F.body, fontSize:13, color:C.text, margin:0, lineHeight:1.5 }}>{n.message}</p>
-                <span style={{ fontFamily:F.body, fontSize:11, color:C.muted }}>{new Date(n.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</span>
+              <Link key={n.id} to={n.thread_id?`/thread/${n.thread_id}`:'#'} onClick={()=>setOpen(false)} style={{ display:'block', padding:'12px 16px', borderBottom:'1px solid #E5E0D5', background:n.is_read?'#fff':C.mist }}>
+                <p style={{ fontFamily:F.body, fontSize:13, color:'#2C2416', margin:0, lineHeight:1.5 }}>{n.message}</p>
+                <span style={{ fontFamily:F.body, fontSize:11, color:'#8a7f6a' }}>{new Date(n.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</span>
               </Link>
             ))
           }

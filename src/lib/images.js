@@ -28,9 +28,9 @@ export const IMAGES = {
 }
 
 export const OVERLAY = {
-  hero: 'rgba(27,42,74,0.72)',
-  content: 'rgba(27,42,74,0.88)',
-  groups: 'rgba(30,58,47,0.78)',
-  daily: 'rgba(15,25,50,0.85)',
-  bible: 'rgba(10,20,35,0.92)',
+  hero: 'var(--ov-72)',
+  content: 'var(--ov-88)',
+  groups: 'var(--ov-78)',
+  daily: 'var(--ov-85)',
+  bible: 'var(--ov-92)',
 }

@@ -64,14 +64,14 @@ export function ForumPage() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 22, flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <h1 style={{ fontFamily: F.display, fontSize: 26, fontWeight: 700, color: '#fff', marginBottom: 4 }}>The Forum</h1>
-          <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.55)' }}>
+          <h1 style={{ fontFamily: F.display, fontSize: 26, fontWeight: 700, color: 'var(--fg-100)', marginBottom: 4 }}>The Forum</h1>
+          <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'var(--fg-55)' }}>
             {filtered.length} discussion{filtered.length !== 1 ? 's' : ''} · Join in, ask freely, share deeply
           </p>
         </div>
         {user
           ? <Btn variant="gold" onClick={() => navigate('/new-thread')}>+ Start a Discussion</Btn>
-          : <Link to="/register" style={{ background: C.gold, color: '#E8E0D0', borderRadius: 8, padding: '9px 18px', fontFamily: F.body, fontSize: 13, fontWeight: 700 }}>Join to Post</Link>
+          : <Link to="/register" style={{ background: C.gold, color: '#0a0f1e', borderRadius: 8, padding: '9px 18px', fontFamily: F.body, fontSize: 13, fontWeight: 700 }}>Join to Post</Link>
         }
       </div>
 
@@ -80,9 +80,9 @@ export function ForumPage() {
         <input
           value={search} onChange={e => { setSearch(e.target.value); setPage(1) }}
           placeholder="Search discussions…"
-          style={{ flex: 1, minWidth: 200, border: '1px solid rgba(255,255,255,0.15)', borderRadius: 8, padding: '9px 14px', fontFamily: F.body, fontSize: 14, outline: 'none', background: 'rgba(255,255,255,0.06)', boxSizing: 'border-box' }}
+          style={{ flex: 1, minWidth: 200, border: '1px solid var(--fg-15)', borderRadius: 8, padding: '9px 14px', fontFamily: F.body, fontSize: 14, outline: 'none', background: 'var(--fg-06)', boxSizing: 'border-box' }}
         />
-        <select value={sort} onChange={e => setSort(e.target.value)} style={{ border: '1px solid rgba(255,255,255,0.15)', borderRadius: 8, padding: '9px 12px', fontFamily: F.body, fontSize: 13.5, outline: 'none', background: '#fff' }}>
+        <select value={sort} onChange={e => setSort(e.target.value)} style={{ border: '1px solid var(--fg-15)', borderRadius: 8, padding: '9px 12px', fontFamily: F.body, fontSize: 13.5, outline: 'none', background: '#fff' }}>
           <option value="recent">Most Recent</option>
           <option value="popular">Most Popular</option>
           <option value="unanswered">Unanswered</option>
@@ -103,7 +103,7 @@ export function ForumPage() {
           {/* Pinned threads */}
           {pinned.length > 0 && (
             <div style={{ marginBottom: 20 }}>
-              <p style={{ fontFamily: F.body, fontSize: 11.5, fontWeight: 700, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>📌 Featured</p>
+              <p style={{ fontFamily: F.body, fontSize: 11.5, fontWeight: 700, color: 'var(--fg-6)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>📌 Featured</p>
               <div style={{ display: 'grid', gap: 10 }}>
                 {pinned.map(t => <ThreadCard key={t.id} thread={t} view={view} onClick={() => navigate(`/thread/${t.id}`)} pinned/>)}
               </div>
@@ -114,7 +114,7 @@ export function ForumPage() {
           {paginated.length > 0
             ? (
               <>
-                {pinned.length > 0 && <p style={{ fontFamily: F.body, fontSize: 11.5, fontWeight: 700, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>All Discussions</p>}
+                {pinned.length > 0 && <p style={{ fontFamily: F.body, fontSize: 11.5, fontWeight: 700, color: 'var(--fg-6)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>All Discussions</p>}
                 <div style={{ display: view==='grid' ? 'grid' : 'grid', gridTemplateColumns: view==='grid' ? 'repeat(auto-fill,minmax(280px,1fr))' : '1fr', gap: view==='grid' ? 16 : 10 }}>
                   {paginated.map(t => <ThreadCard key={t.id} thread={t} view={view} onClick={() => navigate(`/thread/${t.id}`)}/>)}
                 </div>
@@ -122,20 +122,20 @@ export function ForumPage() {
                 {/* Pagination */}
                 {totalPages > 1 && (
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 28 }}>
-                    <button onClick={() => setPage(p => Math.max(1, p-1))} disabled={page === 1} style={{ border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.06)', borderRadius: 8, padding: '7px 14px', fontFamily: F.body, fontSize: 13, cursor: page === 1 ? 'not-allowed' : 'pointer', opacity: page === 1 ? 0.4 : 1 }}>← Prev</button>
+                    <button onClick={() => setPage(p => Math.max(1, p-1))} disabled={page === 1} style={{ border: '1px solid var(--fg-15)', background: 'var(--fg-06)', borderRadius: 8, padding: '7px 14px', fontFamily: F.body, fontSize: 13, cursor: page === 1 ? 'not-allowed' : 'pointer', opacity: page === 1 ? 0.4 : 1 }}>← Prev</button>
                     {Array.from({ length: totalPages }, (_, i) => i + 1).filter(p => p === 1 || p === totalPages || Math.abs(p - page) <= 1).map((p, i, arr) => (
                       <span key={p}>
-                        {i > 0 && arr[i-1] !== p - 1 && <span style={{ fontFamily: F.body, color: 'rgba(255,255,255,0.6)', padding: '0 4px' }}>…</span>}
-                        <button onClick={() => setPage(p)} style={{ border: `1.5px solid ${p === page ? C.navy : C.border}`, background: p === page ? C.navy : '#fff', color: p === page ? '#fff' : C.text, borderRadius: 8, padding: '7px 12px', fontFamily: F.body, fontSize: 13, cursor: 'pointer', minWidth: 36 }}>{p}</button>
+                        {i > 0 && arr[i-1] !== p - 1 && <span style={{ fontFamily: F.body, color: 'var(--fg-6)', padding: '0 4px' }}>…</span>}
+                        <button onClick={() => setPage(p)} style={{ border: `1.5px solid ${p === page ? '#0a0f1e' : '#D4C9AE'}`, background: p === page ? '#0a0f1e' : '#fff', color: p === page ? '#fff' : '#2C2416', borderRadius: 8, padding: '7px 12px', fontFamily: F.body, fontSize: 13, cursor: 'pointer', minWidth: 36 }}>{p}</button>
                       </span>
                     ))}
-                    <button onClick={() => setPage(p => Math.min(totalPages, p+1))} disabled={page === totalPages} style={{ border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.06)', borderRadius: 8, padding: '7px 14px', fontFamily: F.body, fontSize: 13, cursor: page === totalPages ? 'not-allowed' : 'pointer', opacity: page === totalPages ? 0.4 : 1 }}>Next →</button>
+                    <button onClick={() => setPage(p => Math.min(totalPages, p+1))} disabled={page === totalPages} style={{ border: '1px solid var(--fg-15)', background: 'var(--fg-06)', borderRadius: 8, padding: '7px 14px', fontFamily: F.body, fontSize: 13, cursor: page === totalPages ? 'not-allowed' : 'pointer', opacity: page === totalPages ? 0.4 : 1 }}>Next →</button>
                   </div>
                 )}
               </>
             )
             : (
-              <div style={{ textAlign: 'center', padding: '52px 0', color: 'rgba(255,255,255,0.6)', fontFamily: F.body }}>
+              <div style={{ textAlign: 'center', padding: '52px 0', color: 'var(--fg-6)', fontFamily: F.body }}>
                 {search ? `No results for "${search}"` : 'No discussions yet in this category.'}
                 <br/>
                 {user ? <Link to="/new-thread" style={{ color: C.gold, fontWeight: 600 }}>Start one →</Link>
@@ -172,8 +172,8 @@ function ThreadCard({ thread, onClick, pinned, view = 'list' }) {
   if (view === 'grid') {
     return (
       <div onClick={onClick} style={{
-        background: 'rgba(27,42,74,0.5)', backdropFilter:'blur(8px)', borderRadius: 12, overflow: 'hidden',
-        border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer',
+        background: 'var(--surface-card)', backdropFilter:'blur(8px)', borderRadius: 12, overflow: 'hidden',
+        border: '1px solid var(--fg-08)', cursor: 'pointer',
         transition: 'all 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.05)'
       }}
         onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)' }}
@@ -185,18 +185,18 @@ function ThreadCard({ thread, onClick, pinned, view = 'list' }) {
           <div style={{ display: 'flex', gap: 6, marginBottom: 8, alignItems: 'center' }}>
             <span style={{ background: cat.bg, color: cat.text, borderRadius: 5, padding: '2px 8px', fontSize: 10.5, fontFamily: F.body, fontWeight: 700 }}>{thread.cat_label}</span>
             {pinned && <span style={{ fontSize: 10.5, color: C.gold, fontWeight: 700 }}>📌</span>}
-            <span style={{ fontFamily: F.body, fontSize: 10.5, color: 'rgba(255,255,255,0.6)', marginLeft: 'auto' }}>{timeAgo(thread.created_at)}</span>
+            <span style={{ fontFamily: F.body, fontSize: 10.5, color: 'var(--fg-6)', marginLeft: 'auto' }}>{timeAgo(thread.created_at)}</span>
           </div>
-          <h3 style={{ fontFamily: F.display, fontSize: 15, fontWeight: 700, color: '#E8E0D0', margin: '0 0 6px', lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{thread.title}</h3>
-          <p style={{ fontFamily: F.body, fontSize: 12.5, color: 'rgba(255,255,255,0.6)', margin: '0 0 12px', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{thread.body?.slice(0, 120)}</p>
+          <h3 style={{ fontFamily: F.display, fontSize: 15, fontWeight: 700, color: 'var(--c-text)', margin: '0 0 6px', lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{thread.title}</h3>
+          <p style={{ fontFamily: F.body, fontSize: 12.5, color: 'var(--fg-6)', margin: '0 0 12px', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{thread.body?.slice(0, 120)}</p>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               <Avatar name={thread.display_name} color={thread.avatar_color} size={20}/>
-              <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'rgba(255,255,255,0.6)', maxWidth: 80, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{thread.display_name}</span>
+              <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'var(--fg-6)', maxWidth: 80, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{thread.display_name}</span>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
-              <span style={{ fontFamily: F.body, fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>💬 {thread.reply_count}</span>
-              <span style={{ fontFamily: F.body, fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>❤️ {thread.like_count}</span>
+              <span style={{ fontFamily: F.body, fontSize: 11, color: 'var(--fg-6)' }}>💬 {thread.reply_count}</span>
+              <span style={{ fontFamily: F.body, fontSize: 11, color: 'var(--fg-6)' }}>❤️ {thread.like_count}</span>
             </div>
           </div>
         </div>
@@ -207,8 +207,8 @@ function ThreadCard({ thread, onClick, pinned, view = 'list' }) {
   // List view (default)
   return (
     <div onClick={onClick} style={{
-      background: 'rgba(27,42,74,0.5)', backdropFilter:'blur(8px)', borderRadius: 10, overflow: 'hidden',
-      border: `1px solid ${pinned ? C.gold + '55' : 'rgba(255,255,255,0.08)'}`,
+      background: 'var(--surface-card)', backdropFilter:'blur(8px)', borderRadius: 10, overflow: 'hidden',
+      border: `1px solid ${pinned ? C.gold + '55' : 'var(--fg-08)'}`,
       cursor: 'pointer', transition: 'box-shadow 0.15s',
       display: 'grid', gridTemplateColumns: `4px 1fr`
     }}
@@ -220,10 +220,10 @@ function ThreadCard({ thread, onClick, pinned, view = 'list' }) {
         <div style={{ display: 'flex', gap: 8, marginBottom: 5, alignItems: 'center' }}>
           <span style={{ background: cat.bg, color: cat.text, borderRadius: 5, padding: '2px 8px', fontSize: 11, fontFamily: F.body, fontWeight: 700 }}>{thread.cat_label}</span>
           {pinned && <span style={{ fontSize: 11, color: C.gold, fontWeight: 700 }}>📌 Featured</span>}
-          <span style={{ fontFamily: F.body, fontSize: 11, color: 'rgba(255,255,255,0.6)', marginLeft: 'auto' }}>{timeAgo(thread.created_at)}</span>
+          <span style={{ fontFamily: F.body, fontSize: 11, color: 'var(--fg-6)', marginLeft: 'auto' }}>{timeAgo(thread.created_at)}</span>
         </div>
-        <h3 style={{ fontFamily: F.display, fontSize: 15.5, fontWeight: 700, color: '#E8E0D0', margin: '0 0 4px', lineHeight: 1.35 }}>{thread.title}</h3>
-        <p style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.6)', margin: '0 0 10px', lineHeight: 1.5 }}>{thread.body?.slice(0, 130)}…</p>
+        <h3 style={{ fontFamily: F.display, fontSize: 15.5, fontWeight: 700, color: 'var(--c-text)', margin: '0 0 4px', lineHeight: 1.35 }}>{thread.title}</h3>
+        <p style={{ fontFamily: F.body, fontSize: 13, color: 'var(--fg-6)', margin: '0 0 10px', lineHeight: 1.5 }}>{thread.body?.slice(0, 130)}…</p>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 6 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <Avatar name={thread.display_name} color={thread.avatar_color} size={20}/>
@@ -231,9 +231,9 @@ function ThreadCard({ thread, onClick, pinned, view = 'list' }) {
             <BadgeTag label={thread.badge}/>
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
-            <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'rgba(255,255,255,0.6)' }}>💬 {thread.reply_count}</span>
-            <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'rgba(255,255,255,0.6)' }}>👁 {thread.view_count}</span>
-            <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'rgba(255,255,255,0.6)' }}>❤️ {thread.like_count}</span>
+            <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'var(--fg-6)' }}>💬 {thread.reply_count}</span>
+            <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'var(--fg-6)' }}>👁 {thread.view_count}</span>
+            <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'var(--fg-6)' }}>❤️ {thread.like_count}</span>
           </div>
         </div>
       </div>
@@ -312,18 +312,18 @@ export function ThreadPage() {
   }
 
   if (loading) return <div style={{ maxWidth: 820, margin: '40px auto' }}><Spinner/></div>
-  if (!thread) return <div style={{ textAlign: 'center', padding: '80px', fontFamily: F.body, color: 'rgba(255,255,255,0.6)' }}>Not found. <Link to="/forum" style={{ color: C.gold }}>Back to forum</Link></div>
+  if (!thread) return <div style={{ textAlign: 'center', padding: '80px', fontFamily: F.body, color: 'var(--fg-6)' }}>Not found. <Link to="/forum" style={{ color: C.gold }}>Back to forum</Link></div>
 
   return (
     <div style={{ maxWidth: 820, margin: '0 auto', padding: '32px 20px 60px' }}>
-      <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: '#E8C97A', fontFamily: F.body, fontSize: 13.5, fontWeight: 600, cursor: 'pointer', marginBottom: 22, padding: 0 }}>
+      <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: 'var(--c-gold-light)', fontFamily: F.body, fontSize: 13.5, fontWeight: 600, cursor: 'pointer', marginBottom: 22, padding: 0 }}>
         ← Back
       </button>
 
       {/* Thread */}
-      <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 12, padding: '24px 24px', border: '1px solid rgba(255,255,255,0.12)', marginBottom: 20 }}>
+      <div style={{ background: 'var(--fg-06)', borderRadius: 12, padding: '24px 24px', border: '1px solid var(--fg-12)', marginBottom: 20 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 }}>
-          <span style={{ background: 'rgba(255,255,255,0.05)', color: '#E8C97A', borderRadius: 6, padding: '2px 9px', fontSize: 11, fontFamily: F.body, fontWeight: 600 }}>
+          <span style={{ background: 'var(--fg-05)', color: 'var(--c-gold-light)', borderRadius: 6, padding: '2px 9px', fontSize: 11, fontFamily: F.body, fontWeight: 600 }}>
             {thread.cat_label || 'Discussion'}
           </span>
           <ShareButton
@@ -333,7 +333,7 @@ export function ThreadPage() {
           />
         </div>
 
-        <h1 style={{ fontFamily: F.display, fontSize: 22, fontWeight: 700, color: '#E8E0D0', margin: '0 0 16px', lineHeight: 1.3 }}>
+        <h1 style={{ fontFamily: F.display, fontSize: 22, fontWeight: 700, color: 'var(--c-text)', margin: '0 0 16px', lineHeight: 1.3 }}>
           {thread.title}
         </h1>
 
@@ -341,27 +341,27 @@ export function ThreadPage() {
           <Avatar name={thread.display_name} color={thread.avatar_color} size={34}/>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-              <Link to={`/profile/${thread.username}`} style={{ fontFamily: F.body, fontSize: 13.5, fontWeight: 600, color: '#E8E0D0' }}>{thread.display_name}</Link>
+              <Link to={`/profile/${thread.username}`} style={{ fontFamily: F.body, fontSize: 13.5, fontWeight: 600, color: 'var(--c-text)' }}>{thread.display_name}</Link>
               <BadgeTag label={thread.badge}/>
             </div>
-            <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'rgba(255,255,255,0.6)' }}>
+            <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'var(--fg-6)' }}>
               {new Date(thread.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
             </span>
           </div>
         </div>
 
-        <div style={{ fontFamily: F.body, fontSize: 15.5, color: '#E8E0D0', lineHeight: 1.85, whiteSpace: 'pre-wrap' }}>
+        <div style={{ fontFamily: F.body, fontSize: 15.5, color: 'var(--c-text)', lineHeight: 1.85, whiteSpace: 'pre-wrap' }}>
           {thread.body}
         </div>
       </div>
 
       {/* Replies header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '24px 0 14px' }}>
-        <h2 style={{ fontFamily: F.display, fontSize: 17, fontWeight: 700, color: '#E8E0D0' }}>
+        <h2 style={{ fontFamily: F.display, fontSize: 17, fontWeight: 700, color: 'var(--c-text)' }}>
           {replies.length} {replies.length === 1 ? 'Reply' : 'Replies'}
         </h2>
         {replies.length > 0 && (
-          <span style={{ fontFamily: F.body, fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>
+          <span style={{ fontFamily: F.body, fontSize: 12, color: 'var(--fg-6)' }}>
             {thread.view_count} views · {thread.like_count} likes
           </span>
         )}
@@ -369,28 +369,28 @@ export function ThreadPage() {
 
       {/* Replies */}
       {replies.map((r, i) => (
-        <div key={r.id} style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 10, padding: '16px 20px', marginBottom: 10, border: '1px solid rgba(255,255,255,0.12)' }}>
+        <div key={r.id} style={{ background: 'var(--fg-06)', borderRadius: 10, padding: '16px 20px', marginBottom: 10, border: '1px solid var(--fg-12)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
             <Avatar name={r.display_name} color={r.avatar_color} size={28}/>
             <span style={{ fontFamily: F.body, fontSize: 13, fontWeight: 600 }}>{r.display_name}</span>
             <BadgeTag label={r.badge}/>
-            <span style={{ fontFamily: F.body, fontSize: 11, color: 'rgba(255,255,255,0.6)', marginLeft: 'auto' }}>
+            <span style={{ fontFamily: F.body, fontSize: 11, color: 'var(--fg-6)', marginLeft: 'auto' }}>
               {new Date(r.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
             </span>
           </div>
-          <p style={{ fontFamily: F.body, fontSize: 14.5, color: '#E8E0D0', lineHeight: 1.75, whiteSpace: 'pre-wrap' }}>{r.body}</p>
+          <p style={{ fontFamily: F.body, fontSize: 14.5, color: 'var(--c-text)', lineHeight: 1.75, whiteSpace: 'pre-wrap' }}>{r.body}</p>
         </div>
       ))}
 
       {/* Reply box */}
-      <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 12, padding: '20px 22px', border: '1px solid rgba(255,255,255,0.12)', marginTop: 22 }}>
-        <p style={{ fontFamily: F.display, fontSize: 15, fontWeight: 700, color: '#E8E0D0', marginBottom: 14 }}>Add your voice</p>
+      <div style={{ background: 'var(--fg-06)', borderRadius: 12, padding: '20px 22px', border: '1px solid var(--fg-12)', marginTop: 22 }}>
+        <p style={{ fontFamily: F.display, fontSize: 15, fontWeight: 700, color: 'var(--c-text)', marginBottom: 14 }}>Add your voice</p>
         {!user
-          ? <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.55)' }}><Link to="/login" style={{ color: C.gold, fontWeight: 600 }}>Sign in</Link> or <Link to="/register" style={{ color: C.gold, fontWeight: 600 }}>join free</Link> to reply.</p>
+          ? <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'var(--fg-55)' }}><Link to="/login" style={{ color: C.gold, fontWeight: 600 }}>Sign in</Link> or <Link to="/register" style={{ color: C.gold, fontWeight: 600 }}>join free</Link> to reply.</p>
           : <>
               {error && <p style={{ color: '#DC2626', fontFamily: F.body, fontSize: 13, marginBottom: 10 }}>{error}</p>}
               <textarea value={body} onChange={e => setBody(e.target.value)} placeholder="Share your reflection, question, or insight…" rows={4}
-                style={{ width: '100%', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 8, padding: '10px 13px', fontFamily: F.body, fontSize: 14, resize: 'vertical', outline: 'none', marginBottom: 10, boxSizing: 'border-box', lineHeight: 1.65 }}
+                style={{ width: '100%', border: '1px solid var(--fg-15)', borderRadius: 8, padding: '10px 13px', fontFamily: F.body, fontSize: 14, resize: 'vertical', outline: 'none', marginBottom: 10, boxSizing: 'border-box', lineHeight: 1.65 }}
               />
               <Btn onClick={post} disabled={posting || !body.trim()}>{posting ? 'Posting…' : 'Post Reply'}</Btn>
             </>
@@ -410,7 +410,7 @@ export function NewThreadPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  if (!user) return <div style={{ textAlign: 'center', padding: '80px 24px', fontFamily: F.body, color: 'rgba(255,255,255,0.6)' }}>Please <Link to="/login" style={{ color: C.gold, fontWeight: 600 }}>sign in</Link> to start a discussion.</div>
+  if (!user) return <div style={{ textAlign: 'center', padding: '80px 24px', fontFamily: F.body, color: 'var(--fg-6)' }}>Please <Link to="/login" style={{ color: C.gold, fontWeight: 600 }}>sign in</Link> to start a discussion.</div>
 
   const submit = async () => {
     if (!form.title.trim() || !form.body.trim() || !form.category_slug) return setError('Please fill in all fields and choose a category.')
@@ -423,30 +423,30 @@ export function NewThreadPage() {
 
   return (
     <div style={{ maxWidth: 720, margin: '36px auto', padding: '0 20px 60px' }}>
-      <button onClick={() => navigate('/forum')} style={{ background: 'none', border: 'none', color: '#E8C97A', fontFamily: F.body, fontSize: 13.5, fontWeight: 600, cursor: 'pointer', marginBottom: 24, padding: 0 }}>← Back to Forum</button>
-      <h1 style={{ fontFamily: F.display, fontSize: 24, fontWeight: 700, color: '#E8E0D0', marginBottom: 6 }}>Start a Discussion</h1>
-      <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.55)', marginBottom: 24 }}>Ask a question, share an insight, or open a passage for study. All perspectives welcome.</p>
+      <button onClick={() => navigate('/forum')} style={{ background: 'none', border: 'none', color: 'var(--c-gold-light)', fontFamily: F.body, fontSize: 13.5, fontWeight: 600, cursor: 'pointer', marginBottom: 24, padding: 0 }}>← Back to Forum</button>
+      <h1 style={{ fontFamily: F.display, fontSize: 24, fontWeight: 700, color: 'var(--c-text)', marginBottom: 6 }}>Start a Discussion</h1>
+      <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'var(--fg-55)', marginBottom: 24 }}>Ask a question, share an insight, or open a passage for study. All perspectives welcome.</p>
       {error && <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 8, padding: '10px 14px', fontFamily: F.body, fontSize: 13, color: '#DC2626', marginBottom: 16 }}>{error}</div>}
       <div style={{ marginBottom: 18 }}>
-        <label style={{ fontFamily: F.body, fontSize: 13, fontWeight: 600, color: '#E8E0D0', display: 'block', marginBottom: 8 }}>Category *</label>
+        <label style={{ fontFamily: F.body, fontSize: 13, fontWeight: 600, color: 'var(--c-text)', display: 'block', marginBottom: 8 }}>Category *</label>
         <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
           {ALL_CATS.filter(c => c.slug !== 'all').map(cat => (
             <button key={cat.slug} onClick={() => setForm(f => ({ ...f, category_slug: cat.slug }))}
-              style={{ background: form.category_slug === cat.slug ? C.gold : 'rgba(255,255,255,0.08)', color: form.category_slug === cat.slug ? '#0a0f1e' : C.text, border: `1.5px solid ${form.category_slug === cat.slug ? C.gold : 'rgba(255,255,255,0.15)'}`, borderRadius: 20, padding: '6px 14px', fontFamily: F.body, fontSize: 12.5, cursor: 'pointer', fontWeight: form.category_slug === cat.slug ? 700 : 400 }}>
+              style={{ background: form.category_slug === cat.slug ? C.gold : 'var(--fg-08)', color: form.category_slug === cat.slug ? '#0a0f1e' : C.text, border: `1.5px solid ${form.category_slug === cat.slug ? C.gold : 'var(--fg-15)'}`, borderRadius: 20, padding: '6px 14px', fontFamily: F.body, fontSize: 12.5, cursor: 'pointer', fontWeight: form.category_slug === cat.slug ? 700 : 400 }}>
               {cat.icon} {cat.label}
             </button>
           ))}
         </div>
       </div>
       <div style={{ marginBottom: 16 }}>
-        <label style={{ fontFamily: F.body, fontSize: 13, fontWeight: 600, color: '#E8E0D0', display: 'block', marginBottom: 6 }}>Title *</label>
+        <label style={{ fontFamily: F.body, fontSize: 13, fontWeight: 600, color: 'var(--c-text)', display: 'block', marginBottom: 6 }}>Title *</label>
         <input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g. What does 'logos' really mean in John 1:1?" maxLength={200}
-          style={{ width: '100%', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 8, padding: '10px 13px', fontFamily: F.body, fontSize: 14, outline: 'none', boxSizing: 'border-box' }}/>
+          style={{ width: '100%', border: '1px solid var(--fg-15)', borderRadius: 8, padding: '10px 13px', fontFamily: F.body, fontSize: 14, outline: 'none', boxSizing: 'border-box' }}/>
       </div>
       <div style={{ marginBottom: 22 }}>
-        <label style={{ fontFamily: F.body, fontSize: 13, fontWeight: 600, color: '#E8E0D0', display: 'block', marginBottom: 6 }}>Your opening post *</label>
+        <label style={{ fontFamily: F.body, fontSize: 13, fontWeight: 600, color: 'var(--c-text)', display: 'block', marginBottom: 6 }}>Your opening post *</label>
         <textarea value={form.body} onChange={e => setForm(f => ({ ...f, body: e.target.value }))} placeholder="Share your question, reflection, or insight…" rows={8}
-          style={{ width: '100%', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 8, padding: '10px 13px', fontFamily: F.body, fontSize: 14, resize: 'vertical', outline: 'none', lineHeight: 1.7, boxSizing: 'border-box' }}/>
+          style={{ width: '100%', border: '1px solid var(--fg-15)', borderRadius: 8, padding: '10px 13px', fontFamily: F.body, fontSize: 14, resize: 'vertical', outline: 'none', lineHeight: 1.7, boxSizing: 'border-box' }}/>
       </div>
       <Btn variant="gold" onClick={submit} disabled={loading} style={{ fontSize: 14.5, padding: '11px 26px' }}>{loading ? 'Posting…' : 'Post Discussion'}</Btn>
     </div>

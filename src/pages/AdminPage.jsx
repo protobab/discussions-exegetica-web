@@ -16,14 +16,14 @@ export default function AdminPage() {
   if (!isAdmin) return <Center>You do not have permission to view this page.</Center>
 
   return (
-    <div style={{ maxWidth:860, margin:'0 auto', padding:'36px 20px 80px', minHeight:'100vh', background:'#0a0f1e' }}>
+    <div style={{ maxWidth:860, margin:'0 auto', padding:'36px 20px 80px', minHeight:'100vh', background:'var(--bg-page)' }}>
       <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:24 }}>
         <Logo size={28}/>
-        <h1 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:'#fff' }}>Admin Panel</h1>
+        <h1 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:'var(--fg-100)' }}>Admin Panel</h1>
       </div>
       <div style={{ display:'flex', gap:7, marginBottom:26, flexWrap:'wrap' }}>
         {[['sessions','Live Sessions'],['posts','Blog Posts'],['daily','Daily Word'],['auto','Auto Content'],['digest','Email Digest'],['announce','Announcements'],['content','Content Manager'],['moderation','Moderation'],['music','🎵 Music'],['users','👥 Users']].map(([k,l])=>(
-          <button key={k} onClick={()=>setTab(k)} style={{ background:tab===k?C.gold:'rgba(255,255,255,0.08)', color:tab===k?C.navy:'rgba(255,255,255,0.75)', border:`1.5px solid ${tab===k?C.gold:'rgba(255,255,255,0.15)'}`, borderRadius:8, padding:'8px 16px', fontFamily:F.body, fontSize:13, fontWeight:600, cursor:'pointer' }}>{l}</button>
+          <button key={k} onClick={()=>setTab(k)} style={{ background:tab===k?C.gold:'var(--fg-08)', color:tab===k?C.navy:'var(--fg-75)', border:`1.5px solid ${tab===k?C.gold:'var(--fg-15)'}`, borderRadius:8, padding:'8px 16px', fontFamily:F.body, fontSize:13, fontWeight:600, cursor:'pointer' }}>{l}</button>
         ))}
       </div>
       {tab === 'sessions'    && <SessionsTab token={token}/>}
@@ -110,7 +110,7 @@ function SessionsTab({ token }) {
   return (
     <Panel>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:18 }}>
-        <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'#fff' }}>Live Sessions</h2>
+        <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'var(--fg-100)' }}>Live Sessions</h2>
         <Btn variant="gold" onClick={()=>setShowForm(s=>!s)}>{showForm?'Cancel':'+ Schedule New'}</Btn>
       </div>
       <StatusMsg msg={msg}/>
@@ -120,7 +120,7 @@ function SessionsTab({ token }) {
         <div style={{ marginBottom: showForm ? 24 : 0 }}>
           <div style={{ display:'grid', gap:10 }}>
             {sessions.map(s=>(
-              <div key={s.id} style={{ borderRadius:12, overflow:'hidden', border:'1px solid rgba(255,255,255,0.1)', background:'rgba(255,255,255,0.06)', display:'flex', alignItems:'stretch', gap:0, flexWrap:'wrap' }}>
+              <div key={s.id} style={{ borderRadius:12, overflow:'hidden', border:'1px solid var(--fg-1)', background:'var(--fg-06)', display:'flex', alignItems:'stretch', gap:0, flexWrap:'wrap' }}>
                 {s.cover_image && (
                   <div style={{ width:80, minHeight:70, backgroundImage:`url(${s.cover_image})`, backgroundSize:'cover', backgroundPosition:'center', flexShrink:0 }}/>
                 )}
@@ -129,16 +129,16 @@ function SessionsTab({ token }) {
                   <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:4 }}>
                     <span style={{ background:STATUS_COLOR[s.status]+'22', color:STATUS_COLOR[s.status], border:`1px solid ${STATUS_COLOR[s.status]}55`, borderRadius:4, padding:'1px 8px', fontSize:11, fontFamily:F.body, fontWeight:700 }}>{STATUS_LABEL[s.status]}</span>
                   </div>
-                  <p style={{ fontFamily:F.display, fontSize:14.5, fontWeight:700, color:'#fff', marginBottom:2 }}>{s.title}</p>
-                  {s.guest_name && <p style={{ fontFamily:F.body, fontSize:12, color:'rgba(255,255,255,0.55)' }}>with {s.guest_name}</p>}
-                  {s.scheduled_at && <p style={{ fontFamily:F.body, fontSize:11, color:'rgba(255,255,255,0.4)', marginTop:2 }}>{new Date(s.scheduled_at).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}</p>}
+                  <p style={{ fontFamily:F.display, fontSize:14.5, fontWeight:700, color:'var(--fg-100)', marginBottom:2 }}>{s.title}</p>
+                  {s.guest_name && <p style={{ fontFamily:F.body, fontSize:12, color:'var(--fg-55)' }}>with {s.guest_name}</p>}
+                  {s.scheduled_at && <p style={{ fontFamily:F.body, fontSize:11, color:'var(--fg-4)', marginTop:2 }}>{new Date(s.scheduled_at).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}</p>}
                 </div>
                 <div style={{ display:'flex', gap:7, alignItems:'center', flexWrap:'wrap' }}>
                   {s.status === 'scheduled' && <Btn variant="primary" onClick={()=>updateStatus(s.id,'live')}>🔴 Go Live</Btn>}
                   {s.status === 'live'      && <Btn variant="outline" onClick={()=>updateStatus(s.id,'ended')}>⏹ End Session</Btn>}
                   {s.status === 'ended'     && <span style={{ fontFamily:F.body, fontSize:12, color:C.muted }}>Complete</span>}
                   <button onClick={()=>navigate(`/armchair/session/${s.id}`)} style={{ background:'none', border:'none', color:C.gold, fontFamily:F.body, fontSize:12.5, fontWeight:600, cursor:'pointer', padding:0 }}>Open →</button>
-                  <button onClick={()=>openEdit(s)} style={{ background:'none', border:'1px solid rgba(255,255,255,0.2)', borderRadius:6, color:'rgba(255,255,255,0.7)', fontFamily:F.body, fontSize:12, cursor:'pointer', padding:'3px 9px' }}>Edit</button>
+                  <button onClick={()=>openEdit(s)} style={{ background:'none', border:'1px solid var(--fg-2)', borderRadius:6, color:'var(--fg-7)', fontFamily:F.body, fontSize:12, cursor:'pointer', padding:'3px 9px' }}>Edit</button>
                   <button onClick={()=>deleteSession(s.id)} style={{ background:'none', border:'1px solid #FECACA', borderRadius:6, color:'#DC2626', fontFamily:F.body, fontSize:12, cursor:'pointer', padding:'3px 9px' }}>Delete</button>
                 </div>
                 </div>
@@ -155,7 +155,7 @@ function SessionsTab({ token }) {
       {/* Create form */}
       {showForm && (
         <div style={{ borderTop: sessions.length > 0 ? `1px solid ${C.border}` : 'none', paddingTop: sessions.length > 0 ? 22 : 0 }}>
-          {editSession ? <h3 style={{ fontFamily:F.display, fontSize:16, fontWeight:700, color:C.gold, marginBottom:14 }}>Edit Session</h3> : <h3 style={{ fontFamily:F.display, fontSize:16, fontWeight:700, color:'#fff', marginBottom:14 }}>New Session</h3>}
+          {editSession ? <h3 style={{ fontFamily:F.display, fontSize:16, fontWeight:700, color:C.gold, marginBottom:14 }}>Edit Session</h3> : <h3 style={{ fontFamily:F.display, fontSize:16, fontWeight:700, color:'var(--fg-100)', marginBottom:14 }}>New Session</h3>}
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:12 }}>
             <Field label="Title *" value={form.title} onChange={set('title')} placeholder="e.g. The Heart of the Gospel"/>
             <Field label="Date & time *" type="datetime-local" value={form.scheduled_at} onChange={set('scheduled_at')}/>
@@ -176,7 +176,7 @@ function SessionsTab({ token }) {
             } else { create() }
           }} disabled={loading}>{loading ? 'Saving…' : editSession ? 'Save Changes' : 'Schedule Session'}</Btn>
           {editSession && <Btn variant="ghost" onClick={()=>{ setEditSession(null); setShowForm(false); setForm({ title:'', description:'', guest_name:'', guest_bio:'', cover_image:'', scheduled_at:'', zoom_link:'' }) }} style={{ marginLeft:8 }}>Cancel Edit</Btn>}
-          <p style={{ fontFamily:F.body, fontSize:12, color:'rgba(255,255,255,0.5)', marginTop:12, lineHeight:1.6 }}>
+          <p style={{ fontFamily:F.body, fontSize:12, color:'var(--fg-5)', marginTop:12, lineHeight:1.6 }}>
             Tip: run your audio via this platform's live streaming. Guests can join via browser. The session page handles everything — live chat, Q&amp;A, and auto-recording.
           </p>
         </div>
@@ -205,7 +205,7 @@ function PostsTab({ token }) {
 
   return (
     <Panel>
-      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'#fff', marginBottom:18 }}>Write a Post</h2>
+      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'var(--fg-100)', marginBottom:18 }}>Write a Post</h2>
       <StatusMsg msg={msg}/>
       <Field label="Title *" value={form.title} onChange={set('title')} placeholder="Post title"/>
       <ImagePicker currentImage={form.cover_image} onSelect={url=>setForm(f=>({...f,cover_image:url}))}/>
@@ -243,7 +243,7 @@ function DailyWordTab({ token }) {
 
   return (
     <Panel>
-      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'#fff', marginBottom:18 }}>Daily Word</h2>
+      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'var(--fg-100)', marginBottom:18 }}>Daily Word</h2>
       <StatusMsg msg={msg}/>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:12 }}>
         <Field label="Verse reference *" value={form.verse_ref} onChange={set('verse_ref')} placeholder="e.g. John 3:16"/>
@@ -255,21 +255,21 @@ function DailyWordTab({ token }) {
 
       {upcoming.length > 0 && (
         <div style={{ marginTop:24 }}>
-          <h3 style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.6)', textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:12 }}>Upcoming ({upcoming.length})</h3>
+          <h3 style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:'var(--fg-6)', textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:12 }}>Upcoming ({upcoming.length})</h3>
           <div style={{ display:'grid', gap:8 }}>
             {upcoming.slice(0,10).map((w,i)=>(
-              <div key={i} style={{ display:'flex', gap:12, alignItems:'flex-start', padding:'10px 14px', background:'rgba(255,255,255,0.06)', borderRadius:8 }}>
-                <span style={{ background:C.gold, color:'#fff', borderRadius:5, padding:'2px 9px', fontFamily:F.body, fontSize:11, fontWeight:700, whiteSpace:'nowrap', flexShrink:0 }}>
+              <div key={i} style={{ display:'flex', gap:12, alignItems:'flex-start', padding:'10px 14px', background:'var(--fg-06)', borderRadius:8 }}>
+                <span style={{ background:C.gold, color:'var(--fg-100)', borderRadius:5, padding:'2px 9px', fontFamily:F.body, fontSize:11, fontWeight:700, whiteSpace:'nowrap', flexShrink:0 }}>
                   {new Date(w.posted_date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}
                 </span>
                 <div>
-                  <span style={{ fontFamily:F.body, fontSize:12.5, fontWeight:700, color:'#fff' }}>{w.verse_ref}</span>
-                  <span style={{ fontFamily:F.body, fontSize:11, color:'rgba(255,255,255,0.6)', marginLeft:8 }}>{w.theme}</span>
-                  <p style={{ fontFamily:F.body, fontSize:12, color:'#E8E0D0', margin:'3px 0 0', lineHeight:1.5 }}>{w.verse_text.slice(0,90)}…</p>
+                  <span style={{ fontFamily:F.body, fontSize:12.5, fontWeight:700, color:'var(--fg-100)' }}>{w.verse_ref}</span>
+                  <span style={{ fontFamily:F.body, fontSize:11, color:'var(--fg-6)', marginLeft:8 }}>{w.theme}</span>
+                  <p style={{ fontFamily:F.body, fontSize:12, color:'var(--c-text)', margin:'3px 0 0', lineHeight:1.5 }}>{w.verse_text.slice(0,90)}…</p>
                 </div>
               </div>
             ))}
-            {upcoming.length > 10 && <p style={{ fontFamily:F.body, fontSize:12.5, color:'rgba(255,255,255,0.55)', textAlign:'center' }}>+{upcoming.length-10} more scheduled</p>}
+            {upcoming.length > 10 && <p style={{ fontFamily:F.body, fontSize:12.5, color:'var(--fg-55)', textAlign:'center' }}>+{upcoming.length-10} more scheduled</p>}
           </div>
         </div>
       )}
@@ -296,15 +296,15 @@ function ModerationTab({ token }) {
 
   return (
     <Panel>
-      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'#fff', marginBottom:18 }}>Flagged Messages ({flagged.length})</h2>
+      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'var(--fg-100)', marginBottom:18 }}>Flagged Messages ({flagged.length})</h2>
       {loading ? <p style={{ fontFamily:F.body, color:C.muted }}>Loading…</p>
         : flagged.length === 0 ? <p style={{ fontFamily:F.body, fontSize:13.5, color:C.muted }}>No flagged messages — all clear! ✅</p>
         : <div style={{ display:'grid', gap:10 }}>
             {flagged.map(m=>(
-              <div key={m.id} style={{ padding:'12px 16px', background:m.is_hidden?'rgba(220,38,38,0.1)':'rgba(255,255,255,0.05)', borderRadius:10, border:`1px solid ${m.is_hidden?'rgba(220,38,38,0.3)':'rgba(255,255,255,0.08)'}` }}>
+              <div key={m.id} style={{ padding:'12px 16px', background:m.is_hidden?'rgba(220,38,38,0.1)':'var(--fg-05)', borderRadius:10, border:`1px solid ${m.is_hidden?'rgba(220,38,38,0.3)':'var(--fg-08)'}` }}>
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:10, flexWrap:'wrap' }}>
                   <div>
-                    <p style={{ fontFamily:F.body, fontSize:12, color:'rgba(255,255,255,0.5)', marginBottom:4 }}>{m.display_name} · {m.flag_count} flag{m.flag_count!==1?'s':''} {m.is_hidden?'· HIDDEN':''}</p>
+                    <p style={{ fontFamily:F.body, fontSize:12, color:'var(--fg-5)', marginBottom:4 }}>{m.display_name} · {m.flag_count} flag{m.flag_count!==1?'s':''} {m.is_hidden?'· HIDDEN':''}</p>
                     <p style={{ fontFamily:F.body, fontSize:13.5, color:C.text }}>{m.body}</p>
                   </div>
                   <div style={{ display:'flex', gap:6 }}>
@@ -361,8 +361,8 @@ function AutoContentTab({ token }) {
 
   return (
     <Panel>
-      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'#fff', marginBottom:6 }}>Auto Content Engine</h2>
-      <p style={{ fontFamily:F.body, fontSize:13.5, color:'rgba(255,255,255,0.6)', marginBottom:20, lineHeight:1.6 }}>
+      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'var(--fg-100)', marginBottom:6 }}>Auto Content Engine</h2>
+      <p style={{ fontFamily:F.body, fontSize:13.5, color:'var(--fg-6)', marginBottom:20, lineHeight:1.6 }}>
         Uses Claude AI to generate high-quality discussion threads based on the most-searched global faith questions. Runs automatically every week, or trigger it manually here. Each thread is written as a thoughtful opening post that invites real community engagement.
       </p>
 
@@ -370,13 +370,13 @@ function AutoContentTab({ token }) {
 
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14, marginBottom:18 }}>
         <div>
-          <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'#fff', display:'block', marginBottom:6 }}>Number to generate (1–5)</label>
+          <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'var(--fg-100)', display:'block', marginBottom:6 }}>Number to generate (1–5)</label>
           <input type="number" min={1} max={5} value={count} onChange={e=>setCount(Math.min(5,Math.max(1,parseInt(e.target.value)||1)))}
             style={{ width:'100%', border:`1.5px solid ${C.border}`, borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:14, outline:'none' }}/>
         </div>
         <div>
-          <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'#fff', display:'block', marginBottom:6 }}>Category focus</label>
-          <select value={category} onChange={e=>setCategory(e.target.value)} style={{ width:'100%', border:`1.5px solid ${C.border}`, borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:14, outline:'none', background:'rgba(255,255,255,0.08)', color:'#fff', colorScheme:'dark' }}>
+          <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'var(--fg-100)', display:'block', marginBottom:6 }}>Category focus</label>
+          <select value={category} onChange={e=>setCategory(e.target.value)} style={{ width:'100%', border:`1.5px solid ${C.border}`, borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:14, outline:'none', background:'var(--fg-08)', color:'var(--fg-100)', colorScheme:'dark' }}>
             {CATS.map(c=><option key={c.slug} value={c.slug}>{c.label}</option>)}
           </select>
         </div>
@@ -388,13 +388,13 @@ function AutoContentTab({ token }) {
 
       {results.length > 0 && (
         <div style={{ marginTop:20 }}>
-          <h3 style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:'#fff', marginBottom:10 }}>Just created:</h3>
+          <h3 style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:'var(--fg-100)', marginBottom:10 }}>Just created:</h3>
           <div style={{ display:'grid', gap:8 }}>
             {results.map((t,i)=>(
-              <div key={i} style={{ padding:'10px 14px', background:'rgba(255,255,255,0.06)', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <div key={i} style={{ padding:'10px 14px', background:'var(--fg-06)', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
                 <div>
-                  <span style={{ fontFamily:F.body, fontSize:11, color:'rgba(255,255,255,0.6)', textTransform:'uppercase', letterSpacing:'0.06em' }}>{t.category}</span>
-                  <p style={{ fontFamily:F.display, fontSize:14, fontWeight:700, color:'#fff', margin:'2px 0 0' }}>{t.title}</p>
+                  <span style={{ fontFamily:F.body, fontSize:11, color:'var(--fg-6)', textTransform:'uppercase', letterSpacing:'0.06em' }}>{t.category}</span>
+                  <p style={{ fontFamily:F.display, fontSize:14, fontWeight:700, color:'var(--fg-100)', margin:'2px 0 0' }}>{t.title}</p>
                 </div>
                 <a href={`/thread/${t.id}`} target="_blank" rel="noreferrer" style={{ color:C.gold, fontFamily:F.body, fontSize:12.5, fontWeight:600, whiteSpace:'nowrap', marginLeft:12 }}>View →</a>
               </div>
@@ -403,8 +403,8 @@ function AutoContentTab({ token }) {
         </div>
       )}
 
-      <div style={{ marginTop:24, padding:'16px', background:'rgba(255,255,255,0.05)', borderRadius:10 }}>
-        <p style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:'#fff', marginBottom:8 }}>⚙️ Weekly rotation schedule</p>
+      <div style={{ marginTop:24, padding:'16px', background:'var(--fg-05)', borderRadius:10 }}>
+        <p style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:'var(--fg-100)', marginBottom:8 }}>⚙️ Weekly rotation schedule</p>
         {(() => {
           const DOMAINS = ['exegesis','seekers','prayer','theology','prophecy']
           const LABELS = { exegesis:'Deep Dive', seekers:"Seekers' Corner", prayer:'Prayer & Life', theology:'Theology', prophecy:'Prophecy' }
@@ -413,20 +413,20 @@ function AutoContentTab({ token }) {
           const nextWeek = DOMAINS[(weekNum + 1) % DOMAINS.length]
           return (
             <div>
-              <p style={{ fontFamily:F.body, fontSize:12.5, color:'#E8E0D0', marginBottom:6 }}>
+              <p style={{ fontFamily:F.body, fontSize:12.5, color:'var(--c-text)', marginBottom:6 }}>
                 <strong>This week:</strong> <span style={{ color:C.gold, fontWeight:600 }}>{LABELS[thisWeek]}</span> — 3 auto-threads will be generated
               </p>
-              <p style={{ fontFamily:F.body, fontSize:12.5, color:'#E8E0D0', marginBottom:10 }}>
+              <p style={{ fontFamily:F.body, fontSize:12.5, color:'var(--c-text)', marginBottom:10 }}>
                 <strong>Next week:</strong> {LABELS[nextWeek]}
               </p>
               <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
                 {DOMAINS.map((d,i) => (
-                  <span key={d} style={{ background: d===thisWeek ? C.gold : 'rgba(255,255,255,0.08)', color: d===thisWeek ? '#0a0f1e' : 'rgba(255,255,255,0.6)', border:`1px solid ${d===thisWeek ? C.gold : 'rgba(255,255,255,0.15)'}`, borderRadius:6, padding:'3px 10px', fontFamily:F.body, fontSize:11.5, fontWeight: d===thisWeek ? 700 : 400 }}>
+                  <span key={d} style={{ background: d===thisWeek ? C.gold : 'var(--fg-08)', color: d===thisWeek ? '#0a0f1e' : 'var(--fg-6)', border:`1px solid ${d===thisWeek ? C.gold : 'var(--fg-15)'}`, borderRadius:6, padding:'3px 10px', fontFamily:F.body, fontSize:11.5, fontWeight: d===thisWeek ? 700 : 400 }}>
                     Week {(weekNum % 5 === i) ? '▶ ' : ''}{LABELS[d]}
                   </span>
                 ))}
               </div>
-              <p style={{ fontFamily:F.body, fontSize:12, color:'rgba(255,255,255,0.5)', marginTop:10, lineHeight:1.6 }}>
+              <p style={{ fontFamily:F.body, fontSize:12, color:'var(--fg-5)', marginTop:10, lineHeight:1.6 }}>
                 All auto-generated threads are posted by "Global Discussions (Auto)" and marked transparently at the bottom of each post. The full cycle repeats every 5 weeks.
               </p>
             </div>
@@ -472,14 +472,14 @@ function AnnouncementTab({ token }) {
 
   return (
     <Panel>
-      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'#fff', marginBottom:6 }}>Site Announcements</h2>
-      <p style={{ fontFamily:F.body, fontSize:13.5, color:'rgba(255,255,255,0.6)', marginBottom:20 }}>Post a banner that appears at the top of every page for all visitors. Users can dismiss it.</p>
+      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'var(--fg-100)', marginBottom:6 }}>Site Announcements</h2>
+      <p style={{ fontFamily:F.body, fontSize:13.5, color:'var(--fg-6)', marginBottom:20 }}>Post a banner that appears at the top of every page for all visitors. Users can dismiss it.</p>
       <StatusMsg msg={msg}/>
 
       {current && (
-        <div style={{ background:'rgba(255,255,255,0.06)', border:`1px solid ${C.gold}55`, borderRadius:10, padding:'14px 16px', marginBottom:20 }}>
-          <p style={{ fontFamily:F.body, fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.6)', textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:6 }}>Currently live</p>
-          <p style={{ fontFamily:F.body, fontSize:14, color:'#E8E0D0', marginBottom:8 }}>{current.text}</p>
+        <div style={{ background:'var(--fg-06)', border:`1px solid ${C.gold}55`, borderRadius:10, padding:'14px 16px', marginBottom:20 }}>
+          <p style={{ fontFamily:F.body, fontSize:12, fontWeight:700, color:'var(--fg-6)', textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:6 }}>Currently live</p>
+          <p style={{ fontFamily:F.body, fontSize:14, color:'var(--c-text)', marginBottom:8 }}>{current.text}</p>
           <div style={{ display:'flex', gap:10, alignItems:'center', flexWrap:'wrap' }}>
             <span style={{ fontFamily:F.body, fontSize:12, color:C.muted }}>Type: {current.type} · Posted: {new Date(current.created_at).toLocaleString('en-GB')}</span>
             {current.expires_at && <span style={{ fontFamily:F.body, fontSize:12, color:C.muted }}>Expires: {new Date(current.expires_at).toLocaleString('en-GB')}</span>}
@@ -490,20 +490,20 @@ function AnnouncementTab({ token }) {
 
       <div style={{ display:'grid', gap:12, marginBottom:16 }}>
         <div>
-          <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'#fff', display:'block', marginBottom:6 }}>Announcement text *</label>
+          <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'var(--fg-100)', display:'block', marginBottom:6 }}>Announcement text *</label>
           <textarea value={text} onChange={e=>setText(e.target.value)} placeholder="e.g. 🎙 Our next Armchair session is this Sunday at 7pm — join us live!" rows={3}
-            style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', resize:'vertical', boxSizing:'border-box', background:'rgba(255,255,255,0.08)', color:'#fff', colorScheme:'dark', pointerEvents:'auto', colorScheme:'dark', pointerEvents:'auto' }}/>
+            style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', resize:'vertical', boxSizing:'border-box', background:'var(--fg-08)', color:'var(--fg-100)', colorScheme:'dark', pointerEvents:'auto', colorScheme:'dark', pointerEvents:'auto' }}/>
         </div>
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
           <div>
-            <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'#fff', display:'block', marginBottom:6 }}>Style</label>
-            <select value={type} onChange={e=>setType(e.target.value)} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:13.5, outline:'none', background:'rgba(255,255,255,0.08)', color:'#fff', colorScheme:'dark', pointerEvents:'auto', colorScheme:'dark', pointerEvents:'auto' }}>
+            <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'var(--fg-100)', display:'block', marginBottom:6 }}>Style</label>
+            <select value={type} onChange={e=>setType(e.target.value)} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:13.5, outline:'none', background:'var(--fg-08)', color:'var(--fg-100)', colorScheme:'dark', pointerEvents:'auto', colorScheme:'dark', pointerEvents:'auto' }}>
               {TYPE_OPTS.map(o=><option key={o.v} value={o.v}>{o.l}</option>)}
             </select>
           </div>
           <div>
-            <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'#fff', display:'block', marginBottom:6 }}>Auto-expire after</label>
-            <select value={hours} onChange={e=>setHours(parseInt(e.target.value))} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:13.5, outline:'none', background:'rgba(255,255,255,0.08)', color:'#fff', colorScheme:'dark', pointerEvents:'auto', colorScheme:'dark', pointerEvents:'auto' }}>
+            <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'var(--fg-100)', display:'block', marginBottom:6 }}>Auto-expire after</label>
+            <select value={hours} onChange={e=>setHours(parseInt(e.target.value))} style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:13.5, outline:'none', background:'var(--fg-08)', color:'var(--fg-100)', colorScheme:'dark', pointerEvents:'auto', colorScheme:'dark', pointerEvents:'auto' }}>
               {[[1,'1 hour'],[6,'6 hours'],[12,'12 hours'],[24,'24 hours'],[48,'2 days'],[168,'1 week']].map(([v,l])=><option key={v} value={v}>{l}</option>)}
             </select>
           </div>
@@ -537,23 +537,23 @@ function DigestTab({ token }) {
 
   return (
     <Panel>
-      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'#fff', marginBottom:6 }}>Weekly Email Digest</h2>
-      <p style={{ fontFamily:F.body, fontSize:13.5, color:'rgba(255,255,255,0.6)', marginBottom:20, lineHeight:1.6 }}>
+      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'var(--fg-100)', marginBottom:6 }}>Weekly Email Digest</h2>
+      <p style={{ fontFamily:F.body, fontSize:13.5, color:'var(--fg-6)', marginBottom:20, lineHeight:1.6 }}>
         Sends a beautiful email to all members showing the top discussions from the past week. Run manually here or set up a weekly cron trigger.
       </p>
       <StatusMsg msg={msg}/>
 
       {info && (
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:20 }}>
-          <div style={{ background:'rgba(255,255,255,0.06)', borderRadius:10, padding:'14px 16px' }}>
-            <p style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:'#fff', margin:'0 0 2px' }}>{info.subscriberCount}</p>
-            <p style={{ fontFamily:F.body, fontSize:12.5, color:'rgba(255,255,255,0.55)', margin:0 }}>Email subscribers</p>
+          <div style={{ background:'var(--fg-06)', borderRadius:10, padding:'14px 16px' }}>
+            <p style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:'var(--fg-100)', margin:'0 0 2px' }}>{info.subscriberCount}</p>
+            <p style={{ fontFamily:F.body, fontSize:12.5, color:'var(--fg-55)', margin:0 }}>Email subscribers</p>
           </div>
-          <div style={{ background:'rgba(255,255,255,0.06)', borderRadius:10, padding:'14px 16px' }}>
+          <div style={{ background:'var(--fg-06)', borderRadius:10, padding:'14px 16px' }}>
             <p style={{ fontFamily:F.display, fontSize:16, fontWeight:700, color:info.hasEmailProvider?'#15803D':'#DC2626', margin:'0 0 2px' }}>
               {info.hasEmailProvider ? '✅ Connected' : '❌ Not set up'}
             </p>
-            <p style={{ fontFamily:F.body, fontSize:12.5, color:'rgba(255,255,255,0.55)', margin:0 }}>Email provider: {info.provider}</p>
+            <p style={{ fontFamily:F.body, fontSize:12.5, color:'var(--fg-55)', margin:0 }}>Email provider: {info.provider}</p>
           </div>
         </div>
       )}
@@ -564,7 +564,7 @@ function DigestTab({ token }) {
           <p style={{ fontFamily:F.body, fontSize:13, color:'#991B1B', lineHeight:1.6, margin:0 }}>
             1. Sign up free at <strong>resend.com</strong> (3,000 emails/month free)<br/>
             2. Add your domain and get an API key<br/>
-            3. Add <code style={{ background:'rgba(255,255,255,0.06)', padding:'1px 5px', borderRadius:3 }}>RESEND_API_KEY</code> to Cloudflare environment variables<br/>
+            3. Add <code style={{ background:'var(--fg-06)', padding:'1px 5px', borderRadius:3 }}>RESEND_API_KEY</code> to Cloudflare environment variables<br/>
             4. Verify <code>noreply@discussionsexegetica.com</code> as your sender
           </p>
         </div>
@@ -574,11 +574,11 @@ function DigestTab({ token }) {
         {sending ? '📨 Sending…' : '📨 Send Weekly Digest Now'}
       </Btn>
 
-      <div style={{ marginTop:24, padding:'14px 16px', background:'rgba(255,255,255,0.05)', borderRadius:10 }}>
-        <p style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:'#fff', marginBottom:6 }}>⚙️ Automate weekly sends</p>
-        <p style={{ fontFamily:F.body, fontSize:12.5, color:'rgba(255,255,255,0.55)', lineHeight:1.6 }}>
+      <div style={{ marginTop:24, padding:'14px 16px', background:'var(--fg-05)', borderRadius:10 }}>
+        <p style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:'var(--fg-100)', marginBottom:6 }}>⚙️ Automate weekly sends</p>
+        <p style={{ fontFamily:F.body, fontSize:12.5, color:'var(--fg-55)', lineHeight:1.6 }}>
           Add a GitHub Actions scheduled job to send automatically every Sunday at 7am UTC.<br/>
-          Cron: <code style={{ background:'rgba(255,255,255,0.06)', padding:'1px 5px', borderRadius:3 }}>0 7 * * 0</code> → POST to <code style={{ background:'rgba(255,255,255,0.06)', padding:'1px 5px', borderRadius:3 }}>/api/admin/digest</code> with header <code>X-Cron-Secret</code>
+          Cron: <code style={{ background:'var(--fg-06)', padding:'1px 5px', borderRadius:3 }}>0 7 * * 0</code> → POST to <code style={{ background:'var(--fg-06)', padding:'1px 5px', borderRadius:3 }}>/api/admin/digest</code> with header <code>X-Cron-Secret</code>
         </p>
       </div>
     </Panel>
@@ -647,8 +647,8 @@ function ContentManagerTab({ token }) {
 
   return (
     <Panel>
-      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'#fff', marginBottom:6 }}>Content Manager</h2>
-      <p style={{ fontFamily:F.body, fontSize:13, color:'rgba(255,255,255,0.6)', marginBottom:18 }}>Review and delete any content from the platform without touching the database.</p>
+      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'var(--fg-100)', marginBottom:6 }}>Content Manager</h2>
+      <p style={{ fontFamily:F.body, fontSize:13, color:'var(--fg-6)', marginBottom:18 }}>Review and delete any content from the platform without touching the database.</p>
 
       <StatusMsg msg={msg}/>
 
@@ -656,7 +656,7 @@ function ContentManagerTab({ token }) {
       <div style={{ display:'flex', gap:6, marginBottom:16, flexWrap:'wrap' }}>
         {TYPES.map(t => (
           <button key={t.key} onClick={() => { setType(t.key); setPage(1); setSearch('') }}
-            style={{ background:type===t.key?C.gold:'rgba(255,255,255,0.08)', color:type===t.key?'#0a0f1e':'rgba(255,255,255,0.7)', border:`1.5px solid ${type===t.key?C.gold:'rgba(255,255,255,0.15)'}`, borderRadius:7, padding:'6px 14px', fontFamily:F.body, fontSize:12.5, fontWeight:600, cursor:'pointer' }}>
+            style={{ background:type===t.key?C.gold:'var(--fg-08)', color:type===t.key?'#0a0f1e':'var(--fg-7)', border:`1.5px solid ${type===t.key?C.gold:'var(--fg-15)'}`, borderRadius:7, padding:'6px 14px', fontFamily:F.body, fontSize:12.5, fontWeight:600, cursor:'pointer' }}>
             {t.label} {type===t.key && total > 0 ? `(${total})` : ''}
           </button>
         ))}
@@ -685,16 +685,16 @@ function ContentManagerTab({ token }) {
 
       {/* Items list */}
       {loading ? <p style={{ fontFamily:F.body, color:C.muted }}>Loading…</p> : items.length === 0
-        ? <p style={{ fontFamily:F.body, color:'rgba(255,255,255,0.6)', fontSize:14 }}>No {type} found.</p>
+        ? <p style={{ fontFamily:F.body, color:'var(--fg-6)', fontSize:14 }}>No {type} found.</p>
         : (
           <div style={{ display:'grid', gap:8 }}>
             {items.map(item => (
-              <div key={item.id} style={{ padding:'12px 14px', background:'rgba(255,255,255,0.06)', borderRadius:9, border:`1px solid ${C.border}`, display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12 }}>
+              <div key={item.id} style={{ padding:'12px 14px', background:'var(--fg-06)', borderRadius:9, border:`1px solid ${C.border}`, display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12 }}>
                 <div style={{ flex:1, minWidth:0 }}>
-                  <p style={{ fontFamily:F.body, fontSize:13.5, fontWeight:600, color:'#fff', margin:'0 0 2px', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                  <p style={{ fontFamily:F.body, fontSize:13.5, fontWeight:600, color:'var(--fg-100)', margin:'0 0 2px', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
                     {getLabel(item)}
                   </p>
-                  <p style={{ fontFamily:F.body, fontSize:11.5, color:'rgba(255,255,255,0.6)', margin:0 }}>
+                  <p style={{ fontFamily:F.body, fontSize:11.5, color:'var(--fg-6)', margin:0 }}>
                     {item.display_name && `By ${item.display_name} · `}
                     {item.reply_count !== undefined && `${item.reply_count} replies · `}
                     {item.thread_count !== undefined && `${item.thread_count} threads · `}
@@ -702,7 +702,7 @@ function ContentManagerTab({ token }) {
                     {item.created_at && new Date(item.created_at).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'})}
                   </p>
                   {type === 'replies' && item.thread_title && (
-                    <p style={{ fontFamily:F.body, fontSize:11, color:'rgba(255,255,255,0.6)', margin:'3px 0 0' }}>In: {item.thread_title}</p>
+                    <p style={{ fontFamily:F.body, fontSize:11, color:'var(--fg-6)', margin:'3px 0 0' }}>In: {item.thread_title}</p>
                   )}
                 </div>
                 <button
@@ -720,7 +720,7 @@ function ContentManagerTab({ token }) {
       {total > 20 && (
         <div style={{ display:'flex', gap:8, marginTop:16, justifyContent:'center' }}>
           <Btn variant="ghost" onClick={() => setPage(p => Math.max(1,p-1))} disabled={page===1}>← Prev</Btn>
-          <span style={{ fontFamily:F.body, fontSize:13, color:'rgba(255,255,255,0.6)', alignSelf:'center' }}>Page {page}</span>
+          <span style={{ fontFamily:F.body, fontSize:13, color:'var(--fg-6)', alignSelf:'center' }}>Page {page}</span>
           <Btn variant="ghost" onClick={() => setPage(p => p+1)} disabled={items.length < 20}>Next →</Btn>
         </div>
       )}
@@ -731,7 +731,7 @@ function ContentManagerTab({ token }) {
 // ── Shared ────────────────────────────────────────────────────
 
 function Panel({ children }) {
-  return <div style={{ background:'#1a2035', borderRadius:14, padding:28, border:'1px solid rgba(201,168,76,0.18)', position:'relative', isolation:'isolate', marginBottom:24 }}>{children}</div>
+  return <div style={{ background:'var(--surface-card)', borderRadius:14, padding:28, border:'1px solid rgba(201,168,76,0.18)', position:'relative', isolation:'isolate', marginBottom:24 }}>{children}</div>
 }
 
 // ── Music Settings ────────────────────────────────────────────
@@ -758,12 +758,12 @@ function MusicTab({ token }) {
     else setMsg(`❌ ${data.error}`)
   }
 
-  if (loading) return <Panel><p style={{ fontFamily:F.body, color:'rgba(255,255,255,0.5)' }}>Loading…</p></Panel>
+  if (loading) return <Panel><p style={{ fontFamily:F.body, color:'var(--fg-5)' }}>Loading…</p></Panel>
 
   return (
     <Panel>
-      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'#fff', marginBottom:6 }}>🎵 Ambient Music</h2>
-      <p style={{ fontFamily:F.body, fontSize:13.5, color:'rgba(255,255,255,0.55)', marginBottom:24, lineHeight:1.6 }}>
+      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'var(--fg-100)', marginBottom:6 }}>🎵 Ambient Music</h2>
+      <p style={{ fontFamily:F.body, fontSize:13.5, color:'var(--fg-55)', marginBottom:24, lineHeight:1.6 }}>
         Choose what plays in the sitewide ambient player.
       </p>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:20 }}>
@@ -772,19 +772,19 @@ function MusicTab({ token }) {
           { id:'jamendo', title:'Jamendo Streaming', desc:'Streams ambient instrumental tracks from Jamendo. Variety changes automatically. May occasionally include non-worship tracks.' },
         ].map(opt => (
           <div key={opt.id} onClick={()=>save(opt.id)} style={{
-            background: mode===opt.id ? 'rgba(201,168,76,0.12)' : 'rgba(255,255,255,0.05)',
-            border:`2px solid ${mode===opt.id ? C.gold : 'rgba(255,255,255,0.1)'}`,
+            background: mode===opt.id ? 'rgba(201,168,76,0.12)' : 'var(--fg-05)',
+            border:`2px solid ${mode===opt.id ? C.gold : 'var(--fg-1)'}`,
             borderRadius:14, padding:'20px 18px', cursor:'pointer', transition:'all 0.2s',
           }}>
-            <p style={{ fontFamily:F.display, fontSize:15, fontWeight:700, color:mode===opt.id?C.gold:'#fff', marginBottom:8 }}>
+            <p style={{ fontFamily:F.display, fontSize:15, fontWeight:700, color:mode===opt.id?C.gold:'var(--fg-100)', marginBottom:8 }}>
               {mode===opt.id ? '✅ ' : ''}{opt.title}
             </p>
-            <p style={{ fontFamily:F.body, fontSize:13, color:'rgba(255,255,255,0.5)', lineHeight:1.6, margin:0 }}>{opt.desc}</p>
+            <p style={{ fontFamily:F.body, fontSize:13, color:'var(--fg-5)', lineHeight:1.6, margin:0 }}>{opt.desc}</p>
           </div>
         ))}
       </div>
       {msg && <p style={{ fontFamily:F.body, fontSize:13, color:msg.startsWith('✅')?'#4ade80':'#f87171' }}>{msg}</p>}
-      <p style={{ fontFamily:F.body, fontSize:11.5, color:'rgba(255,255,255,0.3)', marginTop:16, lineHeight:1.7 }}>
+      <p style={{ fontFamily:F.body, fontSize:11.5, color:'var(--fg-3)', marginTop:16, lineHeight:1.7 }}>
         To update your uploaded tracks: GitHub → public/ambient/ → replace track1.mp3, track2.mp3, track3.mp3 with your chosen instrumental worship files.
       </p>
     </Panel>
@@ -828,12 +828,12 @@ function UsersTab({ token }) {
   return (
     <Panel>
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:16, flexWrap:'wrap', gap:10 }}>
-        <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'#fff' }}>👥 Registered Users</h2>
+        <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'var(--fg-100)' }}>👥 Registered Users</h2>
         <div style={{ display:'flex', gap:8 }}>
           <input value={search} onChange={e=>setSearch(e.target.value)}
             onKeyDown={e=>e.key==='Enter'&&load()}
             placeholder="Search username or email…"
-            style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.15)', borderRadius:8, padding:'7px 12px', fontFamily:F.body, fontSize:13, color:'#fff', colorScheme:'dark', width:200 }}
+            style={{ background:'var(--fg-08)', border:'1px solid var(--fg-15)', borderRadius:8, padding:'7px 12px', fontFamily:F.body, fontSize:13, color:'var(--fg-100)', colorScheme:'dark', width:200 }}
           />
           <Btn variant="ghost" onClick={load}>Search</Btn>
         </div>
@@ -841,27 +841,27 @@ function UsersTab({ token }) {
 
       {msg && <p style={{ fontFamily:F.body, fontSize:13, color:msg.startsWith('✅')?'#4ade80':'#f87171', marginBottom:12 }}>{msg}</p>}
 
-      {loading ? <p style={{ fontFamily:F.body, color:'rgba(255,255,255,0.4)' }}>Loading…</p> : (
+      {loading ? <p style={{ fontFamily:F.body, color:'var(--fg-4)' }}>Loading…</p> : (
         <div style={{ display:'grid', gap:8 }}>
-          {users.length === 0 && <p style={{ fontFamily:F.body, color:'rgba(255,255,255,0.4)' }}>No users found.</p>}
+          {users.length === 0 && <p style={{ fontFamily:F.body, color:'var(--fg-4)' }}>No users found.</p>}
           {users.map(u => (
-            <div key={u.id} style={{ background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:10, padding:'12px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, flexWrap:'wrap' }}>
+            <div key={u.id} style={{ background:'var(--fg-05)', border:'1px solid var(--fg-08)', borderRadius:10, padding:'12px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, flexWrap:'wrap' }}>
               <div style={{ display:'flex', alignItems:'center', gap:10, flex:1, minWidth:0 }}>
-                <div style={{ width:34, height:34, borderRadius:'50%', background:u.avatar_color||C.gold, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:F.body, fontSize:13, fontWeight:700, color:'#fff', flexShrink:0 }}>
+                <div style={{ width:34, height:34, borderRadius:'50%', background:u.avatar_color||C.gold, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:F.body, fontSize:13, fontWeight:700, color:'var(--fg-100)', flexShrink:0 }}>
                   {u.display_name?.[0]?.toUpperCase()||'?'}
                 </div>
                 <div style={{ minWidth:0 }}>
-                  <p style={{ fontFamily:F.body, fontSize:13.5, fontWeight:600, color:'#fff', margin:'0 0 2px', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
-                    {u.display_name} <span style={{ color:'rgba(255,255,255,0.4)', fontWeight:400 }}>@{u.username}</span>
+                  <p style={{ fontFamily:F.body, fontSize:13.5, fontWeight:600, color:'var(--fg-100)', margin:'0 0 2px', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                    {u.display_name} <span style={{ color:'var(--fg-4)', fontWeight:400 }}>@{u.username}</span>
                   </p>
-                  <p style={{ fontFamily:F.body, fontSize:11.5, color:'rgba(255,255,255,0.4)', margin:0 }}>
+                  <p style={{ fontFamily:F.body, fontSize:11.5, color:'var(--fg-4)', margin:0 }}>
                     {u.email} · Joined {new Date(u.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}
                     {u.post_count > 0 && ` · ${u.post_count} posts`}
                   </p>
                 </div>
               </div>
               <div style={{ display:'flex', alignItems:'center', gap:8, flexShrink:0 }}>
-                <span style={{ fontFamily:F.body, fontSize:11, fontWeight:600, color:STATUS_COLOR[u.status||'active']||'#4ade80', background:'rgba(255,255,255,0.06)', borderRadius:6, padding:'2px 8px' }}>
+                <span style={{ fontFamily:F.body, fontSize:11, fontWeight:600, color:STATUS_COLOR[u.status||'active']||'#4ade80', background:'var(--fg-06)', borderRadius:6, padding:'2px 8px' }}>
                   {u.status||'active'}
                 </span>
                 {u.badge && <span style={{ fontFamily:F.body, fontSize:11, color:C.gold, background:'rgba(201,168,76,0.12)', borderRadius:6, padding:'2px 8px' }}>{u.badge}</span>}
@@ -881,7 +881,7 @@ function UsersTab({ token }) {
 
       <div style={{ display:'flex', gap:8, marginTop:16 }}>
         <Btn variant="ghost" onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page===1}>← Prev</Btn>
-        <span style={{ fontFamily:F.body, fontSize:13, color:'rgba(255,255,255,0.4)', padding:'8px 4px' }}>Page {page}</span>
+        <span style={{ fontFamily:F.body, fontSize:13, color:'var(--fg-4)', padding:'8px 4px' }}>Page {page}</span>
         <Btn variant="ghost" onClick={()=>setPage(p=>p+1)} disabled={users.length<PER_PAGE}>Next →</Btn>
       </div>
     </Panel>

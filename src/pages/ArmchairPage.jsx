@@ -43,7 +43,7 @@ export default function ArmchairPage() {
       {/* OVERLAY GRADIENT */}
       <div style={{
         position: 'fixed', inset: 0, zIndex: 2,
-        background: `linear-gradient(to bottom, rgba(10,20,40,0.45) 0%, rgba(10,20,40,0.25) 40%, rgba(10,20,40,0.65) 100%)`,
+        background: `linear-gradient(to bottom, var(--ov-45) 0%, var(--ov-25) 40%, var(--ov-65) 100%)`,
       }}/>
 
 
@@ -56,10 +56,10 @@ export default function ArmchairPage() {
           <p style={{ fontFamily: F.body, fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 14 }}>
             The Armchair
           </p>
-          <h1 style={{ fontFamily: F.display, fontSize: 'clamp(32px,5vw,52px)', fontWeight: 900, color: '#fff', marginBottom: 14, lineHeight: 1.12 }}>
+          <h1 style={{ fontFamily: F.display, fontSize: 'clamp(32px,5vw,52px)', fontWeight: 900, color: 'var(--fg-100)', marginBottom: 14, lineHeight: 1.12 }}>
             Conversations on faith,<br/>from the comfort of a chair.
           </h1>
-          <p style={{ fontFamily: F.body, fontSize: 16, color: 'rgba(255,255,255,0.72)', maxWidth: 500, margin: '0 auto 32px', lineHeight: 1.75 }}>
+          <p style={{ fontFamily: F.body, fontSize: 16, color: 'var(--fg-72)', maxWidth: 500, margin: '0 auto 32px', lineHeight: 1.75 }}>
             Live audio conversations with guests, auto-saved recordings, and reflections in writing — all in one place.
           </p>
 
@@ -70,8 +70,8 @@ export default function ArmchairPage() {
 
           {featured ? (
             <div style={{
-              background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(12px)',
-              border: '1px solid rgba(255,255,255,0.15)', borderRadius: 18,
+              background: 'var(--fg-08)', backdropFilter: 'blur(12px)',
+              border: '1px solid var(--fg-15)', borderRadius: 18,
               overflow: 'hidden', marginBottom: 40
             }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)' }} className="ac-grid">
@@ -82,14 +82,14 @@ export default function ArmchairPage() {
                     borderRadius: 6, padding: '3px 12px', fontSize: 11, fontWeight: 700,
                     fontFamily: F.body, display: 'inline-block', marginBottom: 12, width: 'fit-content'
                   }}>{isLive ? '🔴 LIVE NOW' : '📅 UPCOMING'}</span>
-                  <h2 style={{ fontFamily: F.display, fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 6, lineHeight: 1.3 }}>{featured.title}</h2>
-                  {featured.guest_name && <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.65)', marginBottom: 8 }}>with <strong style={{ color: '#fff' }}>{featured.guest_name}</strong></p>}
-                  <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.7)', lineHeight: 1.65, marginBottom: 16 }}>{featured.description}</p>
-                  <p style={{ fontFamily: F.body, fontSize: 12.5, color: 'rgba(255,255,255,0.5)', marginBottom: 18 }}>
+                  <h2 style={{ fontFamily: F.display, fontSize: 22, fontWeight: 700, color: 'var(--fg-100)', marginBottom: 6, lineHeight: 1.3 }}>{featured.title}</h2>
+                  {featured.guest_name && <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'var(--fg-65)', marginBottom: 8 }}>with <strong style={{ color: 'var(--fg-100)' }}>{featured.guest_name}</strong></p>}
+                  <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'var(--fg-7)', lineHeight: 1.65, marginBottom: 16 }}>{featured.description}</p>
+                  <p style={{ fontFamily: F.body, fontSize: 12.5, color: 'var(--fg-5)', marginBottom: 18 }}>
                     {new Date(featured.scheduled_at).toLocaleString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
                   </p>
                   <button onClick={() => navigate(`/armchair/session/${featured.id}`)} style={{
-                    background: C.gold, color: '#E8E0D0', border: 'none', borderRadius: 10,
+                    background: C.gold, color: '#0a0f1e', border: 'none', borderRadius: 10,
                     padding: '11px 22px', fontFamily: F.body, fontSize: 14, fontWeight: 700,
                     cursor: 'pointer', width: 'fit-content'
                   }}>
@@ -100,10 +100,10 @@ export default function ArmchairPage() {
             </div>
           ) : (
             <div style={{
-              background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
+              background: 'var(--fg-06)', border: '1px solid var(--fg-12)',
               borderRadius: 14, padding: '28px', textAlign: 'center', marginBottom: 40
             }}>
-              <p style={{ fontFamily: F.body, color: 'rgba(255,255,255,0.6)' }}>
+              <p style={{ fontFamily: F.body, color: 'var(--fg-6)' }}>
                 No live session right now — explore past recordings below, or settle in with the music.
               </p>
             </div>
@@ -112,23 +112,23 @@ export default function ArmchairPage() {
           {/* PAST RECORDINGS */}
           {pastSessions.length > 0 && (
             <div style={{ marginBottom: 48 }}>
-              <h3 style={{ fontFamily: F.display, fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 18 }}>Past Conversations</h3>
+              <h3 style={{ fontFamily: F.display, fontSize: 20, fontWeight: 700, color: 'var(--fg-100)', marginBottom: 18 }}>Past Conversations</h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
                 {pastSessions.map(s => (
                   <div key={s.id} onClick={() => navigate(`/armchair/session/${s.id}`)} style={{
-                    background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)',
+                    background: 'var(--fg-08)', border: '1px solid var(--fg-12)',
                     borderRadius: 12, overflow: 'hidden', cursor: 'pointer',
                     transition: 'background 0.2s'
                   }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.14)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--fg-14)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'var(--fg-08)'}
                   >
                     <div style={{ backgroundImage: `url(${s.cover_image || FB})`, backgroundSize: 'cover', backgroundPosition: 'center', height: 110, position: 'relative' }}>
-                      <span style={{ position: 'absolute', bottom: 7, right: 7, background: 'rgba(0,0,0,0.65)', color: '#fff', borderRadius: 4, padding: '2px 7px', fontSize: 10, fontFamily: F.body }}>▶ Recording</span>
+                      <span style={{ position: 'absolute', bottom: 7, right: 7, background: 'rgba(0,0,0,0.65)', color: 'var(--fg-100)', borderRadius: 4, padding: '2px 7px', fontSize: 10, fontFamily: F.body }}>▶ Recording</span>
                     </div>
                     <div style={{ padding: '10px 12px' }}>
-                      <p style={{ fontFamily: F.display, fontSize: 13.5, fontWeight: 700, color: '#fff', marginBottom: 3, lineHeight: 1.3 }}>{s.title}</p>
-                      {s.guest_name && <p style={{ fontFamily: F.body, fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>with {s.guest_name}</p>}
+                      <p style={{ fontFamily: F.display, fontSize: 13.5, fontWeight: 700, color: 'var(--fg-100)', marginBottom: 3, lineHeight: 1.3 }}>{s.title}</p>
+                      {s.guest_name && <p style={{ fontFamily: F.body, fontSize: 11, color: 'var(--fg-55)' }}>with {s.guest_name}</p>}
                     </div>
                   </div>
                 ))}
@@ -137,19 +137,19 @@ export default function ArmchairPage() {
           )}
 
           {/* BLOG FEED */}
-          <h3 style={{ fontFamily: F.display, fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 18 }}>Reflections</h3>
+          <h3 style={{ fontFamily: F.display, fontSize: 20, fontWeight: 700, color: 'var(--fg-100)', marginBottom: 18 }}>Reflections</h3>
           {posts.length === 0 ? (
-            <p style={{ fontFamily: F.body, color: 'rgba(255,255,255,0.5)', fontSize: 14 }}>No posts yet — check back soon.</p>
+            <p style={{ fontFamily: F.body, color: 'var(--fg-5)', fontSize: 14 }}>No posts yet — check back soon.</p>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 22 }}>
               {posts.map(p => (
                 <div key={p.id} onClick={() => navigate(`/armchair/post/${p.id}`)} style={{ cursor: 'pointer' }}>
                   <div style={{ backgroundImage: `url(${p.cover_image || FB})`, backgroundSize: 'cover', backgroundPosition: 'center', height: 155, borderRadius: 12, marginBottom: 11 }}/>
-                  <h4 style={{ fontFamily: F.display, fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 5, lineHeight: 1.35 }}>{p.title}</h4>
-                  {p.excerpt && <p style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.62)', lineHeight: 1.6, marginBottom: 8 }}>{p.excerpt}</p>}
+                  <h4 style={{ fontFamily: F.display, fontSize: 16, fontWeight: 700, color: 'var(--fg-100)', marginBottom: 5, lineHeight: 1.35 }}>{p.title}</h4>
+                  {p.excerpt && <p style={{ fontFamily: F.body, fontSize: 13, color: 'var(--fg-62)', lineHeight: 1.6, marginBottom: 8 }}>{p.excerpt}</p>}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
                     <Avatar name={p.author_name} color={p.author_avatar_color} size={20}/>
-                    <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'rgba(255,255,255,0.5)' }}>
+                    <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'var(--fg-5)' }}>
                       {p.author_name} · {new Date(p.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
                     </span>
                   </div>

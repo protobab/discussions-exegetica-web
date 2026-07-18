@@ -108,7 +108,7 @@ export default function AmbientPlayer() {
         position: 'fixed', bottom: 80, left: 16, zIndex: 300,
         display: 'flex', alignItems: 'center',
         gap: minimised ? 0 : 8,
-        background: 'rgba(10,15,30,0.88)',
+        background: 'var(--surface-solid-c)',
         backdropFilter: 'blur(14px)',
         border: '1px solid rgba(201,168,76,0.35)',
         borderRadius: 40,
@@ -130,7 +130,7 @@ export default function AmbientPlayer() {
           <>
             <span style={{
               fontFamily: F.body, fontSize: 11,
-              color: 'rgba(255,255,255,0.65)',
+              color: 'var(--fg-65)',
               whiteSpace: 'nowrap', maxWidth: 90,
               overflow: 'hidden', textOverflow: 'ellipsis',
             }}>
@@ -138,7 +138,7 @@ export default function AmbientPlayer() {
             </span>
             <button onClick={next} style={{
               background: 'none', border: 'none',
-              color: 'rgba(255,255,255,0.45)',
+              color: 'var(--fg-45)',
               cursor: 'pointer', fontSize: 12, padding: 0, flexShrink: 0,
             }}>⏭</button>
             <input type="range" min="0" max="1" step="0.05" value={vol}
@@ -149,7 +149,7 @@ export default function AmbientPlayer() {
 
         <button onClick={() => setMinimised(m => !m)} style={{
           background: 'none', border: 'none',
-          color: 'rgba(255,255,255,0.3)',
+          color: 'var(--fg-3)',
           cursor: 'pointer', fontSize: 9,
           padding: minimised ? '0 0 0 4px' : '0 0 0 2px',
           flexShrink: 0,

@@ -36,12 +36,12 @@ function GroupImagePicker({ currentImage, onSelect }) {
         🖼 {open ? 'Close' : currentImage ? 'Change cover image' : 'Add cover image'}
       </button>
       {open && (
-        <div style={{ marginTop: 10, padding: 14, background: 'rgba(255,255,255,0.06)', borderRadius: 10, border: `1px solid ${sageLight}` }}>
+        <div style={{ marginTop: 10, padding: 14, background: 'var(--fg-06)', borderRadius: 10, border: `1px solid ${sageLight}` }}>
           <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
             <input value={query} onChange={e => setQuery(e.target.value)} onKeyDown={e => e.key === 'Enter' && search()}
               placeholder="e.g. bible study, community, prayer, mountains"
               style={{ flex: 1, border: `1.5px solid ${sageLight}`, borderRadius: 8, padding: '8px 12px', fontFamily: F.body, fontSize: 13, outline: 'none' }}/>
-            <button onClick={search} disabled={loading} style={{ background: sage, color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontFamily: F.body, fontSize: 12.5, cursor: 'pointer' }}>
+            <button onClick={search} disabled={loading} style={{ background: sage, color: 'var(--fg-100)', border: 'none', borderRadius: 8, padding: '8px 16px', fontFamily: F.body, fontSize: 12.5, cursor: 'pointer' }}>
               {loading ? '…' : 'Search'}
             </button>
           </div>
@@ -57,7 +57,7 @@ function GroupImagePicker({ currentImage, onSelect }) {
               ))}
             </div>
           )}
-          <p style={{ fontFamily: F.body, fontSize: 10.5, color: 'rgba(255,255,255,0.6)', marginTop: 6 }}>Free images via Pixabay</p>
+          <p style={{ fontFamily: F.body, fontSize: 10.5, color: 'var(--fg-6)', marginTop: 6 }}>Free images via Pixabay</p>
         </div>
       )}
     </div>
@@ -109,17 +109,17 @@ export function GroupsPage() {
       {/* HERO */}
       <div style={{ backgroundImage: `linear-gradient(135deg, rgba(30,58,47,0.85) 0%, rgba(45,106,79,0.9) 100%), url(${IMAGES.groupsHero})`, backgroundSize: 'cover', backgroundPosition: 'center', padding: '52px 24px 44px', textAlign: 'center' }}>
         <p style={{ fontFamily: F.body, fontSize: 11, fontWeight: 700, color: sageMid, letterSpacing: '0.16em', textTransform: 'uppercase', marginBottom: 10 }}>Study Groups</p>
-        <h1 style={{ fontFamily: F.display, fontSize: 'clamp(24px,4vw,38px)', fontWeight: 900, color: '#fff', marginBottom: 12, lineHeight: 1.2 }}>
+        <h1 style={{ fontFamily: F.display, fontSize: 'clamp(24px,4vw,38px)', fontWeight: 900, color: 'var(--fg-100)', marginBottom: 12, lineHeight: 1.2 }}>
           Smaller circles,<br/>deeper roots.
         </h1>
-        <p style={{ fontFamily: F.body, fontSize: 15, color: 'rgba(255,255,255,0.7)', maxWidth: 420, margin: '0 auto 28px', lineHeight: 1.75 }}>
+        <p style={{ fontFamily: F.body, fontSize: 15, color: 'var(--fg-7)', maxWidth: 420, margin: '0 auto 28px', lineHeight: 1.75 }}>
           Book-by-book study communities where everyone knows your name and your questions are welcome.
         </p>
         {user
-          ? <button onClick={() => setShowForm(s => !s)} style={{ background: sageMid, color: '#fff', border: 'none', borderRadius: 10, padding: '11px 24px', fontFamily: F.body, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+          ? <button onClick={() => setShowForm(s => !s)} style={{ background: sageMid, color: 'var(--fg-100)', border: 'none', borderRadius: 10, padding: '11px 24px', fontFamily: F.body, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
               {showForm ? 'Cancel' : '+ Start a Group'}
             </button>
-          : <Link to="/register" style={{ background: sageMid, color: '#fff', borderRadius: 10, padding: '11px 24px', fontFamily: F.body, fontSize: 14, fontWeight: 700 }}>Join to start a group</Link>
+          : <Link to="/register" style={{ background: sageMid, color: 'var(--fg-100)', borderRadius: 10, padding: '11px 24px', fontFamily: F.body, fontSize: 14, fontWeight: 700 }}>Join to start a group</Link>
         }
       </div>
 
@@ -127,7 +127,7 @@ export function GroupsPage() {
 
         {/* Create form */}
         {showForm && (
-          <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 14, padding: '24px', marginBottom: 24, border: `1px solid ${sageLight}`, boxShadow: '0 4px 20px rgba(45,106,79,0.1)' }}>
+          <div style={{ background: 'var(--fg-06)', borderRadius: 14, padding: '24px', marginBottom: 24, border: `1px solid ${sageLight}`, boxShadow: '0 4px 20px rgba(45,106,79,0.1)' }}>
             <h3 style={{ fontFamily: F.display, fontSize: 17, fontWeight: 700, color: sage, marginBottom: 16 }}>New Study Group</h3>
             {error && <p style={{ color: '#DC2626', fontFamily: F.body, fontSize: 13, marginBottom: 10 }}>{error}</p>}
             <div style={{ display: 'grid', gap: 10 }}>
@@ -144,12 +144,12 @@ export function GroupsPage() {
                   <input type="number" min="0" max="500" value={form.max_members} onChange={e => setForm(f => ({ ...f, max_members: e.target.value }))}
                     style={{ width: '100%', border: `1.5px solid ${sageLight}`, borderRadius: 8, padding: '9px 12px', fontFamily: F.body, fontSize: 13.5, outline: 'none', boxSizing: 'border-box' }}/>
                 </div>
-                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: F.body, fontSize: 13.5, color: '#E8E0D0', alignSelf: 'end', paddingBottom: 10 }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: F.body, fontSize: 13.5, color: 'var(--c-text)', alignSelf: 'end', paddingBottom: 10 }}>
                   <input type="checkbox" checked={form.approval_required} onChange={e => setForm(f => ({ ...f, approval_required: e.target.checked }))}/>
                   Require approval to join
                 </label>
               </div>
-              <button onClick={create} disabled={creating} style={{ background: sage, color: '#fff', border: 'none', borderRadius: 8, padding: '11px', fontFamily: F.body, fontSize: 14, fontWeight: 700, cursor: 'pointer', opacity: creating ? .7 : 1 }}>
+              <button onClick={create} disabled={creating} style={{ background: sage, color: 'var(--fg-100)', border: 'none', borderRadius: 8, padding: '11px', fontFamily: F.body, fontSize: 14, fontWeight: 700, cursor: 'pointer', opacity: creating ? .7 : 1 }}>
                 {creating ? 'Creating…' : 'Create Group'}
               </button>
             </div>
@@ -159,19 +159,19 @@ export function GroupsPage() {
         {/* Filter pills */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
           {[['all','All Groups'],['open','Open to join'],['approval','Approval required'],['private','🔐 Private']].map(([k,l]) => (
-            <button key={k} onClick={() => setFilter(k)} style={{ background: filter===k ? sage : '#fff', color: filter===k ? '#fff' : C.muted, border: `1.5px solid ${filter===k ? sage : sageLight}`, borderRadius: 20, padding: '6px 16px', fontFamily: F.body, fontSize: 13, cursor: 'pointer' }}>{l}</button>
+            <button key={k} onClick={() => setFilter(k)} style={{ background: filter===k ? sage : '#fff', color: filter===k ? 'var(--fg-100)' : C.muted, border: `1.5px solid ${filter===k ? sage : sageLight}`, borderRadius: 20, padding: '6px 16px', fontFamily: F.body, fontSize: 13, cursor: 'pointer' }}>{l}</button>
           ))}
-          <span style={{ fontFamily: F.body, fontSize: 12.5, color: 'rgba(255,255,255,0.6)', alignSelf: 'center', marginLeft: 4 }}>{filtered.length} group{filtered.length !== 1 ? 's' : ''}</span>
+          <span style={{ fontFamily: F.body, fontSize: 12.5, color: 'var(--fg-6)', alignSelf: 'center', marginLeft: 4 }}>{filtered.length} group{filtered.length !== 1 ? 's' : ''}</span>
         </div>
 
         {loading ? <Spinner/> : filtered.length === 0
           ? (
             <div style={{ textAlign: 'center', padding: '52px 24px' }}>
               <p style={{ fontFamily: F.display, fontSize: 22, fontWeight: 700, color: sage, marginBottom: 8 }}>No groups yet</p>
-              <p style={{ fontFamily: F.body, fontSize: 14.5, color: 'rgba(255,255,255,0.6)', marginBottom: 20 }}>Be the founder of the first one.</p>
+              <p style={{ fontFamily: F.body, fontSize: 14.5, color: 'var(--fg-6)', marginBottom: 20 }}>Be the founder of the first one.</p>
               {user
-                ? <button onClick={() => setShowForm(true)} style={{ background: sage, color: '#fff', border: 'none', borderRadius: 10, padding: '11px 24px', fontFamily: F.body, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>Start a Group</button>
-                : <Link to="/register" style={{ background: sage, color: '#fff', borderRadius: 10, padding: '11px 24px', fontFamily: F.body, fontSize: 14, fontWeight: 700 }}>Join to start one</Link>}
+                ? <button onClick={() => setShowForm(true)} style={{ background: sage, color: 'var(--fg-100)', border: 'none', borderRadius: 10, padding: '11px 24px', fontFamily: F.body, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>Start a Group</button>
+                : <Link to="/register" style={{ background: sage, color: 'var(--fg-100)', borderRadius: 10, padding: '11px 24px', fontFamily: F.body, fontSize: 14, fontWeight: 700 }}>Join to start one</Link>}
             </div>
           )
           : (
@@ -180,7 +180,7 @@ export function GroupsPage() {
                 const full = g.max_members > 0 && g.member_count >= g.max_members
                 return (
                   <div key={g.id} onClick={() => !full && navigate(`/groups/${g.id}`)} style={{
-                    background: 'rgba(255,255,255,0.06)', borderRadius: 14, overflow: 'hidden', cursor: full ? 'not-allowed' : 'pointer',
+                    background: 'var(--fg-06)', borderRadius: 14, overflow: 'hidden', cursor: full ? 'not-allowed' : 'pointer',
                     border: `1px solid ${sageLight}`, transition: 'all 0.2s', opacity: full ? 0.7 : 1,
                     boxShadow: '0 2px 8px rgba(45,106,79,0.08)'
                   }}
@@ -197,11 +197,11 @@ export function GroupsPage() {
                         {full && <span style={{ background: '#FEF2F2', color: '#DC2626', borderRadius: 6, padding: '2px 9px', fontSize: 10.5, fontFamily: F.body, fontWeight: 600 }}>Full</span>}
                       </div>
                       <h3 style={{ fontFamily: F.display, fontSize: 16.5, fontWeight: 700, color: '#1E3A2F', margin: '0 0 5px', lineHeight: 1.3 }}>{g.name}</h3>
-                      {g.description && <p style={{ fontFamily: F.body, fontSize: 12.5, color: 'rgba(255,255,255,0.6)', margin: '0 0 12px', lineHeight: 1.55 }}>{g.description.slice(0, 90)}{g.description.length > 90 ? '…' : ''}</p>}
+                      {g.description && <p style={{ fontFamily: F.body, fontSize: 12.5, color: 'var(--fg-6)', margin: '0 0 12px', lineHeight: 1.55 }}>{g.description.slice(0, 90)}{g.description.length > 90 ? '…' : ''}</p>}
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                           <Avatar name={g.display_name} color={g.avatar_color || sage} size={20}/>
-                          <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'rgba(255,255,255,0.6)' }}>{g.display_name}</span>
+                          <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'var(--fg-6)' }}>{g.display_name}</span>
                         </div>
                         <span style={{ fontFamily: F.body, fontSize: 12, color: sage, fontWeight: 600 }}>
                           👥 {g.member_count}{g.max_members > 0 ? `/${g.max_members}` : ''}
@@ -274,12 +274,12 @@ export function GroupDetailPage() {
 
   if (loading) return <div style={{ maxWidth: 760, margin: '40px auto' }}><Spinner/></div>
   if (!group && !loading) return (
-    <div style={{ minHeight:'60vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#0a0f1e' }}>
+    <div style={{ minHeight:'60vh', display:'flex', alignItems:'center', justifyContent:'center', background:'var(--bg-page)' }}>
       <div style={{ textAlign:'center', padding:'40px', maxWidth:400 }}>
         <p style={{ fontSize:48, marginBottom:16 }}>🔐</p>
-        <h2 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:'#fff', marginBottom:10 }}>Private Group</h2>
-        <p style={{ fontFamily:F.body, fontSize:14.5, color:'rgba(255,255,255,0.55)', lineHeight:1.7, marginBottom:20 }}>This group is private. You need a personal invite link from the group owner to join.</p>
-        <button onClick={()=>navigate('/groups')} style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.15)', color:'rgba(255,255,255,0.7)', borderRadius:10, padding:'10px 24px', fontFamily:F.body, fontSize:14, cursor:'pointer' }}>← Back to Groups</button>
+        <h2 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:'var(--fg-100)', marginBottom:10 }}>Private Group</h2>
+        <p style={{ fontFamily:F.body, fontSize:14.5, color:'var(--fg-55)', lineHeight:1.7, marginBottom:20 }}>This group is private. You need a personal invite link from the group owner to join.</p>
+        <button onClick={()=>navigate('/groups')} style={{ background:'var(--fg-08)', border:'1px solid var(--fg-15)', color:'var(--fg-7)', borderRadius:10, padding:'10px 24px', fontFamily:F.body, fontSize:14, cursor:'pointer' }}>← Back to Groups</button>
       </div>
     </div>
   )
@@ -290,19 +290,19 @@ export function GroupDetailPage() {
     <div style={{ minHeight: '100vh', background: sageBg, opacity: visible ? 1 : 0, transition: 'opacity 0.5s ease' }}>
       <div style={{ backgroundImage: `linear-gradient(135deg, rgba(30,58,47,0.88) 0%, rgba(45,106,79,0.92) 100%), url(${group.cover_image || IMAGES.groupsHero})`, backgroundSize: 'cover', backgroundPosition: 'center', padding: '32px 24px 28px' }}>
         <div style={{ maxWidth: 760, margin: '0 auto' }}>
-          <button onClick={() => navigate('/groups')} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.65)', fontFamily: F.body, fontSize: 13, cursor: 'pointer', marginBottom: 14, padding: 0 }}>← All Groups</button>
-          {group.book_focus && <span style={{ background: 'rgba(255,255,255,0.15)', color: '#fff', borderRadius: 6, padding: '2px 10px', fontSize: 11, fontFamily: F.body, fontWeight: 600, display: 'inline-block', marginBottom: 10 }}>📖 {group.book_focus}</span>}
-          <h1 style={{ fontFamily: F.display, fontSize: 24, fontWeight: 700, color: '#fff', marginBottom: 8 }}>{group.name}</h1>
-          {group.description && <p style={{ fontFamily: F.body, fontSize: 14, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7, marginBottom: 14, maxWidth: 540 }}>{group.description}</p>}
+          <button onClick={() => navigate('/groups')} style={{ background: 'none', border: 'none', color: 'var(--fg-65)', fontFamily: F.body, fontSize: 13, cursor: 'pointer', marginBottom: 14, padding: 0 }}>← All Groups</button>
+          {group.book_focus && <span style={{ background: 'var(--fg-15)', color: 'var(--fg-100)', borderRadius: 6, padding: '2px 10px', fontSize: 11, fontFamily: F.body, fontWeight: 600, display: 'inline-block', marginBottom: 10 }}>📖 {group.book_focus}</span>}
+          <h1 style={{ fontFamily: F.display, fontSize: 24, fontWeight: 700, color: 'var(--fg-100)', marginBottom: 8 }}>{group.name}</h1>
+          {group.description && <p style={{ fontFamily: F.body, fontSize: 14, color: 'var(--fg-75)', lineHeight: 1.7, marginBottom: 14, maxWidth: 540 }}>{group.description}</p>}
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-            <span style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>
+            <span style={{ fontFamily: F.body, fontSize: 13, color: 'var(--fg-7)' }}>
               👥 {group.member_count}{group.max_members > 0 ? `/${group.max_members}` : ''} members
             </span>
-            {group.is_private && <span style={{ fontFamily: F.body, fontSize: 12, color: '#C9A84C', fontWeight: 600 }}>🔐 Private Group</span>}
-            {group.approval_required && <span style={{ fontFamily: F.body, fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>🔒 Approval required</span>}
+            {group.is_private && <span style={{ fontFamily: F.body, fontSize: 12, color: 'var(--c-gold)', fontWeight: 600 }}>🔐 Private Group</span>}
+            {group.approval_required && <span style={{ fontFamily: F.body, fontSize: 12, color: 'var(--fg-6)' }}>🔒 Approval required</span>}
             {full && <span style={{ fontFamily: F.body, fontSize: 12, color: '#FCA5A5', fontWeight: 600 }}>Group is full</span>}
             {user && !full && (
-              <button onClick={join} disabled={joining} style={{ background: 'rgba(255,255,255,0.18)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)', borderRadius: 8, padding: '7px 16px', fontFamily: F.body, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+              <button onClick={join} disabled={joining} style={{ background: 'var(--fg-18)', color: 'var(--fg-100)', border: '1px solid var(--fg-3)', borderRadius: 8, padding: '7px 16px', fontFamily: F.body, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                 {joining ? 'Joining…' : group.approval_required ? 'Request to Join' : 'Join Group'}
               </button>
             )}
@@ -312,11 +312,11 @@ export function GroupDetailPage() {
                 {editingMax
                   ? <>
                       <input type="number" min="0" value={maxMembers} onChange={e => setMaxMembers(e.target.value)}
-                        style={{ width: 70, border: '1px solid rgba(255,255,255,0.3)', borderRadius: 6, padding: '5px 8px', fontFamily: F.body, fontSize: 13, background: 'rgba(255,255,255,0.1)', color: '#fff', outline: 'none' }}/>
-                      <button onClick={saveMaxMembers} style={{ background: sageMid, color: '#fff', border: 'none', borderRadius: 6, padding: '5px 10px', fontFamily: F.body, fontSize: 12, cursor: 'pointer' }}>Save</button>
-                      <button onClick={() => setEditingMax(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', fontFamily: F.body, fontSize: 12, cursor: 'pointer' }}>Cancel</button>
+                        style={{ width: 70, border: '1px solid var(--fg-3)', borderRadius: 6, padding: '5px 8px', fontFamily: F.body, fontSize: 13, background: 'var(--fg-1)', color: 'var(--fg-100)', outline: 'none' }}/>
+                      <button onClick={saveMaxMembers} style={{ background: sageMid, color: 'var(--fg-100)', border: 'none', borderRadius: 6, padding: '5px 10px', fontFamily: F.body, fontSize: 12, cursor: 'pointer' }}>Save</button>
+                      <button onClick={() => setEditingMax(false)} style={{ background: 'none', border: 'none', color: 'var(--fg-5)', fontFamily: F.body, fontSize: 12, cursor: 'pointer' }}>Cancel</button>
                     </>
-                  : <button onClick={() => setEditingMax(true)} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 6, padding: '5px 10px', fontFamily: F.body, fontSize: 12, color: 'rgba(255,255,255,0.6)', cursor: 'pointer' }}>
+                  : <button onClick={() => setEditingMax(true)} style={{ background: 'none', border: '1px solid var(--fg-2)', borderRadius: 6, padding: '5px 10px', fontFamily: F.body, fontSize: 12, color: 'var(--fg-6)', cursor: 'pointer' }}>
                       ⚙️ Max: {group.max_members > 0 ? group.max_members : '∞'}
                     </button>
                 }
@@ -330,12 +330,12 @@ export function GroupDetailPage() {
         {/* Invite link panel for owner/admin of private group */}
         {inviteUrl && (
           <div style={{ background:'rgba(201,168,76,0.08)', border:'1px solid rgba(201,168,76,0.2)', borderRadius:12, padding:'16px 18px', marginBottom:20 }}>
-            <p style={{ fontFamily:F.body, fontSize:12, fontWeight:700, color:'#C9A84C', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:8 }}>🔐 Private Invite Link</p>
-            <p style={{ fontFamily:F.body, fontSize:12.5, color:'rgba(255,255,255,0.55)', marginBottom:10, lineHeight:1.6 }}>Share this link to invite members. Only people with this link can find and join this group.</p>
+            <p style={{ fontFamily:F.body, fontSize:12, fontWeight:700, color:'var(--c-gold)', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:8 }}>🔐 Private Invite Link</p>
+            <p style={{ fontFamily:F.body, fontSize:12.5, color:'var(--fg-55)', marginBottom:10, lineHeight:1.6 }}>Share this link to invite members. Only people with this link can find and join this group.</p>
             <div style={{ display:'flex', gap:8, alignItems:'center', flexWrap:'wrap' }}>
-              <code style={{ flex:1, background:'rgba(0,0,0,0.3)', borderRadius:8, padding:'8px 12px', fontFamily:'monospace', fontSize:12.5, color:'#E8C97A', wordBreak:'break-all' }}>{inviteUrl}</code>
+              <code style={{ flex:1, background:'rgba(0,0,0,0.3)', borderRadius:8, padding:'8px 12px', fontFamily:'monospace', fontSize:12.5, color:'var(--c-gold-light)', wordBreak:'break-all' }}>{inviteUrl}</code>
               <button onClick={async () => { await navigator.clipboard.writeText(inviteUrl); setCopied(true); setTimeout(()=>setCopied(false),2000) }}
-                style={{ background:copied?'rgba(21,128,61,0.2)':'rgba(201,168,76,0.15)', color:copied?'#4ade80':'#C9A84C', border:`1px solid ${copied?'rgba(21,128,61,0.4)':'rgba(201,168,76,0.3)'}`, borderRadius:8, padding:'8px 14px', fontFamily:F.body, fontSize:13, cursor:'pointer', whiteSpace:'nowrap' }}>
+                style={{ background:copied?'rgba(21,128,61,0.2)':'rgba(201,168,76,0.15)', color:copied?'#4ade80':'var(--c-gold)', border:`1px solid ${copied?'rgba(21,128,61,0.4)':'rgba(201,168,76,0.3)'}`, borderRadius:8, padding:'8px 14px', fontFamily:F.body, fontSize:13, cursor:'pointer', whiteSpace:'nowrap' }}>
                 {copied ? '✓ Copied!' : '📋 Copy'}
               </button>
             </div>
@@ -343,27 +343,27 @@ export function GroupDetailPage() {
         )}
         <h2 style={{ fontFamily: F.display, fontSize: 17, fontWeight: 700, color: '#1E3A2F', marginBottom: 14 }}>Discussion ({posts.length})</h2>
         {posts.map(p => (
-          <div key={p.id} style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 10, padding: '14px 18px', marginBottom: 10, border: `1px solid ${sageLight}` }}>
+          <div key={p.id} style={{ background: 'var(--fg-06)', borderRadius: 10, padding: '14px 18px', marginBottom: 10, border: `1px solid ${sageLight}` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 8 }}>
               <Avatar name={p.display_name} color={p.avatar_color || sage} size={28}/>
               <span style={{ fontFamily: F.body, fontSize: 13, fontWeight: 600, color: '#1E3A2F' }}>{p.display_name}</span>
               <BadgeTag label={p.badge}/>
-              <span style={{ fontFamily: F.body, fontSize: 11, color: 'rgba(255,255,255,0.6)', marginLeft: 'auto' }}>
+              <span style={{ fontFamily: F.body, fontSize: 11, color: 'var(--fg-6)', marginLeft: 'auto' }}>
                 {new Date(p.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
               </span>
             </div>
-            <p style={{ fontFamily: F.body, fontSize: 14, color: '#E8E0D0', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{p.body}</p>
+            <p style={{ fontFamily: F.body, fontSize: 14, color: 'var(--c-text)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{p.body}</p>
           </div>
         ))}
 
-        <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 12, padding: '18px 20px', border: `1px solid ${sageLight}`, marginTop: 18 }}>
+        <div style={{ background: 'var(--fg-06)', borderRadius: 12, padding: '18px 20px', border: `1px solid ${sageLight}`, marginTop: 18 }}>
           {!user
-            ? <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.6)' }}><Link to="/login" style={{ color: sage, fontWeight: 600 }}>Sign in</Link> to join the conversation.</p>
+            ? <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'var(--fg-6)' }}><Link to="/login" style={{ color: sage, fontWeight: 600 }}>Sign in</Link> to join the conversation.</p>
             : <>
                 {error && <p style={{ color: '#DC2626', fontFamily: F.body, fontSize: 13, marginBottom: 8 }}>{error}</p>}
                 <textarea value={body} onChange={e => setBody(e.target.value)} placeholder="Share your thoughts with the group…" rows={3}
                   style={{ width: '100%', border: `1.5px solid ${sageLight}`, borderRadius: 8, padding: '10px 13px', fontFamily: F.body, fontSize: 13.5, resize: 'vertical', outline: 'none', marginBottom: 10, boxSizing: 'border-box' }}/>
-                <button onClick={post} disabled={posting || !body.trim()} style={{ background: posting || !body.trim() ? sageLight : sage, color: posting || !body.trim() ? C.muted : '#fff', border: 'none', borderRadius: 8, padding: '10px 22px', fontFamily: F.body, fontSize: 13.5, fontWeight: 700, cursor: posting || !body.trim() ? 'not-allowed' : 'pointer' }}>
+                <button onClick={post} disabled={posting || !body.trim()} style={{ background: posting || !body.trim() ? sageLight : sage, color: posting || !body.trim() ? C.muted : 'var(--fg-100)', border: 'none', borderRadius: 8, padding: '10px 22px', fontFamily: F.body, fontSize: 13.5, fontWeight: 700, cursor: posting || !body.trim() ? 'not-allowed' : 'pointer' }}>
                   {posting ? 'Posting…' : 'Post'}
                 </button>
               </>
@@ -407,34 +407,34 @@ export function GroupJoinPage() {
   }
 
   if (loading) return (
-    <div style={{ minHeight:'80vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#0a0f1e' }}>
-      <p style={{ fontFamily:F.body, color:'rgba(255,255,255,0.4)' }}>Loading…</p>
+    <div style={{ minHeight:'80vh', display:'flex', alignItems:'center', justifyContent:'center', background:'var(--bg-page)' }}>
+      <p style={{ fontFamily:F.body, color:'var(--fg-4)' }}>Loading…</p>
     </div>
   )
 
   if (!group) return (
-    <div style={{ minHeight:'80vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#0a0f1e' }}>
+    <div style={{ minHeight:'80vh', display:'flex', alignItems:'center', justifyContent:'center', background:'var(--bg-page)' }}>
       <div style={{ textAlign:'center', padding:40 }}>
-        <p style={{ fontFamily:F.display, fontSize:20, color:'#fff', marginBottom:12 }}>Invalid invite link</p>
-        <p style={{ fontFamily:F.body, fontSize:14, color:'rgba(255,255,255,0.5)', marginBottom:20 }}>This link may have expired or been removed.</p>
-        <button onClick={()=>navigate('/groups')} style={{ background:sage, color:'#fff', border:'none', borderRadius:10, padding:'11px 24px', fontFamily:F.body, fontSize:14, fontWeight:700, cursor:'pointer' }}>Browse Groups</button>
+        <p style={{ fontFamily:F.display, fontSize:20, color:'var(--fg-100)', marginBottom:12 }}>Invalid invite link</p>
+        <p style={{ fontFamily:F.body, fontSize:14, color:'var(--fg-5)', marginBottom:20 }}>This link may have expired or been removed.</p>
+        <button onClick={()=>navigate('/groups')} style={{ background:sage, color:'var(--fg-100)', border:'none', borderRadius:10, padding:'11px 24px', fontFamily:F.body, fontSize:14, fontWeight:700, cursor:'pointer' }}>Browse Groups</button>
       </div>
     </div>
   )
 
   return (
-    <div style={{ minHeight:'80vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#0a0f1e', padding:'40px 20px' }}>
-      <div style={{ background:'rgba(17,24,39,0.95)', border:'1px solid rgba(201,168,76,0.2)', borderRadius:20, padding:'40px 32px', maxWidth:460, width:'100%', textAlign:'center', boxShadow:'0 8px 40px rgba(0,0,0,0.5)' }}>
+    <div style={{ minHeight:'80vh', display:'flex', alignItems:'center', justifyContent:'center', background:'var(--bg-page)', padding:'40px 20px' }}>
+      <div style={{ background:'var(--surface-authcard)', border:'1px solid rgba(201,168,76,0.2)', borderRadius:20, padding:'40px 32px', maxWidth:460, width:'100%', textAlign:'center', boxShadow:'0 8px 40px rgba(0,0,0,0.5)' }}>
         {group.cover_image && (
           <div style={{ backgroundImage:`url(${group.cover_image})`, backgroundSize:'cover', backgroundPosition:'center', height:120, borderRadius:12, marginBottom:20 }}/>
         )}
-        <span style={{ background:'rgba(201,168,76,0.15)', color:'#C9A84C', borderRadius:6, padding:'3px 12px', fontSize:12, fontFamily:F.body, fontWeight:700, display:'inline-block', marginBottom:14 }}>
+        <span style={{ background:'rgba(201,168,76,0.15)', color:'var(--c-gold)', borderRadius:6, padding:'3px 12px', fontSize:12, fontFamily:F.body, fontWeight:700, display:'inline-block', marginBottom:14 }}>
           🔐 Private Group Invitation
         </span>
-        <h1 style={{ fontFamily:F.display, fontSize:24, fontWeight:700, color:'#fff', marginBottom:8 }}>{group.name}</h1>
-        {group.book_focus && <p style={{ fontFamily:F.body, fontSize:13, color:'#C9A84C', marginBottom:10 }}>📖 {group.book_focus}</p>}
-        {group.description && <p style={{ fontFamily:F.body, fontSize:14.5, color:'rgba(255,255,255,0.6)', lineHeight:1.7, marginBottom:20 }}>{group.description}</p>}
-        <p style={{ fontFamily:F.body, fontSize:13, color:'rgba(255,255,255,0.4)', marginBottom:24 }}>
+        <h1 style={{ fontFamily:F.display, fontSize:24, fontWeight:700, color:'var(--fg-100)', marginBottom:8 }}>{group.name}</h1>
+        {group.book_focus && <p style={{ fontFamily:F.body, fontSize:13, color:'var(--c-gold)', marginBottom:10 }}>📖 {group.book_focus}</p>}
+        {group.description && <p style={{ fontFamily:F.body, fontSize:14.5, color:'var(--fg-6)', lineHeight:1.7, marginBottom:20 }}>{group.description}</p>}
+        <p style={{ fontFamily:F.body, fontSize:13, color:'var(--fg-4)', marginBottom:24 }}>
           {group.member_count} member{group.member_count !== 1 ? 's' : ''} · Hosted by {group.display_name}
         </p>
 
@@ -443,16 +443,16 @@ export function GroupJoinPage() {
         {joined ? (
           <div>
             <p style={{ fontFamily:F.body, fontSize:15, color:'#4ade80', marginBottom:16 }}>✅ You've joined the group!</p>
-            <button onClick={()=>navigate(`/groups/${group.id}`)} style={{ background:'linear-gradient(135deg,#C9A84C,#E8C97A)', color:'#0a0f1e', border:'none', borderRadius:10, padding:'12px 28px', fontFamily:F.body, fontSize:14.5, fontWeight:700, cursor:'pointer' }}>
+            <button onClick={()=>navigate(`/groups/${group.id}`)} style={{ background:'linear-gradient(135deg,var(--c-gold),var(--c-gold-light))', color:'#0a0f1e', border:'none', borderRadius:10, padding:'12px 28px', fontFamily:F.body, fontSize:14.5, fontWeight:700, cursor:'pointer' }}>
               Enter Group →
             </button>
           </div>
         ) : (
-          <button onClick={join} disabled={joining} style={{ background:'linear-gradient(135deg,#C9A84C,#E8C97A)', color:'#0a0f1e', border:'none', borderRadius:10, padding:'13px 32px', fontFamily:F.body, fontSize:15, fontWeight:700, cursor:'pointer', opacity:joining?0.7:1, width:'100%' }}>
+          <button onClick={join} disabled={joining} style={{ background:'linear-gradient(135deg,var(--c-gold),var(--c-gold-light))', color:'#0a0f1e', border:'none', borderRadius:10, padding:'13px 32px', fontFamily:F.body, fontSize:15, fontWeight:700, cursor:'pointer', opacity:joining?0.7:1, width:'100%' }}>
             {joining ? 'Joining…' : user ? 'Join This Group →' : 'Sign in to Join →'}
           </button>
         )}
-        <button onClick={()=>navigate('/groups')} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.35)', fontFamily:F.body, fontSize:12.5, cursor:'pointer', marginTop:14 }}>
+        <button onClick={()=>navigate('/groups')} style={{ background:'none', border:'none', color:'var(--fg-35)', fontFamily:F.body, fontSize:12.5, cursor:'pointer', marginTop:14 }}>
           ← Back to all groups
         </button>
       </div>

@@ -67,10 +67,10 @@ export default function ShareButton({ title, url, excerpt = '' }) {
             position: 'absolute', bottom: '110%', right: 0,
             background: '#fff', borderRadius: 12, padding: '12px',
             boxShadow: '0 8px 32px rgba(0,0,0,0.16)',
-            border: `1px solid ${C.border}`, zIndex: 50,
+            border: '1px solid #E5E0D5', zIndex: 50,
             minWidth: 200
           }}>
-            <p style={{ fontFamily: F.body, fontSize: 11.5, fontWeight: 700, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Share this discussion</p>
+            <p style={{ fontFamily: F.body, fontSize: 11.5, fontWeight: 700, color: '#8a7f6a', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Share this discussion</p>
             <div style={{ display: 'grid', gap: 6 }}>
               {links.map(l => (
                 <a key={l.label} href={l.href} target="_blank" rel="noreferrer"
@@ -95,7 +95,7 @@ export default function ShareButton({ title, url, excerpt = '' }) {
                 padding: '8px 10px', borderRadius: 8,
                 background: copied ? '#F0FDF4' : C.mist,
                 fontFamily: F.body, fontSize: 13, fontWeight: 600,
-                color: copied ? '#15803D' : C.muted,
+                color: copied ? '#15803D' : '#6b6357',
                 border: 'none', cursor: 'pointer', width: '100%', textAlign: 'left'
               }}>
                 <span style={{ width: 22, textAlign: 'center' }}>{copied ? '✓' : '📋'}</span>

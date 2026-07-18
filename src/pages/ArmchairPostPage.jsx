@@ -4,6 +4,7 @@ import { useAuth } from '../lib/auth.jsx'
 import { C, F, API } from '../lib/tokens.js'
 import { Avatar, Spinner } from '../components/ui.jsx'
 import { usePageTitle } from '../lib/usePageTitle.js'
+import ImagePicker from '../components/ImagePicker.jsx'
 
 const FB = 'https://images.unsplash.com/photo-1490127252417-7c393f993ee4?w=1200&q=60'
 
@@ -16,6 +17,7 @@ export default function ArmchairPostPage() {
   const [editing, setEditing] = useState(false)
   const [editTitle, setEditTitle] = useState('')
   const [editBody, setEditBody] = useState('')
+  const [editCoverImage, setEditCoverImage] = useState('')
   const [saving, setSaving] = useState(false)
   usePageTitle(post?.title)
 
@@ -31,11 +33,11 @@ export default function ArmchairPostPage() {
     const res = await fetch(`${API}/armchair/manage`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ id: post.id, title: editTitle, body: editBody })
+      body: JSON.stringify({ id: post.id, title: editTitle, body: editBody, cover_image: editCoverImage })
     })
     const data = await res.json()
     if (data.ok) {
-      setPost(p => ({ ...p, title: editTitle, body: editBody }))
+      setPost(p => ({ ...p, title: editTitle, body: editBody, cover_image: editCoverImage }))
       setEditing(false)
     }
     setSaving(false)
@@ -49,17 +51,17 @@ export default function ArmchairPostPage() {
       <button onClick={()=>navigate('/armchair')} style={{ background:'none', border:'none', color:C.navyLight, fontFamily:F.body, fontSize:13.5, fontWeight:600, cursor:'pointer', marginBottom:22, padding:0 }}>
         ← Back to The Armchair
       </button>
-      <div style={{ backgroundImage:`url(${post.cover_image||FB})`, backgroundSize:'cover', backgroundPosition:'center', height:260, borderRadius:14, marginBottom:24 }}/>
+      <div style={{ backgroundImage:`url(${(editing ? editCoverImage : post.cover_image)||FB})`, backgroundSize:'cover', backgroundPosition:'center', height:260, borderRadius:14, marginBottom:24 }}/>
       <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12, marginBottom:12 }}>
         {editing ? (
           <input value={editTitle} onChange={e=>setEditTitle(e.target.value)}
-            style={{ flex:1, fontFamily:F.display, fontSize:24, fontWeight:700, color:'#fff', background:'rgba(255,255,255,0.08)', border:'1px solid rgba(201,168,76,0.3)', borderRadius:8, padding:'8px 12px', colorScheme:'dark' }}/>
+            style={{ flex:1, fontFamily:F.display, fontSize:24, fontWeight:700, color:'var(--fg-100)', background:'var(--fg-08)', border:'1px solid rgba(201,168,76,0.3)', borderRadius:8, padding:'8px 12px', colorScheme:'dark' }}/>
         ) : (
-          <h1 style={{ fontFamily:F.display, fontSize:26, fontWeight:700, color:'#fff', lineHeight:1.3, margin:0 }}>{post.title}</h1>
+          <h1 style={{ fontFamily:F.display, fontSize:26, fontWeight:700, color:'var(--fg-100)', lineHeight:1.3, margin:0 }}>{post.title}</h1>
         )}
         {user && post.author_id === user.id && !editing && (
-          <button onClick={()=>{ setEditTitle(post.title); setEditBody(post.body); setEditing(true) }}
-            style={{ background:'none', border:'1px solid rgba(255,255,255,0.15)', borderRadius:7, color:'rgba(255,255,255,0.5)', fontFamily:F.body, fontSize:12.5, cursor:'pointer', padding:'6px 12px', whiteSpace:'nowrap', flexShrink:0 }}>
+          <button onClick={()=>{ setEditTitle(post.title); setEditBody(post.body); setEditCoverImage(post.cover_image||''); setEditing(true) }}
+            style={{ background:'none', border:'1px solid var(--fg-15)', borderRadius:7, color:'var(--fg-5)', fontFamily:F.body, fontSize:12.5, cursor:'pointer', padding:'6px 12px', whiteSpace:'nowrap', flexShrink:0 }}>
             ✏️ Edit
           </button>
         )}
@@ -73,15 +75,16 @@ export default function ArmchairPostPage() {
       </div>
       {editing ? (
         <div>
+          <ImagePicker currentImage={editCoverImage} onSelect={url=>setEditCoverImage(url)}/>
           <textarea value={editBody} onChange={e=>setEditBody(e.target.value)} rows={12}
-            style={{ width:'100%', fontFamily:F.body, fontSize:15, color:'#fff', background:'rgba(255,255,255,0.08)', border:'1px solid rgba(201,168,76,0.3)', borderRadius:8, padding:'12px', colorScheme:'dark', resize:'vertical', lineHeight:1.8, boxSizing:'border-box', marginBottom:10 }}/>
+            style={{ width:'100%', fontFamily:F.body, fontSize:15, color:'var(--fg-100)', background:'var(--fg-08)', border:'1px solid rgba(201,168,76,0.3)', borderRadius:8, padding:'12px', colorScheme:'dark', resize:'vertical', lineHeight:1.8, boxSizing:'border-box', marginBottom:10 }}/>
           <div style={{ display:'flex', gap:8 }}>
             <button onClick={saveEdit} disabled={saving}
               style={{ background:C.gold, color:'#0a0f1e', border:'none', borderRadius:8, padding:'9px 22px', fontFamily:F.body, fontSize:13.5, fontWeight:700, cursor:'pointer' }}>
               {saving ? 'Saving…' : 'Save changes'}
             </button>
             <button onClick={()=>setEditing(false)}
-              style={{ background:'rgba(255,255,255,0.06)', color:'rgba(255,255,255,0.6)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:8, padding:'9px 18px', fontFamily:F.body, fontSize:13.5, cursor:'pointer' }}>
+              style={{ background:'var(--fg-06)', color:'var(--fg-6)', border:'1px solid var(--fg-1)', borderRadius:8, padding:'9px 18px', fontFamily:F.body, fontSize:13.5, cursor:'pointer' }}>
               Cancel
             </button>
           </div>

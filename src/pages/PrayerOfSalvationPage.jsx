@@ -72,7 +72,7 @@ export default function PrayerOfSalvationPage() {
       {/* Progress dots */}
       <div style={{ position: 'fixed', top: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8, zIndex: 20 }}>
         {STEPS.map((s, i) => (
-          <div key={i} style={{ width: i === step ? 24 : 8, height: 8, borderRadius: 4, background: i <= step ? C.gold : 'rgba(255,255,255,0.2)', transition: 'all 0.3s' }}/>
+          <div key={i} style={{ width: i === step ? 24 : 8, height: 8, borderRadius: 4, background: i <= step ? C.gold : 'var(--fg-2)', transition: 'all 0.3s' }}/>
         ))}
       </div>
 
@@ -87,13 +87,13 @@ export default function PrayerOfSalvationPage() {
             {step + 1} of {STEPS.length}
           </p>
 
-          <h1 style={{ fontFamily: F.display, fontSize: 'clamp(24px,4vw,36px)', fontWeight: 700, color: '#fff', textAlign: 'center', marginBottom: 28, lineHeight: 1.2 }}>
+          <h1 style={{ fontFamily: F.display, fontSize: 'clamp(24px,4vw,36px)', fontWeight: 700, color: 'var(--fg-100)', textAlign: 'center', marginBottom: 28, lineHeight: 1.2 }}>
             {current.title}
           </h1>
 
           {/* Verse */}
           <div style={{ borderLeft: `3px solid ${C.gold}`, paddingLeft: 20, marginBottom: 28 }}>
-            <p style={{ fontFamily: F.display, fontSize: 'clamp(16px,2.5vw,20px)', fontWeight: 600, color: '#fff', lineHeight: 1.65, marginBottom: 8, fontStyle: 'italic' }}>
+            <p style={{ fontFamily: F.display, fontSize: 'clamp(16px,2.5vw,20px)', fontWeight: 600, color: 'var(--fg-100)', lineHeight: 1.65, marginBottom: 8, fontStyle: 'italic' }}>
               "{current.verse}"
             </p>
             <p style={{ fontFamily: F.body, fontSize: 13.5, fontWeight: 700, color: C.gold }}>{current.ref}</p>
@@ -101,7 +101,7 @@ export default function PrayerOfSalvationPage() {
 
           {/* Body text */}
           {current.text && (
-            <p style={{ fontFamily: F.body, fontSize: 16, color: 'rgba(255,255,255,0.78)', lineHeight: 1.85, marginBottom: 24 }}>
+            <p style={{ fontFamily: F.body, fontSize: 16, color: 'var(--fg-78)', lineHeight: 1.85, marginBottom: 24 }}>
               {current.text}
             </p>
           )}
@@ -109,7 +109,7 @@ export default function PrayerOfSalvationPage() {
           {/* Prayer text */}
           {isPrayer && current.prayer && (
             <div style={{ background: 'rgba(201,168,76,0.08)', border: `1px solid ${C.gold}33`, borderRadius: 14, padding: '24px 28px', marginBottom: 24 }}>
-              <p style={{ fontFamily: F.display, fontSize: 17, color: '#fff', lineHeight: 2, whiteSpace: 'pre-wrap', margin: 0 }}>
+              <p style={{ fontFamily: F.display, fontSize: 17, color: 'var(--fg-100)', lineHeight: 2, whiteSpace: 'pre-wrap', margin: 0 }}>
                 {current.prayer}
               </p>
             </div>
@@ -125,10 +125,10 @@ export default function PrayerOfSalvationPage() {
           {/* Last step — next steps */}
           {isLast && (
             <div style={{ marginBottom: 32 }}>
-              <p style={{ fontFamily: F.body, fontSize: 16, color: 'rgba(255,255,255,0.78)', lineHeight: 1.85, marginBottom: 20 }}>
+              <p style={{ fontFamily: F.body, fontSize: 16, color: 'var(--fg-78)', lineHeight: 1.85, marginBottom: 20 }}>
                 If you prayed that prayer sincerely, something eternal has happened. Welcome to the family of God.
               </p>
-              <p style={{ fontFamily: F.body, fontSize: 15, color: 'rgba(255,255,255,0.65)', lineHeight: 1.75, marginBottom: 24 }}>
+              <p style={{ fontFamily: F.body, fontSize: 15, color: 'var(--fg-65)', lineHeight: 1.75, marginBottom: 24 }}>
                 What now? Three things matter most in these early days:
               </p>
               {[
@@ -136,11 +136,11 @@ export default function PrayerOfSalvationPage() {
                 { icon: '🙏', title: 'Pray every day', desc: 'Talk to God like you would a friend. He hears you. The Prayer & Life forum is a safe space.' },
                 { icon: '💬', title: 'Find community', desc: 'You were not made to walk alone. Dive into the Seekers\' Corner — no question is too basic.' },
               ].map((item, i) => (
-                <div key={i} style={{ display: 'flex', gap: 14, padding: '14px', background: 'rgba(255,255,255,0.05)', borderRadius: 10, marginBottom: 10, border: '1px solid rgba(255,255,255,0.08)' }}>
+                <div key={i} style={{ display: 'flex', gap: 14, padding: '14px', background: 'var(--fg-05)', borderRadius: 10, marginBottom: 10, border: '1px solid var(--fg-08)' }}>
                   <span style={{ fontSize: 22, flexShrink: 0 }}>{item.icon}</span>
                   <div>
-                    <p style={{ fontFamily: F.display, fontSize: 15, fontWeight: 700, color: '#fff', margin: '0 0 4px' }}>{item.title}</p>
-                    <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.6)', margin: 0, lineHeight: 1.6 }}>{item.desc}</p>
+                    <p style={{ fontFamily: F.display, fontSize: 15, fontWeight: 700, color: 'var(--fg-100)', margin: '0 0 4px' }}>{item.title}</p>
+                    <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'var(--fg-6)', margin: 0, lineHeight: 1.6 }}>{item.desc}</p>
                   </div>
                 </div>
               ))}
@@ -150,7 +150,7 @@ export default function PrayerOfSalvationPage() {
           {/* Navigation */}
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
             {step > 0 && (
-              <button onClick={() => goTo(step - 1)} style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 10, padding: '12px 24px', fontFamily: F.body, fontSize: 14, cursor: 'pointer' }}>
+              <button onClick={() => goTo(step - 1)} style={{ background: 'var(--fg-08)', color: 'var(--fg-6)', border: '1px solid var(--fg-15)', borderRadius: 10, padding: '12px 24px', fontFamily: F.body, fontSize: 14, cursor: 'pointer' }}>
                 ← Back
               </button>
             )}
@@ -172,10 +172,10 @@ export default function PrayerOfSalvationPage() {
                 <Link to="/forum/seekers" style={{ background: C.gold, color: C.navy, borderRadius: 10, padding: '13px 26px', fontFamily: F.body, fontSize: 14.5, fontWeight: 700 }}>
                   🌱 Join Seekers' Corner →
                 </Link>
-                <Link to="/bible" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 10, padding: '13px 26px', fontFamily: F.body, fontSize: 14 }}>
+                <Link to="/bible" style={{ background: 'var(--fg-1)', color: 'var(--fg-100)', border: '1px solid var(--fg-2)', borderRadius: 10, padding: '13px 26px', fontFamily: F.body, fontSize: 14 }}>
                   📖 Open Bible Study
                 </Link>
-                <Link to="/register" style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 10, padding: '13px 26px', fontFamily: F.body, fontSize: 14 }}>
+                <Link to="/register" style={{ background: 'var(--fg-08)', color: 'var(--fg-7)', border: '1px solid var(--fg-15)', borderRadius: 10, padding: '13px 26px', fontFamily: F.body, fontSize: 14 }}>
                   Join the Community
                 </Link>
               </div>
@@ -184,7 +184,7 @@ export default function PrayerOfSalvationPage() {
 
           {/* Reassurance */}
           {step === 0 && (
-            <p style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.35)', textAlign: 'center', marginTop: 24 }}>
+            <p style={{ fontFamily: F.body, fontSize: 13, color: 'var(--fg-35)', textAlign: 'center', marginTop: 24 }}>
               No pressure. No obligation. Just an open door — walk through at your own pace.
             </p>
           )}

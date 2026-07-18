@@ -172,13 +172,13 @@ export function HostBroadcaster({ sessionId, token, zoomLink, onEnd }) {
   }, [])
 
   return (
-    <div style={{ background: status === 'broadcasting' ? '#FEF2F2' : C.parchment, borderRadius: 12, padding: '18px 20px', marginBottom: 16, border: `1px solid ${status === 'broadcasting' ? '#FECACA' : C.border}` }}>
+    <div style={{ background: status === 'broadcasting' ? '#FEF2F2' : C.parchment, borderRadius: 12, padding: '18px 20px', marginBottom: 16, border: `1px solid ${status === 'broadcasting' ? '#FECACA' : '#D4C9AE'}` }}>
       <p style={{ fontFamily: F.body, fontSize: 12, fontWeight: 700, color: C.navy, marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
         🎙 Host Broadcast Controls
       </p>
 
       {msg && (
-        <p style={{ fontFamily: F.body, fontSize: 13, marginBottom: 12, color: msg.startsWith('❌') ? '#DC2626' : msg.startsWith('✅') ? '#15803D' : C.muted }}>
+        <p style={{ fontFamily: F.body, fontSize: 13, marginBottom: 12, color: msg.startsWith('❌') ? '#DC2626' : msg.startsWith('✅') ? '#15803D' : '#5a6472' }}>
           {msg}
         </p>
       )}
@@ -195,7 +195,7 @@ export function HostBroadcaster({ sessionId, token, zoomLink, onEnd }) {
       )}
 
       {status === 'connecting' && (
-        <p style={{ fontFamily: F.body, fontSize: 13, color: C.muted }}>Connecting to broadcast room…</p>
+        <p style={{ fontFamily: F.body, fontSize: 13, color: '#5a6472' }}>Connecting to broadcast room…</p>
       )}
 
       {status === 'broadcasting' && (
@@ -206,7 +206,7 @@ export function HostBroadcaster({ sessionId, token, zoomLink, onEnd }) {
               LIVE — {listenerCount} listener{listenerCount !== 1 ? 's' : ''} connected
             </span>
           </div>
-          <p style={{ fontFamily: F.body, fontSize: 12, color: C.muted, marginBottom: 12 }}>
+          <p style={{ fontFamily: F.body, fontSize: 12, color: '#5a6472', marginBottom: 12 }}>
             Recording: {(recordingSize / 1024).toFixed(0)} KB captured
           </p>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
@@ -221,7 +221,7 @@ export function HostBroadcaster({ sessionId, token, zoomLink, onEnd }) {
       )}
 
       {(status === 'saving' || status === 'ended') && (
-        <p style={{ fontFamily: F.body, fontSize: 13, color: status === 'ended' ? '#15803D' : C.muted }}>{msg}</p>
+        <p style={{ fontFamily: F.body, fontSize: 13, color: status === 'ended' ? '#15803D' : '#5a6472' }}>{msg}</p>
       )}
 
       <style>{`
@@ -337,14 +337,14 @@ export function ListenerReceiver({ sessionId, zoomLink }) {
               <Btn variant="outline">📹 Join Video Instead</Btn>
             </a>
           )}
-          <span style={{ fontFamily: F.body, fontSize: 12.5, color: C.muted }}>
+          <span style={{ fontFamily: F.body, fontSize: 12.5, color: '#5a6472' }}>
             Click to hear the live conversation
           </span>
         </div>
       )}
 
       {status === 'connecting' && (
-        <p style={{ fontFamily: F.body, fontSize: 13, color: C.muted }}>
+        <p style={{ fontFamily: F.body, fontSize: 13, color: '#5a6472' }}>
           Connecting to live room…
         </p>
       )}
@@ -355,7 +355,7 @@ export function ListenerReceiver({ sessionId, zoomLink }) {
           <span style={{ fontFamily: F.body, fontSize: 13, color: '#15803D', fontWeight: 600 }}>
             🎧 Connected — listening live
           </span>
-          <button onClick={disconnect} style={{ background: 'none', border: 'none', color: C.muted, fontSize: 12, cursor: 'pointer', fontFamily: F.body }}>
+          <button onClick={disconnect} style={{ background: 'none', border: 'none', color: '#5a6472', fontSize: 12, cursor: 'pointer', fontFamily: F.body }}>
             Disconnect
           </button>
         </div>

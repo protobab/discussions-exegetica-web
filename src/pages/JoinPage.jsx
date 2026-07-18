@@ -63,7 +63,7 @@ export default function JoinPage() {
           </div>
         )}
 
-        <p style={{ fontFamily: F.body, fontSize: 15, color: C.muted, lineHeight: 1.75, marginBottom: 28 }}>
+        <p style={{ fontFamily: F.body, fontSize: 15, color: '#5a5346', lineHeight: 1.75, marginBottom: 28 }}>
           A global community where Scripture is opened together — honest questions welcome, all backgrounds respected.
         </p>
 
@@ -76,7 +76,7 @@ export default function JoinPage() {
           ].map((item, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', background: C.parchment, borderRadius: 10, textAlign: 'left' }}>
               <span style={{ fontSize: 20 }}>{item.icon}</span>
-              <span style={{ fontFamily: F.body, fontSize: 13.5, color: C.text }}>{item.text}</span>
+              <span style={{ fontFamily: F.body, fontSize: 13.5, color: '#2C2416' }}>{item.text}</span>
             </div>
           ))}
         </div>
@@ -93,11 +93,11 @@ export default function JoinPage() {
           Join Free — Create Your Account →
         </Link>
 
-        <p style={{ fontFamily: F.body, fontSize: 13, color: C.muted }}>
+        <p style={{ fontFamily: F.body, fontSize: 13, color: '#5a5346' }}>
           Already a member? <Link to="/login" style={{ color: C.gold, fontWeight: 600 }}>Sign in</Link>
         </p>
 
-        <p style={{ fontFamily: F.body, fontSize: 11.5, color: C.muted, marginTop: 20 }}>
+        <p style={{ fontFamily: F.body, fontSize: 11.5, color: '#5a5346', marginTop: 20 }}>
           Free forever · No spam · Cancel anytime
         </p>
       </div>

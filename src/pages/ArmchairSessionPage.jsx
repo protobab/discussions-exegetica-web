@@ -67,7 +67,7 @@ export default function ArmchairSessionPage() {
 
   return (
     <div style={{ maxWidth:820, margin:'0 auto', padding:'32px 20px 60px' }}>
-      <button onClick={() => navigate('/armchair')} style={{ background:'none', border:'none', color:'#E8C97A', fontFamily:F.body, fontSize:13.5, fontWeight:600, cursor:'pointer', marginBottom:20, padding:0 }}>
+      <button onClick={() => navigate('/armchair')} style={{ background:'none', border:'none', color:'var(--c-gold-light)', fontFamily:F.body, fontSize:13.5, fontWeight:600, cursor:'pointer', marginBottom:20, padding:0 }}>
         ← Back to The Armchair
       </button>
 
@@ -80,10 +80,10 @@ export default function ArmchairSessionPage() {
       <div style={{ display:'grid', gridTemplateColumns:'minmax(0,1.2fr) minmax(0,1fr)', gap:20, marginBottom:20 }} className="sess-grid">
         <div style={{ backgroundImage:`url(${session.cover_image||FB})`, backgroundSize:'cover', backgroundPosition:'center', borderRadius:12, minHeight:160 }}/>
         <div style={{ display:'flex', flexDirection:'column', justifyContent:'center' }}>
-          <h1 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:'#E8E0D0', marginBottom:6, lineHeight:1.3 }}>{session.title}</h1>
-          {session.guest_name && <p style={{ fontFamily:F.body, fontSize:13.5, color:'rgba(255,255,255,0.6)', marginBottom:8 }}>with <strong style={{ color:C.text }}>{session.guest_name}</strong></p>}
-          <p style={{ fontFamily:F.body, fontSize:13, color:'#E8E0D0', lineHeight:1.65 }}>{session.description}</p>
-          <p style={{ fontFamily:F.body, fontSize:12, color:'rgba(255,255,255,0.6)', marginTop:10 }}>👥 {session.listener_count} engaging in this conversation</p>
+          <h1 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:'var(--c-text)', marginBottom:6, lineHeight:1.3 }}>{session.title}</h1>
+          {session.guest_name && <p style={{ fontFamily:F.body, fontSize:13.5, color:'var(--fg-6)', marginBottom:8 }}>with <strong style={{ color:C.text }}>{session.guest_name}</strong></p>}
+          <p style={{ fontFamily:F.body, fontSize:13, color:'var(--c-text)', lineHeight:1.65 }}>{session.description}</p>
+          <p style={{ fontFamily:F.body, fontSize:12, color:'var(--fg-6)', marginTop:10 }}>👥 {session.listener_count} engaging in this conversation</p>
         </div>
       </div>
 
@@ -108,19 +108,19 @@ export default function ArmchairSessionPage() {
           </button>
           <button
             onClick={() => navigate('/admin')}
-            style={{ background:'none', border:'1px solid rgba(255,255,255,0.12)', borderRadius:8, padding:'6px 14px', fontFamily:F.body, fontSize:12.5, color:'rgba(255,255,255,0.6)', cursor:'pointer' }}>
+            style={{ background:'none', border:'1px solid var(--fg-12)', borderRadius:8, padding:'6px 14px', fontFamily:F.body, fontSize:12.5, color:'var(--fg-6)', cursor:'pointer' }}>
             ← Admin Panel
           </button>
         </div>
       )}
 
-      {/* ZOOM LINK BANNER */}}
+      {/* ZOOM LINK BANNER */}
       {session.zoom_link && isLive && (
-        <div style={{ background: C.navyLight, borderRadius: 10, padding: '12px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-          <span style={{ fontFamily: F.body, fontSize: 13.5, color: '#fff' }}>
+        <div style={{ background: 'var(--surface-card)', borderRadius: 10, padding: '12px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+          <span style={{ fontFamily: F.body, fontSize: 13.5, color: 'var(--fg-100)' }}>
             📹 <strong>Video session available</strong> — join via Zoom or video link
           </span>
-          <a href={session.zoom_link} target="_blank" rel="noreferrer" style={{ background: C.gold, color: '#E8E0D0', borderRadius: 8, padding: '8px 18px', fontFamily: F.body, fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap' }}>
+          <a href={session.zoom_link} target="_blank" rel="noreferrer" style={{ background: C.gold, color: '#0a0f1e', borderRadius: 8, padding: '8px 18px', fontFamily: F.body, fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap' }}>
             Join Video →
           </a>
         </div>
@@ -150,7 +150,7 @@ export default function ArmchairSessionPage() {
       {isEnded && (
         <div style={{ marginBottom:20 }}>
           {(session.recording_url || session.recording_key) ? (
-            <div style={{ background:'rgba(27,42,74,0.8)', borderRadius:12, padding:'14px 18px', border:`1px solid ${C.gold}33` }}>
+            <div style={{ background:'var(--surface-elevated-b)', borderRadius:12, padding:'14px 18px', border:`1px solid ${C.gold}33` }}>
               <p style={{ fontFamily:F.body, fontSize:11.5, fontWeight:700, color:C.gold, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:10 }}>
                 📼 Session Recording
               </p>
@@ -164,12 +164,12 @@ export default function ArmchairSessionPage() {
                 {session.recording_key && <source src={`${API}/armchair/recordings/${session.recording_key.replace('recordings/','')}`} type="audio/webm"/>}
                 Your browser does not support audio playback.
               </audio>
-              <p style={{ fontFamily:F.body, fontSize:11, color:'rgba(255,255,255,0.35)', marginTop:6 }}>
+              <p style={{ fontFamily:F.body, fontSize:11, color:'var(--fg-35)', marginTop:6 }}>
                 Having trouble playing? Try Chrome or Safari. Firefox may require WebM codec support.
               </p>
             </div>
           ) : (
-            <div style={{ background:'rgba(255,255,255,0.05)', borderRadius:10, padding:'14px 18px', fontFamily:F.body, fontSize:13.5, color:C.muted }}>
+            <div style={{ background:'var(--fg-05)', borderRadius:10, padding:'14px 18px', fontFamily:F.body, fontSize:13.5, color:C.muted }}>
               No recording available for this session. Always end via the <strong>"End Session & Save Recording"</strong> button to save recordings.
             </div>
           )}
@@ -185,7 +185,7 @@ export default function ArmchairSessionPage() {
 
         <div ref={scrollRef} style={{ maxHeight:380, overflowY:'auto', padding:'16px 18px' }}>
           {messages.length === 0
-            ? <p style={{ fontFamily:F.body, fontSize:13.5, color:'rgba(255,255,255,0.6)', textAlign:'center', padding:'24px 0' }}>No messages yet. {isLive ? 'Be the first to say hello or ask a question!' : 'Chat opens when the session goes live.'}</p>
+            ? <p style={{ fontFamily:F.body, fontSize:13.5, color:'var(--fg-6)', textAlign:'center', padding:'24px 0' }}>No messages yet. {isLive ? 'Be the first to say hello or ask a question!' : 'Chat opens when the session goes live.'}</p>
             : messages.map(m => (
               <div key={m.id} style={{ marginBottom:12, display:'flex', gap:9 }}>
                 <Avatar name={m.display_name} color={m.avatar_color} size={26}/>
@@ -196,10 +196,10 @@ export default function ArmchairSessionPage() {
                     {m.is_question === 1 && <span style={{ background:C.gold+'22', color:C.gold, borderRadius:4, padding:'1px 6px', fontSize:10, fontWeight:700, fontFamily:F.body }}>❓ QUESTION</span>}
                     <span style={{ fontFamily:F.body, fontSize:10.5, color:C.muted }}>{new Date(m.created_at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span>
                   </div>
-                  <p style={{ fontFamily:F.body, fontSize:13.5, color:'#E8E0D0', lineHeight:1.5 }}>{m.body}</p>
+                  <p style={{ fontFamily:F.body, fontSize:13.5, color:'var(--c-text)', lineHeight:1.5 }}>{m.body}</p>
                 </div>
                 {user && (
-                  <button onClick={() => flag(m.id)} title="Report" style={{ background:'none', border:'none', color:'rgba(255,255,255,0.6)', cursor:'pointer', fontSize:11, flexShrink:0, alignSelf:'flex-start', padding:2 }}>🚩</button>
+                  <button onClick={() => flag(m.id)} title="Report" style={{ background:'none', border:'none', color:'var(--fg-6)', cursor:'pointer', fontSize:11, flexShrink:0, alignSelf:'flex-start', padding:2 }}>🚩</button>
                 )}
               </div>
             ))
@@ -214,7 +214,7 @@ export default function ArmchairSessionPage() {
             : (
               <>
                 <div style={{ display:'flex', gap:8 }}>
-                  <input value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} placeholder={asQ ? 'Type your question for the guest…' : 'Share a thought or comment…'} style={{ flex:1, border:'1px solid rgba(255,255,255,0.15)', borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:13.5, outline:'none' }}/>
+                  <input value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} placeholder={asQ ? 'Type your question for the guest…' : 'Share a thought or comment…'} style={{ flex:1, border:'1px solid var(--fg-15)', borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:13.5, outline:'none' }}/>
                   <Btn onClick={send} disabled={posting||!text.trim()}>{posting?'…':'Send'}</Btn>
                 </div>
                 <label style={{ display:'flex', alignItems:'center', gap:6, marginTop:7, cursor:'pointer' }}>

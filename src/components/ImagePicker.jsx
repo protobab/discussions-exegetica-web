@@ -5,6 +5,7 @@ export default function ImagePicker({ onSelect, currentImage }) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
+  const [searched, setSearched] = useState(false)
   const [open, setOpen] = useState(false)
 
   const search = async () => {
@@ -13,6 +14,7 @@ export default function ImagePicker({ onSelect, currentImage }) {
     const res = await fetch(`${API}/armchair/image-search?q=${encodeURIComponent(query)}`)
     const data = await res.json()
     setResults(data.images || [])
+    setSearched(true)
     setLoading(false)
   }
 
@@ -20,16 +22,16 @@ export default function ImagePicker({ onSelect, currentImage }) {
     <div style={{ marginBottom:14 }}>
       <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:C.navy, display:'block', marginBottom:5 }}>Cover image</label>
       {currentImage && (
-        <div style={{ backgroundImage:`url(${currentImage})`, backgroundSize:'cover', backgroundPosition:'center', height:90, borderRadius:8, marginBottom:8, border:`1px solid ${C.border}` }}/>
+        <div style={{ backgroundImage:`url(${currentImage})`, backgroundSize:'cover', backgroundPosition:'center', height:90, borderRadius:8, marginBottom:8, border:`1px solid #D4C9AE` }}/>
       )}
-      <button onClick={()=>setOpen(o=>!o)} style={{ background:'none', border:`1.5px solid ${C.border}`, borderRadius:8, padding:'8px 14px', fontFamily:F.body, fontSize:12.5, color:C.navy, cursor:'pointer' }}>
+      <button onClick={()=>setOpen(o=>!o)} style={{ background:'none', border:`1.5px solid #D4C9AE`, borderRadius:8, padding:'8px 14px', fontFamily:F.body, fontSize:12.5, color:C.navy, cursor:'pointer' }}>
         🔍 {open ? 'Close search' : 'Search for a photo'}
       </button>
       {open && (
         <div style={{ marginTop:10, padding:14, background:C.parchment, borderRadius:10 }}>
           <div style={{ display:'flex', gap:8, marginBottom:10 }}>
-            <input value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>e.key==='Enter'&&search()} placeholder="e.g. open bible, candle, sunrise, mountains" style={{ flex:1, border:`1.5px solid ${C.border}`, borderRadius:8, padding:'8px 12px', fontFamily:F.body, fontSize:13, outline:'none' }}/>
-            <button onClick={search} disabled={loading} style={{ background:C.navy, color:'#fff', border:'none', borderRadius:8, padding:'8px 16px', fontFamily:F.body, fontSize:12.5, cursor:'pointer' }}>{loading?'…':'Search'}</button>
+            <input value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>e.key==='Enter'&&search()} placeholder="e.g. open bible, candle, sunrise, mountains" style={{ flex:1, border:`1.5px solid #D4C9AE`, borderRadius:8, padding:'8px 12px', fontFamily:F.body, fontSize:13, outline:'none' }}/>
+            <button onClick={search} disabled={loading} style={{ background:'#0a0f1e', color:'#fff', border:'none', borderRadius:8, padding:'8px 16px', fontFamily:F.body, fontSize:12.5, cursor:'pointer' }}>{loading?'…':'Search'}</button>
           </div>
           {results.length > 0 && (
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(90px,1fr))', gap:6 }}>
@@ -42,7 +44,12 @@ export default function ImagePicker({ onSelect, currentImage }) {
               ))}
             </div>
           )}
-          <p style={{ fontFamily:F.body, fontSize:10.5, color:C.muted, marginTop:6 }}>Free images via Pixabay · No attribution required</p>
+          {searched && !loading && results.length === 0 && (
+            <p style={{ fontFamily:F.body, fontSize:12, color:'#b45309', marginTop:6 }}>
+              No results. If this keeps happening for every search, the image service may not be configured for this environment — check the PIXABAY_API_KEY setting.
+            </p>
+          )}
+          <p style={{ fontFamily:F.body, fontSize:10.5, color:'#8a7f6a', marginTop:6 }}>Free images via Pixabay · No attribution required</p>
         </div>
       )}
     </div>

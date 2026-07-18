@@ -25,7 +25,7 @@ const VERSIONS = [
 const ink = '#0D1B2A'
 const inkLight = '#112236'
 const cream = '#E8DCC8'
-const gold = '#C9A84C'
+const gold = 'var(--c-gold)'
 const CHAT_KEY = 'de_bible_chat'
 const NOTES_KEY = 'de_study_notes'
 
@@ -34,9 +34,9 @@ function renderMarkdown(text) {
   return text
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/`(.+?)`/g, '<code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:3px;font-family:monospace;font-size:12px">$1</code>')
-    .replace(/^### (.+)$/gm, '<p style="font-weight:700;color:#E8C97A;margin:8px 0 3px">$1</p>')
-    .replace(/^## (.+)$/gm, '<p style="font-weight:700;color:#E8C97A;font-size:15px;margin:10px 0 4px">$1</p>')
+    .replace(/`(.+?)`/g, '<code style="background:var(--fg-1);padding:1px 5px;border-radius:3px;font-family:monospace;font-size:12px">$1</code>')
+    .replace(/^### (.+)$/gm, '<p style="font-weight:700;color:var(--c-gold-light);margin:8px 0 3px">$1</p>')
+    .replace(/^## (.+)$/gm, '<p style="font-weight:700;color:var(--c-gold-light);font-size:15px;margin:10px 0 4px">$1</p>')
     .replace(/^- (.+)$/gm, '<li style="margin:2px 0;padding-left:4px">$1</li>')
     .replace(/\n/g, '<br/>')
 }
@@ -259,20 +259,20 @@ export default function BibleStudyPage() {
     a.click()
   }
 
-  const inputStyle = { border: '1px solid rgba(255,255,255,0.15)', borderRadius: 8, padding: '9px 12px', fontFamily: F.body, fontSize: 13.5, outline: 'none', background: 'rgba(255,255,255,0.08)', color: cream, width: '100%', boxSizing: 'border-box' }
+  const inputStyle = { border: '1px solid var(--fg-15)', borderRadius: 8, padding: '9px 12px', fontFamily: F.body, fontSize: 13.5, outline: 'none', background: 'var(--fg-08)', color: cream, width: '100%', boxSizing: 'border-box' }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundImage: `linear-gradient(rgba(10,25,42,0.93), rgba(10,25,42,0.96)), url(${IMAGES.bibleHero})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed', opacity: visible ? 1 : 0, transition: 'opacity 0.6s ease' }}>
+    <div style={{ minHeight: '100vh', backgroundImage: `linear-gradient(var(--ov-93), var(--ov-96)), url(${IMAGES.bibleHero})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed', opacity: visible ? 1 : 0, transition: 'opacity 0.6s ease' }}>
 
       {/* HEADER */}
-      <div style={{ background: inkLight, borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '14px 20px' }}>
+      <div style={{ background: inkLight, borderBottom: '1px solid var(--fg-08)', padding: '14px 20px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
           <div>
             <h1 style={{ fontFamily: F.display, fontSize: 21, fontWeight: 700, color: cream, margin: 0 }}>📖 Bible Study Hub</h1>
-            <p style={{ fontFamily: F.body, fontSize: 12.5, color: 'rgba(255,255,255,0.4)', margin: '2px 0 0' }}>Read, explore, reflect — bring your questions to the community</p>
+            <p style={{ fontFamily: F.body, fontSize: 12.5, color: 'var(--fg-4)', margin: '2px 0 0' }}>Read, explore, reflect — bring your questions to the community</p>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={() => setShowNotes(s => !s)} style={{ background: showNotes ? gold : 'rgba(255,255,255,0.1)', color: showNotes ? ink : cream, border: 'none', borderRadius: 8, padding: '7px 14px', fontFamily: F.body, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={() => setShowNotes(s => !s)} style={{ background: showNotes ? gold : 'var(--fg-1)', color: showNotes ? ink : cream, border: 'none', borderRadius: 8, padding: '7px 14px', fontFamily: F.body, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
               📝 Notes ({savedNotes.length})
             </button>
             <Link to="/forum/exegesis" style={{ background: gold, color: ink, borderRadius: 8, padding: '7px 16px', fontFamily: F.body, fontSize: 13, fontWeight: 700 }}>Discuss →</Link>
@@ -281,7 +281,7 @@ export default function BibleStudyPage() {
       </div>
 
       {/* CONTROLS */}
-      <div style={{ background: 'rgba(0,0,0,0.3)', borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '10px 20px' }}>
+      <div style={{ background: 'rgba(0,0,0,0.3)', borderBottom: '1px solid var(--fg-06)', padding: '10px 20px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
           <select value={reference} onChange={e => { setReference(e.target.value); if(user) recordActivity('bible', e.target.value) }}
             style={{ ...inputStyle, width: 'auto' }}>
@@ -295,7 +295,7 @@ export default function BibleStudyPage() {
           <select value={version} onChange={e => setVersion(e.target.value)} style={{ ...inputStyle, width: 'auto' }}>
             {VERSIONS.map(v => <option key={v.value} value={v.value} style={{ background: ink }}>{v.label}</option>)}
           </select>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.5)', whiteSpace: 'nowrap' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontFamily: F.body, fontSize: 13, color: 'var(--fg-5)', whiteSpace: 'nowrap' }}>
             <input type="checkbox" checked={parallel} onChange={e => setParallel(e.target.checked)}/>
             KJV parallel
           </label>
@@ -313,10 +313,10 @@ export default function BibleStudyPage() {
           <>
             {/* Bible viewer */}
             <div>
-              <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid var(--fg-1)' }}>
                 <iframe src={stepUrl} title="Bible" style={{ width: '100%', height: 560, border: 'none', display: 'block' }}/>
               </div>
-              <p style={{ fontFamily: F.body, fontSize: 11, color: 'rgba(255,255,255,0.25)', marginTop: 6, textAlign: 'center' }}>
+              <p style={{ fontFamily: F.body, fontSize: 11, color: 'var(--fg-25)', marginTop: 6, textAlign: 'center' }}>
                 Powered by <a href="https://www.stepbible.org" target="_blank" rel="noreferrer" style={{ color: gold }}>STEPBible</a> — free scholarly Bible tool with Greek &amp; Hebrew
               </p>
             </div>
@@ -325,14 +325,14 @@ export default function BibleStudyPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 
               {/* AI Study Chat */}
-              <div style={{ background: inkLight, borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column', maxHeight: 480 }}>
-                <div style={{ padding: '12px 14px', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ background: inkLight, borderRadius: 12, border: '1px solid var(--fg-08)', display: 'flex', flexDirection: 'column', maxHeight: 480 }}>
+                <div style={{ padding: '12px 14px', borderBottom: '1px solid var(--fg-08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <p style={{ fontFamily: F.display, fontSize: 14, fontWeight: 700, color: cream, margin: 0 }}>🤖 Study Helper</p>
                   <div style={{ display: 'flex', gap: 8 }}>
                     {chatHistory.length > 0 && (
                       <>
-                        <button onClick={downloadChat} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', fontFamily: F.body, fontSize: 11.5, cursor: 'pointer' }}>⬇ Download</button>
-                        <button onClick={clearChat} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', fontFamily: F.body, fontSize: 11.5, cursor: 'pointer' }}>✕ Clear</button>
+                        <button onClick={downloadChat} style={{ background: 'none', border: 'none', color: 'var(--fg-4)', fontFamily: F.body, fontSize: 11.5, cursor: 'pointer' }}>⬇ Download</button>
+                        <button onClick={clearChat} style={{ background: 'none', border: 'none', color: 'var(--fg-4)', fontFamily: F.body, fontSize: 11.5, cursor: 'pointer' }}>✕ Clear</button>
                       </>
                     )}
                   </div>
@@ -341,7 +341,7 @@ export default function BibleStudyPage() {
                 {/* Chat messages */}
                 <div style={{ flex: 1, overflowY: 'auto', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 10, minHeight: 120 }}>
                   {chatHistory.length === 0 && (
-                    <p style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.35)', textAlign: 'center', marginTop: 20 }}>
+                    <p style={{ fontFamily: F.body, fontSize: 13, color: 'var(--fg-35)', textAlign: 'center', marginTop: 20 }}>
                       Ask anything about what you're reading…<br/>
                       <span style={{ fontSize: 11.5 }}>e.g. "What does logos mean in John 1?" or "Who wrote this letter?"</span>
                     </p>
@@ -350,13 +350,13 @@ export default function BibleStudyPage() {
                     <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
                       <div style={{
                         maxWidth: '88%', padding: '9px 12px', borderRadius: msg.role === 'user' ? '12px 12px 4px 12px' : '12px 12px 12px 4px',
-                        background: msg.role === 'user' ? 'rgba(201,168,76,0.2)' : 'rgba(255,255,255,0.07)',
-                        border: msg.role === 'user' ? `1px solid ${gold}44` : '1px solid rgba(255,255,255,0.1)',
+                        background: msg.role === 'user' ? 'rgba(201,168,76,0.2)' : 'var(--fg-07)',
+                        border: msg.role === 'user' ? `1px solid ${gold}44` : '1px solid var(--fg-1)',
                       }}>
                         <p style={{ fontFamily: F.body, fontSize: 13, color: cream, margin: 0, lineHeight: 1.65 }}
                           dangerouslySetInnerHTML={{ __html: msg.role === 'assistant' ? renderMarkdown(msg.text) : msg.text }}/>
                       </div>
-                      {msg.time && <span style={{ fontFamily: F.body, fontSize: 10, color: 'rgba(255,255,255,0.25)', marginTop: 2, padding: '0 4px' }}>{msg.time}</span>}
+                      {msg.time && <span style={{ fontFamily: F.body, fontSize: 10, color: 'var(--fg-25)', marginTop: 2, padding: '0 4px' }}>{msg.time}</span>}
                       {msg.role === 'assistant' && <a href="/contact" style={{ fontFamily: F.body, fontSize: 10, color: 'rgba(239,68,68,0.5)', marginLeft: 8 }} title="Report">⚑ Report</a>}
                     </div>
                   ))}
@@ -367,14 +367,14 @@ export default function BibleStudyPage() {
                           <span key={i} style={{ width: 6, height: 6, borderRadius: '50%', background: gold, display: 'inline-block', animation: `bounce 1s ${i*0.2}s infinite` }}/>
                         ))}
                       </div>
-                      <span style={{ fontFamily: F.body, fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>Thinking…</span>
+                      <span style={{ fontFamily: F.body, fontSize: 12, color: 'var(--fg-4)' }}>Thinking…</span>
                     </div>
                   )}
                   <div ref={chatEndRef}/>
                 </div>
 
                 {/* Input */}
-                <div style={{ padding: '10px 12px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                <div style={{ padding: '10px 12px', borderTop: '1px solid var(--fg-08)' }}>
                   <div style={{ display: 'flex', gap: 6 }}>
                     <input value={aiQuery} onChange={e => setAiQuery(e.target.value)}
                       onKeyDown={e => e.key === 'Enter' && !e.shiftKey && askHelper()}
@@ -384,20 +384,20 @@ export default function BibleStudyPage() {
                       Send
                     </button>
                   </div>
-                  <p style={{ fontFamily: F.body, fontSize: 10.5, color: 'rgba(255,255,255,0.25)', margin: '5px 0 0' }}>
+                  <p style={{ fontFamily: F.body, fontSize: 10.5, color: 'var(--fg-25)', margin: '5px 0 0' }}>
                     Chat history saves automatically · {chatHistory.length} message{chatHistory.length !== 1 ? 's' : ''}
                   </p>
                 </div>
               </div>
 
               {/* Quick note + audio */}
-              <div style={{ background: inkLight, borderRadius: 12, padding: '14px', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <div style={{ background: inkLight, borderRadius: 12, padding: '14px', border: '1px solid var(--fg-08)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                   <p style={{ fontFamily: F.display, fontSize: 14, fontWeight: 700, color: cream, margin: 0 }}>📝 Quick Note</p>
                   <div style={{ display: 'flex', gap: 6 }}>
                     {!recording
                       ? <button onClick={startRecording} style={{ background: 'rgba(239,68,68,0.15)', color: '#EF4444', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 6, padding: '4px 10px', fontFamily: F.body, fontSize: 11.5, cursor: 'pointer' }}>🎙 Record</button>
-                      : <button onClick={stopRecording} style={{ background: '#EF4444', color: '#fff', border: 'none', borderRadius: 6, padding: '4px 10px', fontFamily: F.body, fontSize: 11.5, cursor: 'pointer', animation: 'pulse-red 1s infinite' }}>⏹ Stop</button>
+                      : <button onClick={stopRecording} style={{ background: '#EF4444', color: 'var(--fg-100)', border: 'none', borderRadius: 6, padding: '4px 10px', fontFamily: F.body, fontSize: 11.5, cursor: 'pointer', animation: 'pulse-red 1s infinite' }}>⏹ Stop</button>
                     }
                     {audioBlob && <button onClick={downloadAudioNote} style={{ background: 'rgba(201,168,76,0.15)', color: gold, border: `1px solid ${gold}44`, borderRadius: 6, padding: '4px 10px', fontFamily: F.body, fontSize: 11.5, cursor: 'pointer' }}>⬇ Audio</button>}
                   </div>
@@ -406,20 +406,20 @@ export default function BibleStudyPage() {
                   placeholder={`Notes on ${reference}…`} rows={3}
                   style={{ ...inputStyle, resize: 'none', marginBottom: 8, lineHeight: 1.55, fontSize: 13 }}/>
                 <div style={{ display: 'flex', gap: 6 }}>
-                  <button onClick={saveNote} disabled={!notes.trim()} style={{ flex: 1, background: !notes.trim() ? 'rgba(255,255,255,0.08)' : gold, color: !notes.trim() ? 'rgba(255,255,255,0.3)' : ink, border: 'none', borderRadius: 8, padding: '8px', fontFamily: F.body, fontSize: 13, fontWeight: 700, cursor: notes.trim() ? 'pointer' : 'not-allowed' }}>
+                  <button onClick={saveNote} disabled={!notes.trim()} style={{ flex: 1, background: !notes.trim() ? 'var(--fg-08)' : gold, color: !notes.trim() ? 'var(--fg-3)' : ink, border: 'none', borderRadius: 8, padding: '8px', fontFamily: F.body, fontSize: 13, fontWeight: 700, cursor: notes.trim() ? 'pointer' : 'not-allowed' }}>
                     {noteSaved ? '✓ Saved' : 'Save Note'}
                   </button>
-                  <button onClick={() => setShowNotes(true)} style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 8, padding: '8px 12px', fontFamily: F.body, fontSize: 13, cursor: 'pointer' }}>
+                  <button onClick={() => setShowNotes(true)} style={{ background: 'var(--fg-08)', color: 'var(--fg-6)', border: '1px solid var(--fg-15)', borderRadius: 8, padding: '8px 12px', fontFamily: F.body, fontSize: 13, cursor: 'pointer' }}>
                     All notes ({savedNotes.length})
                   </button>
                 </div>
               </div>
 
               {/* Community links */}
-              <div style={{ background: `linear-gradient(135deg, ${C.navy} 0%, ${C.navyLight} 100%)`, borderRadius: 12, padding: '14px' }}>
-                <p style={{ fontFamily: F.display, fontSize: 13.5, fontWeight: 700, color: '#fff', marginBottom: 10 }}>Study with others</p>
+              <div style={{ background: 'var(--surface-card)', borderRadius: 12, padding: '14px' }}>
+                <p style={{ fontFamily: F.display, fontSize: 13.5, fontWeight: 700, color: 'var(--fg-100)', marginBottom: 10 }}>Study with others</p>
                 {[['💬 Deep Dive','/forum/exegesis'],['🌱 Seekers Corner','/forum/seekers'],['📚 Resources','/forum/resources'],['👥 Study Groups','/groups']].map(([l,t]) => (
-                  <Link key={t} to={t} style={{ fontFamily: F.body, fontSize: 12.5, color: '#E8C97A', display: 'block', marginBottom: 6 }}>{l}</Link>
+                  <Link key={t} to={t} style={{ fontFamily: F.body, fontSize: 12.5, color: 'var(--c-gold-light)', display: 'block', marginBottom: 6 }}>{l}</Link>
                 ))}
               </div>
             </div>
@@ -431,21 +431,21 @@ export default function BibleStudyPage() {
               <h2 style={{ fontFamily: F.display, fontSize: 20, fontWeight: 700, color: cream, margin: 0 }}>📝 Study Notes ({savedNotes.length})</h2>
               <div style={{ display: 'flex', gap: 8 }}>
                 {savedNotes.length > 0 && <button onClick={() => downloadNotes()} style={{ background: gold, color: ink, border: 'none', borderRadius: 8, padding: '8px 14px', fontFamily: F.body, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>⬇ Download All</button>}
-                <button onClick={() => setShowNotes(false)} style={{ background: 'rgba(255,255,255,0.1)', color: cream, border: 'none', borderRadius: 8, padding: '8px 14px', fontFamily: F.body, fontSize: 13, cursor: 'pointer' }}>← Back to Study</button>
+                <button onClick={() => setShowNotes(false)} style={{ background: 'var(--fg-1)', color: cream, border: 'none', borderRadius: 8, padding: '8px 14px', fontFamily: F.body, fontSize: 13, cursor: 'pointer' }}>← Back to Study</button>
               </div>
             </div>
             {savedNotes.length === 0
-              ? <p style={{ fontFamily: F.body, color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '40px 0' }}>No notes saved yet. Go back to study and save your first note.</p>
+              ? <p style={{ fontFamily: F.body, color: 'var(--fg-4)', textAlign: 'center', padding: '40px 0' }}>No notes saved yet. Go back to study and save your first note.</p>
               : <div style={{ display: 'grid', gap: 12 }}>
                   {savedNotes.map(note => (
-                    <div key={note.id} style={{ background: inkLight, borderRadius: 12, padding: '16px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                    <div key={note.id} style={{ background: inkLight, borderRadius: 12, padding: '16px', border: '1px solid var(--fg-08)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
                         <div>
                           <span style={{ fontFamily: F.body, fontSize: 12, fontWeight: 700, color: gold }}>{note.ref}</span>
-                          <span style={{ fontFamily: F.body, fontSize: 11, color: 'rgba(255,255,255,0.35)', marginLeft: 10 }}>{note.date}</span>
+                          <span style={{ fontFamily: F.body, fontSize: 11, color: 'var(--fg-35)', marginLeft: 10 }}>{note.date}</span>
                         </div>
                         <div style={{ display: 'flex', gap: 6 }}>
-                          <button onClick={() => downloadNotes(note.id)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', fontFamily: F.body, fontSize: 11.5, cursor: 'pointer' }}>⬇</button>
+                          <button onClick={() => downloadNotes(note.id)} style={{ background: 'none', border: 'none', color: 'var(--fg-4)', fontFamily: F.body, fontSize: 11.5, cursor: 'pointer' }}>⬇</button>
                           <button onClick={() => deleteNote(note.id)} style={{ background: 'none', border: 'none', color: 'rgba(239,68,68,0.6)', fontFamily: F.body, fontSize: 11.5, cursor: 'pointer' }}>✕</button>
                         </div>
                       </div>

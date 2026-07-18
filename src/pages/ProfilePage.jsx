@@ -10,7 +10,7 @@ import { IMAGES } from '../lib/images.js'
 const BADGE_INFO = {
   Seeker:   { color:'#A78BFA', desc:'Asking honest questions — the beginning of wisdom' },
   Disciple: { color:'#3B82F6', desc:'A consistent learner growing in faith and knowledge' },
-  Elder:    { color:'#C9A84C', desc:'A trusted voice in the community' },
+  Elder:    { color:'var(--c-gold)', desc:'A trusted voice in the community' },
   Teacher:  { color:'#EF4444', desc:'Guiding others in Scripture and faith' },
 }
 
@@ -47,7 +47,7 @@ export default function ProfilePage() {
 
   if (loading) return <div style={{ maxWidth: 760, margin: '60px auto' }}><Spinner/></div>
   if (!data?.user) return (
-    <div style={{ textAlign: 'center', padding: '80px', fontFamily: F.body, color: 'rgba(255,255,255,0.6)' }}>
+    <div style={{ textAlign: 'center', padding: '80px', fontFamily: F.body, color: 'var(--fg-6)' }}>
       User not found. <Link to="/forum" style={{ color: C.gold }}>Back to Forum</Link>
     </div>
   )
@@ -57,10 +57,10 @@ export default function ProfilePage() {
   const joinedDate = new Date(user.joined).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
 
   return (
-    <div style={{ minHeight: '100vh', background: 'rgba(255,255,255,0.05)', opacity: visible ? 1 : 0, transition: 'opacity 0.5s ease' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--fg-05)', opacity: visible ? 1 : 0, transition: 'opacity 0.5s ease' }}>
 
       {/* PROFILE HERO */}
-      <div style={{ backgroundImage: `linear-gradient(135deg, rgba(27,42,74,0.88) 0%, rgba(46,66,112,0.92) 100%), url(${IMAGES.profileHero})`, backgroundSize: 'cover', backgroundPosition: 'center top', padding: '44px 24px 0' }}>
+      <div style={{ backgroundImage: `linear-gradient(135deg, var(--ov-88) 0%, rgba(46,66,112,0.92) 100%), url(${IMAGES.profileHero})`, backgroundSize: 'cover', backgroundPosition: 'center top', padding: '44px 24px 0' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 20, marginBottom: 0, flexWrap: 'wrap' }}>
 
@@ -69,8 +69,8 @@ export default function ProfilePage() {
               width: 88, height: 88, borderRadius: '50%',
               background: user.avatar_color || C.navy,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontFamily: F.display, fontSize: 34, fontWeight: 700, color: '#fff',
-              border: '3px solid rgba(255,255,255,0.2)',
+              fontFamily: F.display, fontSize: 34, fontWeight: 700, color: 'var(--fg-100)',
+              border: '3px solid var(--fg-2)',
               flexShrink: 0
             }}>
               {user.display_name.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase()}
@@ -78,12 +78,12 @@ export default function ProfilePage() {
 
             <div style={{ flex: 1, paddingBottom: 20 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 6 }}>
-                <h1 style={{ fontFamily: F.display, fontSize: 24, fontWeight: 700, color: '#fff', margin: 0 }}>{user.display_name}</h1>
+                <h1 style={{ fontFamily: F.display, fontSize: 24, fontWeight: 700, color: 'var(--fg-100)', margin: 0 }}>{user.display_name}</h1>
                 <BadgeTag label={user.badge}/>
               </div>
-              <p style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: '0 0 6px' }}>@{user.username} · Member since {joinedDate}</p>
+              <p style={{ fontFamily: F.body, fontSize: 13, color: 'var(--fg-55)', margin: '0 0 6px' }}>@{user.username} · Member since {joinedDate}</p>
               {user.bio && !user.bio.startsWith('invited_by:') && (
-                <p style={{ fontFamily: F.body, fontSize: 14, color: 'rgba(255,255,255,0.75)', margin: 0, lineHeight: 1.6, maxWidth: 500 }}>{user.bio}</p>
+                <p style={{ fontFamily: F.body, fontSize: 14, color: 'var(--fg-75)', margin: 0, lineHeight: 1.6, maxWidth: 500 }}>{user.bio}</p>
               )}
             </div>
 
@@ -108,8 +108,8 @@ export default function ProfilePage() {
               { val: user.longest_streak || 0, label: 'Best streak' },
             ].map((s, i) => (
               <div key={i}>
-                <span style={{ fontFamily: F.display, fontSize: 20, fontWeight: 700, color: '#fff' }}>{s.val}</span>
-                <span style={{ fontFamily: F.body, fontSize: 12, color: 'rgba(255,255,255,0.5)', marginLeft: 5 }}>{s.label}</span>
+                <span style={{ fontFamily: F.display, fontSize: 20, fontWeight: 700, color: 'var(--fg-100)' }}>{s.val}</span>
+                <span style={{ fontFamily: F.body, fontSize: 12, color: 'var(--fg-5)', marginLeft: 5 }}>{s.label}</span>
               </div>
             ))}
           </div>
@@ -120,29 +120,29 @@ export default function ProfilePage() {
 
         {/* Threads */}
         <div>
-          <h2 style={{ fontFamily: F.display, fontSize: 18, fontWeight: 700, color: '#E8E0D0', marginBottom: 14 }}>
+          <h2 style={{ fontFamily: F.display, fontSize: 18, fontWeight: 700, color: 'var(--c-text)', marginBottom: 14 }}>
             Discussions ({user.thread_count})
           </h2>
           {threads.length === 0
-            ? <p style={{ fontFamily: F.body, color: 'rgba(255,255,255,0.6)', fontSize: 14 }}>No discussions yet.</p>
+            ? <p style={{ fontFamily: F.body, color: 'var(--fg-6)', fontSize: 14 }}>No discussions yet.</p>
             : <div style={{ display: 'grid', gap: 10 }}>
                 {threads.map(t => (
                   <div key={t.id} onClick={() => navigate(`/thread/${t.id}`)} style={{
-                    background: 'rgba(255,255,255,0.06)', borderRadius: 10, padding: '14px 16px',
-                    border: '1px solid rgba(255,255,255,0.12)', cursor: 'pointer', transition: 'box-shadow 0.15s'
+                    background: 'var(--fg-06)', borderRadius: 10, padding: '14px 16px',
+                    border: '1px solid var(--fg-12)', cursor: 'pointer', transition: 'box-shadow 0.15s'
                   }}
                     onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 14px rgba(0,0,0,0.08)'}
                     onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
                   >
                     <div style={{ display: 'flex', gap: 7, marginBottom: 5 }}>
-                      <span style={{ background: 'rgba(255,255,255,0.05)', color: '#E8C97A', borderRadius: 5, padding: '2px 8px', fontSize: 10.5, fontFamily: F.body, fontWeight: 600 }}>{t.cat_label}</span>
-                      <span style={{ fontFamily: F.body, fontSize: 10.5, color: 'rgba(255,255,255,0.6)', marginLeft: 'auto' }}>{new Date(t.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
+                      <span style={{ background: 'var(--fg-05)', color: 'var(--c-gold-light)', borderRadius: 5, padding: '2px 8px', fontSize: 10.5, fontFamily: F.body, fontWeight: 600 }}>{t.cat_label}</span>
+                      <span style={{ fontFamily: F.body, fontSize: 10.5, color: 'var(--fg-6)', marginLeft: 'auto' }}>{new Date(t.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
                     </div>
-                    <h3 style={{ fontFamily: F.display, fontSize: 14.5, fontWeight: 700, color: '#E8E0D0', margin: '0 0 6px', lineHeight: 1.35 }}>{t.title}</h3>
+                    <h3 style={{ fontFamily: F.display, fontSize: 14.5, fontWeight: 700, color: 'var(--c-text)', margin: '0 0 6px', lineHeight: 1.35 }}>{t.title}</h3>
                     <div style={{ display: 'flex', gap: 10 }}>
-                      <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'rgba(255,255,255,0.6)' }}>💬 {t.reply_count}</span>
-                      <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'rgba(255,255,255,0.6)' }}>❤️ {t.like_count}</span>
-                      <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'rgba(255,255,255,0.6)' }}>👁 {t.view_count}</span>
+                      <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'var(--fg-6)' }}>💬 {t.reply_count}</span>
+                      <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'var(--fg-6)' }}>❤️ {t.like_count}</span>
+                      <span style={{ fontFamily: F.body, fontSize: 11.5, color: 'var(--fg-6)' }}>👁 {t.view_count}</span>
                     </div>
                   </div>
                 ))}
@@ -154,37 +154,37 @@ export default function ProfilePage() {
         <div style={{ display: 'grid', gap: 16, alignContent: 'start' }}>
 
           {/* Badge info */}
-          <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 14, padding: '20px', border: '1px solid rgba(255,255,255,0.12)' }}>
-            <p style={{ fontFamily: F.body, fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 12 }}>Current Badge</p>
+          <div style={{ background: 'var(--fg-06)', borderRadius: 14, padding: '20px', border: '1px solid var(--fg-12)' }}>
+            <p style={{ fontFamily: F.body, fontSize: 11, fontWeight: 700, color: 'var(--fg-6)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 12 }}>Current Badge</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
               <span style={{ background: badge.color + '22', color: badge.color, border: `1px solid ${badge.color}55`, borderRadius: 6, padding: '3px 11px', fontSize: 12, fontFamily: F.body, fontWeight: 700, textTransform: 'uppercase' }}>
                 {user.badge}
               </span>
             </div>
-            <p style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, margin: 0 }}>{badge.desc}</p>
+            <p style={{ fontFamily: F.body, fontSize: 13, color: 'var(--fg-6)', lineHeight: 1.6, margin: 0 }}>{badge.desc}</p>
           </div>
 
           {/* Own profile actions */}
           {isOwn && (
-            <div style={{ background: C.navy, borderRadius: 14, padding: '20px' }}>
-              <p style={{ fontFamily: F.display, fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 14 }}>🔗 Invite Friends</p>
-              <p style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.6, marginBottom: 14 }}>
+            <div style={{ background: 'var(--surface-card)', borderRadius: 14, padding: '20px' }}>
+              <p style={{ fontFamily: F.display, fontSize: 15, fontWeight: 700, color: 'var(--fg-100)', marginBottom: 14 }}>🔗 Invite Friends</p>
+              <p style={{ fontFamily: F.body, fontSize: 13, color: 'var(--fg-65)', lineHeight: 1.6, marginBottom: 14 }}>
                 Share your personal invite link. Every person who joins earns you +20 reputation.
               </p>
-              <Link to="/change-password" style={{ display:'block', background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:10, padding:'10px 14px', fontFamily:F.body, fontSize:13.5, color:'rgba(255,255,255,0.7)', marginBottom:12, textAlign:'center' }}>
+              <Link to="/change-password" style={{ display:'block', background:'var(--fg-06)', border:'1px solid var(--fg-1)', borderRadius:10, padding:'10px 14px', fontFamily:F.body, fontSize:13.5, color:'var(--fg-7)', marginBottom:12, textAlign:'center' }}>
                 🔑 Change Password
               </Link>
               {!inviteCode ? (
-                <button onClick={getInviteLink} disabled={inviteLoading} style={{ background: C.gold, color: '#E8E0D0', border: 'none', borderRadius: 8, padding: '10px 18px', fontFamily: F.body, fontSize: 13.5, fontWeight: 700, cursor: 'pointer', width: '100%' }}>
+                <button onClick={getInviteLink} disabled={inviteLoading} style={{ background: C.gold, color: '#0a0f1e', border: 'none', borderRadius: 8, padding: '10px 18px', fontFamily: F.body, fontSize: 13.5, fontWeight: 700, cursor: 'pointer', width: '100%' }}>
                   {inviteLoading ? 'Generating…' : 'Get My Invite Link'}
                 </button>
               ) : (
                 <div>
-                  <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: 8, padding: '10px 12px', marginBottom: 10 }}>
-                    <p style={{ fontFamily: F.body, fontSize: 12, color: 'rgba(255,255,255,0.5)', margin: '0 0 4px' }}>Your invite link</p>
-                    <p style={{ fontFamily: F.body, fontSize: 13, color: '#fff', margin: 0, wordBreak: 'break-all' }}>{inviteCode.url}</p>
+                  <div style={{ background: 'var(--fg-1)', borderRadius: 8, padding: '10px 12px', marginBottom: 10 }}>
+                    <p style={{ fontFamily: F.body, fontSize: 12, color: 'var(--fg-5)', margin: '0 0 4px' }}>Your invite link</p>
+                    <p style={{ fontFamily: F.body, fontSize: 13, color: 'var(--fg-100)', margin: 0, wordBreak: 'break-all' }}>{inviteCode.url}</p>
                   </div>
-                  <p style={{ fontFamily: F.body, fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 10 }}>Used {inviteCode.uses} time{inviteCode.uses !== 1 ? 's' : ''}</p>
+                  <p style={{ fontFamily: F.body, fontSize: 12, color: 'var(--fg-5)', marginBottom: 10 }}>Used {inviteCode.uses} time{inviteCode.uses !== 1 ? 's' : ''}</p>
                   <ShareButton
                     title="Join me on Discussions Exegetica"
                     url={inviteCode.url}
@@ -196,10 +196,10 @@ export default function ProfilePage() {
           )}
 
           {/* Quick links */}
-          <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 14, padding: '18px', border: '1px solid rgba(255,255,255,0.12)' }}>
-            <p style={{ fontFamily: F.display, fontSize: 14, fontWeight: 700, color: '#E8E0D0', marginBottom: 12 }}>Join the conversation</p>
+          <div style={{ background: 'var(--fg-06)', borderRadius: 14, padding: '18px', border: '1px solid var(--fg-12)' }}>
+            <p style={{ fontFamily: F.display, fontSize: 14, fontWeight: 700, color: 'var(--c-text)', marginBottom: 12 }}>Join the conversation</p>
             {[['📖 Deep Dive','/forum/exegesis'],['🌱 Seekers Corner','/forum/seekers'],['🙏 Prayer & Life','/forum/prayer'],['👥 Study Groups','/groups']].map(([l,t]) => (
-              <Link key={t} to={t} style={{ fontFamily: F.body, fontSize: 13, color: '#E8C97A', display: 'block', marginBottom: 8 }}>{l}</Link>
+              <Link key={t} to={t} style={{ fontFamily: F.body, fontSize: 13, color: 'var(--c-gold-light)', display: 'block', marginBottom: 8 }}>{l}</Link>
             ))}
           </div>
         </div>

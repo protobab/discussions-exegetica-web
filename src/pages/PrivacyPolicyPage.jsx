@@ -10,35 +10,35 @@ export default function PrivacyPolicyPage() {
   useEffect(() => { window.scrollTo(0, 0) }, [])
 
   return (
-    <div style={{ background: C.navy, minHeight: '100vh', padding: '60px 24px 80px' }}>
+    <div style={{ background: 'var(--bg-page)', minHeight: '100vh', padding: '60px 24px 80px' }}>
       <div style={{ maxWidth: 760, margin: '0 auto' }}>
 
         <div style={{ marginBottom: 40 }}>
-          <Link to="/" style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.4)' }}>← Home</Link>
+          <Link to="/" style={{ fontFamily: F.body, fontSize: 13, color: 'var(--fg-4)' }}>← Home</Link>
         </div>
 
-        <h1 style={{ fontFamily: F.display, fontSize: 34, fontWeight: 700, color: '#fff', marginBottom: 8 }}>Privacy Policy</h1>
-        <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.4)', marginBottom: 48 }}>
+        <h1 style={{ fontFamily: F.display, fontSize: 34, fontWeight: 700, color: 'var(--fg-100)', marginBottom: 8 }}>Privacy Policy</h1>
+        <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'var(--fg-4)', marginBottom: 48 }}>
           Last updated: {today} · Effective: {today}
         </p>
 
-        <div style={{ fontFamily: F.body, fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.85 }}>
+        <div style={{ fontFamily: F.body, fontSize: 15, color: 'var(--fg-75)', lineHeight: 1.85 }}>
 
           <Section title="1. Who we are">
-            <p>Discussions Exegetica is operated by <strong style={{ color: '#fff' }}>Lives In Motion Ltd</strong>, a company registered in England and Wales. We are the data controller for all personal information collected through this platform.</p>
+            <p>Discussions Exegetica is operated by <strong style={{ color: 'var(--fg-100)' }}>Lives In Motion Ltd</strong>, a company registered in England and Wales. We are the data controller for all personal information collected through this platform.</p>
             <p>Contact us about privacy matters at: <a href="https://discussionsexegetica.com/contact" style={{ color: C.gold }}>discussionsexegetica.com/contact</a></p>
           </Section>
 
           <Section title="2. What information we collect">
             <p>We collect the following personal information when you use Discussions Exegetica:</p>
             <ul>
-              <li><strong style={{ color: '#fff' }}>Account information</strong> — your display name, username, and email address when you register</li>
-              <li><strong style={{ color: '#fff' }}>Content you create</strong> — forum posts, replies, study group messages, and any content you submit to the platform</li>
-              <li><strong style={{ color: '#fff' }}>Usage data</strong> — pages visited, discussions viewed, activity timestamps, and engagement with features such as the Daily Word and Bible Study Hub</li>
-              <li><strong style={{ color: '#fff' }}>Communications</strong> — messages you send us via the contact form</li>
-              <li><strong style={{ color: '#fff' }}>Device information</strong> — browser type, operating system, and approximate location (country level) for security purposes</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Account information</strong> — your display name, username, and email address when you register</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Content you create</strong> — forum posts, replies, study group messages, and any content you submit to the platform</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Usage data</strong> — pages visited, discussions viewed, activity timestamps, and engagement with features such as the Daily Word and Bible Study Hub</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Communications</strong> — messages you send us via the contact form</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Device information</strong> — browser type, operating system, and approximate location (country level) for security purposes</li>
             </ul>
-            <p>We do <strong style={{ color: '#fff' }}>not</strong> collect payment information, government identification, or sensitive personal data such as health records.</p>
+            <p>We do <strong style={{ color: 'var(--fg-100)' }}>not</strong> collect payment information, government identification, or sensitive personal data such as health records.</p>
           </Section>
 
           <Section title="3. How we use your information">
@@ -52,25 +52,25 @@ export default function PrivacyPolicyPage() {
               <li>Improve the platform and understand how it is being used</li>
               <li>Respond to your support requests</li>
             </ul>
-            <p>We do <strong style={{ color: '#fff' }}>not</strong> sell your personal data to any third party. We do not use your data for advertising profiling.</p>
+            <p>We do <strong style={{ color: 'var(--fg-100)' }}>not</strong> sell your personal data to any third party. We do not use your data for advertising profiling.</p>
           </Section>
 
           <Section title="4. Legal basis for processing (UK GDPR)">
             <p>We process your personal data under the following legal bases:</p>
             <ul>
-              <li><strong style={{ color: '#fff' }}>Contract</strong> — processing necessary to provide the service you signed up for (account creation, forum access)</li>
-              <li><strong style={{ color: '#fff' }}>Legitimate interests</strong> — platform security, fraud prevention, and improving the service</li>
-              <li><strong style={{ color: '#fff' }}>Consent</strong> — email digest communications, which you can withdraw at any time</li>
-              <li><strong style={{ color: '#fff' }}>Legal obligation</strong> — retaining records where required by law</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Contract</strong> — processing necessary to provide the service you signed up for (account creation, forum access)</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Legitimate interests</strong> — platform security, fraud prevention, and improving the service</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Consent</strong> — email digest communications, which you can withdraw at any time</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Legal obligation</strong> — retaining records where required by law</li>
             </ul>
           </Section>
 
           <Section title="5. How we share your information">
             <p>We share your information only in the following circumstances:</p>
             <ul>
-              <li><strong style={{ color: '#fff' }}>Service providers</strong> — we use Cloudflare (infrastructure and security), Resend (transactional email), and LiveKit (live audio streaming). Each processes data only as necessary to provide their service.</li>
-              <li><strong style={{ color: '#fff' }}>Third-party tools</strong> — the Bible Study Hub uses STEPBible (stepbible.org), an independent scholarly tool. We do not share your account data with STEPBible.</li>
-              <li><strong style={{ color: '#fff' }}>Legal requirements</strong> — we may disclose information if required by law or to protect the rights and safety of our users or the public.</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Service providers</strong> — we use Cloudflare (infrastructure and security), Resend (transactional email), and LiveKit (live audio streaming). Each processes data only as necessary to provide their service.</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Third-party tools</strong> — the Bible Study Hub uses STEPBible (stepbible.org), an independent scholarly tool. We do not share your account data with STEPBible.</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Legal requirements</strong> — we may disclose information if required by law or to protect the rights and safety of our users or the public.</li>
             </ul>
             <p>We do not share your personal data with any other third parties.</p>
           </Section>
@@ -83,16 +83,16 @@ export default function PrivacyPolicyPage() {
           <Section title="7. Your rights under UK GDPR">
             <p>You have the following rights regarding your personal data:</p>
             <ul>
-              <li><strong style={{ color: '#fff' }}>Right of access</strong> — request a copy of the personal data we hold about you</li>
-              <li><strong style={{ color: '#fff' }}>Right to rectification</strong> — correct inaccurate or incomplete data</li>
-              <li><strong style={{ color: '#fff' }}>Right to erasure</strong> — request deletion of your personal data</li>
-              <li><strong style={{ color: '#fff' }}>Right to restrict processing</strong> — ask us to limit how we use your data</li>
-              <li><strong style={{ color: '#fff' }}>Right to data portability</strong> — receive your data in a machine-readable format</li>
-              <li><strong style={{ color: '#fff' }}>Right to object</strong> — object to processing based on legitimate interests</li>
-              <li><strong style={{ color: '#fff' }}>Right to withdraw consent</strong> — unsubscribe from email communications at any time</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Right of access</strong> — request a copy of the personal data we hold about you</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Right to rectification</strong> — correct inaccurate or incomplete data</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Right to erasure</strong> — request deletion of your personal data</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Right to restrict processing</strong> — ask us to limit how we use your data</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Right to data portability</strong> — receive your data in a machine-readable format</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Right to object</strong> — object to processing based on legitimate interests</li>
+              <li><strong style={{ color: 'var(--fg-100)' }}>Right to withdraw consent</strong> — unsubscribe from email communications at any time</li>
             </ul>
             <p>To exercise any of these rights, please contact us via <Link to="/contact" style={{ color: C.gold }}>our contact form</Link>. We will respond within 30 days.</p>
-            <p>You also have the right to lodge a complaint with the <strong style={{ color: '#fff' }}>Information Commissioner's Office (ICO)</strong> at ico.org.uk if you believe we have not handled your data appropriately.</p>
+            <p>You also have the right to lodge a complaint with the <strong style={{ color: 'var(--fg-100)' }}>Information Commissioner's Office (ICO)</strong> at ico.org.uk if you believe we have not handled your data appropriately.</p>
           </Section>
 
           <Section title="8. Cookies and local storage">
@@ -117,7 +117,7 @@ export default function PrivacyPolicyPage() {
           </Section>
 
           <div style={{ marginTop: 48, padding: '24px', background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: 12 }}>
-            <p style={{ fontFamily: F.body, fontSize: 14, color: 'rgba(255,255,255,0.7)', margin: 0, lineHeight: 1.7 }}>
+            <p style={{ fontFamily: F.body, fontSize: 14, color: 'var(--fg-7)', margin: 0, lineHeight: 1.7 }}>
               <strong style={{ color: C.gold }}>Lives In Motion Ltd</strong><br/>
               Registered in England and Wales<br/>
               Privacy enquiries: <Link to="/contact" style={{ color: C.gold }}>discussionsexegetica.com/contact</Link>
@@ -132,7 +132,7 @@ export default function PrivacyPolicyPage() {
 function Section({ title, children }) {
   return (
     <div style={{ marginBottom: 36 }}>
-      <h2 style={{ fontFamily: F.display, fontSize: 19, fontWeight: 700, color: '#fff', marginBottom: 14, borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: 10 }}>{title}</h2>
+      <h2 style={{ fontFamily: F.display, fontSize: 19, fontWeight: 700, color: 'var(--fg-100)', marginBottom: 14, borderBottom: '1px solid var(--fg-08)', paddingBottom: 10 }}>{title}</h2>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {children}
       </div>

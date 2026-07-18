@@ -41,7 +41,7 @@ export default function DailyWordPage() {
   }, [])
 
   return (
-    <div style={{ minHeight: '100vh', backgroundImage: `linear-gradient(to bottom, rgba(27,42,74,0.88) 0%, rgba(10,20,45,0.94) 100%), url(${IMAGES.dailyHero})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative', overflow: 'hidden' }}>
+    <div style={{ minHeight: '100vh', backgroundImage: `linear-gradient(to bottom, var(--ov-88) 0%, var(--ov-94) 100%), url(${IMAGES.dailyHero})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative', overflow: 'hidden' }}>
 
       {/* Decorative circles */}
       {[300, 500, 700].map((r, i) => (
@@ -59,7 +59,7 @@ export default function DailyWordPage() {
       {meditate && word && (
         <div onClick={() => setMeditate(false)} style={{
           position: 'fixed', inset: 0, zIndex: 100,
-          background: 'rgba(10,15,30,0.98)',
+          background: 'var(--surface-solid-a)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           flexDirection: 'column', padding: 40, cursor: 'pointer'
         }}>
@@ -68,14 +68,14 @@ export default function DailyWordPage() {
           </p>
           <blockquote style={{
             fontFamily: F.display, fontSize: 'clamp(20px,4vw,36px)',
-            fontWeight: 700, color: '#fff', textAlign: 'center',
+            fontWeight: 700, color: 'var(--fg-100)', textAlign: 'center',
             lineHeight: 1.65, maxWidth: 680, margin: '0 0 28px',
             animation: 'fadeInUp 1.4s ease'
           }}>
             "{word.verse_text}"
           </blockquote>
           <p style={{ fontFamily: F.body, fontSize: 18, color: C.gold, fontWeight: 700 }}>— {word.verse_ref}</p>
-          <p style={{ fontFamily: F.body, fontSize: 12, color: 'rgba(255,255,255,0.25)', marginTop: 60 }}>Tap anywhere to return</p>
+          <p style={{ fontFamily: F.body, fontSize: 12, color: 'var(--fg-25)', marginTop: 60 }}>Tap anywhere to return</p>
         </div>
       )}
 
@@ -91,7 +91,7 @@ export default function DailyWordPage() {
         {word ? (
           <>
             {word.theme && (
-              <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.5)', marginBottom: 28, fontStyle: 'italic' }}>
+              <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'var(--fg-5)', marginBottom: 28, fontStyle: 'italic' }}>
                 Theme: {word.theme}
               </p>
             )}
@@ -99,7 +99,7 @@ export default function DailyWordPage() {
             <blockquote style={{
               fontFamily: F.display,
               fontSize: 'clamp(20px,4vw,30px)',
-              fontWeight: 700, color: '#fff',
+              fontWeight: 700, color: 'var(--fg-100)',
               lineHeight: 1.65, margin: '0 0 22px',
               borderLeft: `3px solid ${C.gold}`,
               paddingLeft: 24, textAlign: 'left',
@@ -122,8 +122,8 @@ export default function DailyWordPage() {
                 🧘 Meditate on this verse
               </button>
               <Link to="/forum/exegesis" style={{
-                background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.75)',
-                border: '1px solid rgba(255,255,255,0.15)', borderRadius: 10,
+                background: 'var(--fg-07)', color: 'var(--fg-75)',
+                border: '1px solid var(--fg-15)', borderRadius: 10,
                 padding: '12px 24px', fontFamily: F.body, fontSize: 14.5
               }}>
                 Discuss in forum →
@@ -131,11 +131,11 @@ export default function DailyWordPage() {
             </div>
 
             {/* Daily reflection prompt */}
-            <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 14, padding: '24px' }}>
-              <p style={{ fontFamily: F.display, fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 10 }}>
+            <div style={{ background: 'var(--fg-05)', border: '1px solid var(--fg-1)', borderRadius: 14, padding: '24px' }}>
+              <p style={{ fontFamily: F.display, fontSize: 16, fontWeight: 700, color: 'var(--fg-100)', marginBottom: 10 }}>
                 A question for today
               </p>
-              <p style={{ fontFamily: F.body, fontSize: 14.5, color: 'rgba(255,255,255,0.65)', lineHeight: 1.75, margin: '0 0 18px' }}>
+              <p style={{ fontFamily: F.body, fontSize: 14.5, color: 'var(--fg-65)', lineHeight: 1.75, margin: '0 0 18px' }}>
                 As you carry <em style={{ color: C.goldLight }}>{word.verse_ref}</em> through your day — where in your life does this truth most need to land?
               </p>
               <Link to="/forum/prayer" style={{ color: C.gold, fontFamily: F.body, fontSize: 13.5, fontWeight: 600 }}>
@@ -144,7 +144,7 @@ export default function DailyWordPage() {
             </div>
           </>
         ) : (
-          <p style={{ fontFamily: F.body, color: 'rgba(255,255,255,0.5)' }}>Loading today's word…</p>
+          <p style={{ fontFamily: F.body, color: 'var(--fg-5)' }}>Loading today's word…</p>
         )}
       </div>
 

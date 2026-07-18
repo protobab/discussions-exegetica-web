@@ -10,28 +10,28 @@ export default function TermsOfUsePage() {
   useEffect(() => { window.scrollTo(0, 0) }, [])
 
   return (
-    <div style={{ background: C.navy, minHeight: '100vh', padding: '60px 24px 80px' }}>
+    <div style={{ background: 'var(--bg-page)', minHeight: '100vh', padding: '60px 24px 80px' }}>
       <div style={{ maxWidth: 760, margin: '0 auto' }}>
 
         <div style={{ marginBottom: 40 }}>
-          <Link to="/" style={{ fontFamily: F.body, fontSize: 13, color: 'rgba(255,255,255,0.4)' }}>← Home</Link>
+          <Link to="/" style={{ fontFamily: F.body, fontSize: 13, color: 'var(--fg-4)' }}>← Home</Link>
         </div>
 
-        <h1 style={{ fontFamily: F.display, fontSize: 34, fontWeight: 700, color: '#fff', marginBottom: 8 }}>Terms of Use</h1>
-        <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'rgba(255,255,255,0.4)', marginBottom: 48 }}>
+        <h1 style={{ fontFamily: F.display, fontSize: 34, fontWeight: 700, color: 'var(--fg-100)', marginBottom: 8 }}>Terms of Use</h1>
+        <p style={{ fontFamily: F.body, fontSize: 13.5, color: 'var(--fg-4)', marginBottom: 48 }}>
           Last updated: {today} · Effective: {today}
         </p>
 
-        <div style={{ fontFamily: F.body, fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.85 }}>
+        <div style={{ fontFamily: F.body, fontSize: 15, color: 'var(--fg-75)', lineHeight: 1.85 }}>
 
           <div style={{ background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: 12, padding: '20px 24px', marginBottom: 40 }}>
-            <p style={{ fontFamily: F.body, fontSize: 14.5, color: 'rgba(255,255,255,0.8)', margin: 0, lineHeight: 1.7 }}>
+            <p style={{ fontFamily: F.body, fontSize: 14.5, color: 'var(--fg-8)', margin: 0, lineHeight: 1.7 }}>
               By accessing or using Discussions Exegetica, you agree to these Terms of Use. Please read them carefully. If you do not agree, please do not use the platform.
             </p>
           </div>
 
           <Section title="1. About the platform">
-            <p>Discussions Exegetica is operated by <strong style={{ color: '#fff' }}>Lives In Motion Ltd</strong>, a company registered in England and Wales. It is a global, non-denominational evangelical biblical discussion community open to believers and seekers of all backgrounds.</p>
+            <p>Discussions Exegetica is operated by <strong style={{ color: 'var(--fg-100)' }}>Lives In Motion Ltd</strong>, a company registered in England and Wales. It is a global, non-denominational evangelical biblical discussion community open to believers and seekers of all backgrounds.</p>
           </Section>
 
           <Section title="2. Your account">
@@ -103,7 +103,7 @@ export default function TermsOfUsePage() {
           </Section>
 
           <div style={{ marginTop: 48, padding: '24px', background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: 12 }}>
-            <p style={{ fontFamily: F.body, fontSize: 14, color: 'rgba(255,255,255,0.7)', margin: 0, lineHeight: 1.7 }}>
+            <p style={{ fontFamily: F.body, fontSize: 14, color: 'var(--fg-7)', margin: 0, lineHeight: 1.7 }}>
               <strong style={{ color: C.gold }}>Lives In Motion Ltd</strong><br/>
               Registered in England and Wales<br/>
               Discussions Exegetica · <Link to="/" style={{ color: C.gold }}>discussionsexegetica.com</Link>
@@ -118,7 +118,7 @@ export default function TermsOfUsePage() {
 function Section({ title, children }) {
   return (
     <div style={{ marginBottom: 36 }}>
-      <h2 style={{ fontFamily: F.display, fontSize: 19, fontWeight: 700, color: '#fff', marginBottom: 14, borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: 10 }}>{title}</h2>
+      <h2 style={{ fontFamily: F.display, fontSize: 19, fontWeight: 700, color: 'var(--fg-100)', marginBottom: 14, borderBottom: '1px solid var(--fg-08)', paddingBottom: 10 }}>{title}</h2>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {children}
       </div>

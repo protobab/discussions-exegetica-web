@@ -4,17 +4,17 @@ export const C = {
   navy:      '#0a0f1e',        // deepest dark — page backgrounds
   navyMid:   '#111827',        // card backgrounds
   navyLight: '#1B2A4A',        // elevated surfaces
-  navyBorder:'rgba(201,168,76,0.15)', // gold-tinted borders
+  navyBorder:'var(--c-gold-dim)', // gold-tinted borders
 
   // Gold spectrum
-  gold:      '#C9A84C',
-  goldLight: '#E8C97A',
-  goldDim:   'rgba(201,168,76,0.15)',
+  gold:      'var(--c-gold)',
+  goldLight: 'var(--c-gold-light)',
+  goldDim:   'var(--c-gold-dim)',
 
   // Text
-  text:      '#E8E0D0',        // warm white for body text on dark
-  textMuted: 'rgba(255,255,255,0.55)',
-  textDim:   'rgba(255,255,255,0.35)',
+  text:      'var(--c-text)',  // warm ink — cream on dark, warm brown-black on light
+  textMuted: 'var(--fg-55)',
+  textDim:   'var(--fg-35)',
 
   // Accents
   sage:      '#52B788',
@@ -23,8 +23,8 @@ export const C = {
   // Legacy aliases (keep for compatibility)
   parchment: '#F7F3EB',
   mist:      '#EEF2F7',
-  muted:     'rgba(255,255,255,0.55)',
-  border:    'rgba(255,255,255,0.1)',
+  muted:     'var(--fg-55)',
+  border:    'var(--fg-1)',
   navyLightOld: '#2E4270',
 }
 
