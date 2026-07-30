@@ -19,6 +19,8 @@ export default function ArmchairSessionPage() {
   const [asQ, setAsQ] = useState(false)
   const [posting, setPosting] = useState(false)
   const [recordingError, setRecordingError] = useState('')
+  const [uploadingFix, setUploadingFix] = useState(false)
+  const [uploadFixMsg, setUploadFixMsg] = useState('')
   const scrollRef = useRef(null)
 
   usePageTitle(session?.title)
@@ -57,6 +59,29 @@ export default function ArmchairSessionPage() {
   const flag = async (msgId) => {
     await fetch(`${API}/armchair/messages/${msgId}/flag`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } })
     load()
+  }
+
+  const uploadMobileFix = async (file) => {
+    if (!file) return
+    setUploadingFix(true)
+    setUploadFixMsg('⏫ Uploading…')
+    try {
+      const res = await fetch(`${API}/armchair/recordings/upload?session_id=${id}&format=mp4`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': file.type || 'audio/mp4' },
+        body: file
+      })
+      const data = await res.json()
+      if (data.ok) {
+        setUploadFixMsg('✅ Uploaded — mobile playback should work now. Refreshing…')
+        load()
+      } else {
+        setUploadFixMsg(`⚠️ Upload failed: ${data.error || 'unknown error'}`)
+      }
+    } catch {
+      setUploadFixMsg('⚠️ Upload failed — could not reach the server.')
+    }
+    setUploadingFix(false)
   }
 
   if (loading) return <div style={{ maxWidth:820, margin:'40px auto' }}><Spinner/></div>
@@ -192,6 +217,25 @@ export default function ArmchairSessionPage() {
               <p style={{ fontFamily:F.body, fontSize:11, color:'var(--fg-35)', marginTop:6 }}>
                 Having trouble playing on mobile? Try refreshing the page.
               </p>
+
+              {/* HOST-ONLY: manual fix-up for recordings made before the mp4 fix */}
+              {isHost && !session.recording_key_mp4 && (
+                <div style={{ marginTop:14, paddingTop:14, borderTop:'1px dashed var(--fg-15)' }}>
+                  <label style={{ fontFamily:F.body, fontSize:12, fontWeight:600, color:'var(--fg-6)', display:'block', marginBottom:6 }}>
+                    🔧 This recording predates the mobile fix. Upload an m4a/mp4 version to make it playable on iPhone/iPad:
+                  </label>
+                  <input
+                    type="file"
+                    accept="audio/mp4,audio/m4a,.m4a,.mp4"
+                    disabled={uploadingFix}
+                    onChange={e => uploadMobileFix(e.target.files?.[0])}
+                    style={{ fontFamily:F.body, fontSize:12.5 }}
+                  />
+                  {uploadFixMsg && (
+                    <p style={{ fontFamily:F.body, fontSize:12, color:'var(--fg-6)', marginTop:8 }}>{uploadFixMsg}</p>
+                  )}
+                </div>
+              )}
             </div>
           ) : (
             <div style={{ background:'var(--fg-05)', borderRadius:10, padding:'14px 18px', fontFamily:F.body, fontSize:13.5, color:C.muted }}>
