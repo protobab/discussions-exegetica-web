@@ -218,6 +218,19 @@ export default function ArmchairSessionPage() {
                 Having trouble playing on mobile? Try refreshing the page.
               </p>
 
+              {/* HOST-ONLY: direct download link, bypasses the player's no-download restriction */}
+              {isHost && (session.recording_key || session.recording_url) && (
+                <p style={{ fontFamily:F.body, fontSize:12, marginTop:10 }}>
+                  
+                    href={session.recording_key ? `${API}/armchair/recordings/${session.recording_key}` : session.recording_url}
+                    download={`armchair-${id}-recording.webm`}
+                    style={{ color:C.gold, fontWeight:600, textDecoration:'none' }}
+                  >
+                    ⬇ Download original recording (for converting)
+                  </a>
+                </p>
+              )}
+
               {/* HOST-ONLY: manual fix-up for recordings made before the mp4 fix */}
               {isHost && !session.recording_key_mp4 && (
                 <div style={{ marginTop:14, paddingTop:14, borderTop:'1px dashed var(--fg-15)' }}>
