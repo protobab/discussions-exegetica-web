@@ -150,7 +150,7 @@ export default function ArmchairSessionPage() {
       {/* RECORDING PLAYBACK */}
       {isEnded && (
         <div style={{ marginBottom:20 }}>
-          {(session.recording_url || session.recording_key) ? (
+          {(session.recording_url || session.recording_key || session.recording_key_mp4) ? (
             <div style={{ background:'var(--surface-elevated-b)', borderRadius:12, padding:'14px 18px', border:`1px solid ${C.gold}33` }}>
               <p style={{ fontFamily:F.body, fontSize:11.5, fontWeight:700, color:C.gold, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:10 }}>
                 📼 Session Recording
@@ -162,7 +162,11 @@ export default function ArmchairSessionPage() {
                 onError={async () => {
                   // Try to fetch the recording URL directly to surface the actual server error
                   // on the page itself, rather than leaving a silently broken player.
-                  const src = session.recording_key ? `${API}/armchair/recordings/${session.recording_key}` : session.recording_url
+                  const src = session.recording_key_mp4
+                    ? `${API}/armchair/recordings/${session.recording_key_mp4}`
+                    : session.recording_key
+                    ? `${API}/armchair/recordings/${session.recording_key}`
+                    : session.recording_url
                   try {
                     const r = await fetch(src)
                     if (!r.ok) {
@@ -175,6 +179,7 @@ export default function ArmchairSessionPage() {
                 }}
                 style={{ width:'100%', maxWidth:480, height:36, display:'block', borderRadius:6 }}
               >
+                {session.recording_key_mp4 && <source src={`${API}/armchair/recordings/${session.recording_key_mp4}`} type="audio/mp4"/>}
                 {session.recording_url && <source src={session.recording_url} type="audio/webm"/>}
                 {session.recording_key && <source src={`${API}/armchair/recordings/${session.recording_key}`} type="audio/webm"/>}
                 Your browser does not support audio playback.
@@ -185,7 +190,7 @@ export default function ArmchairSessionPage() {
                 </p>
               )}
               <p style={{ fontFamily:F.body, fontSize:11, color:'var(--fg-35)', marginTop:6 }}>
-                Having trouble playing? Try Chrome or Safari. Firefox may require WebM codec support.
+                Having trouble playing on mobile? Try refreshing the page.
               </p>
             </div>
           ) : (
