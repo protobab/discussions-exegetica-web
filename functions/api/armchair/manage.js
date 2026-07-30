@@ -63,7 +63,7 @@ async function rehostCoverImage(url, env) {
 export async function onRequestGet({ env, request }) {
   if (!(await adminSession(request, env))) return json({ error: 'Unauthorised' }, 401)
   const { results } = await env.DB.prepare(
-    `SELECT id, title, guest_name, status, scheduled_at, cover_image, recording_url, recording_key, zoom_link FROM armchair_sessions ORDER BY scheduled_at DESC`
+    `SELECT id, title, guest_name, status, scheduled_at, cover_image, recording_url, recording_key, recording_key_mp4, zoom_link FROM armchair_sessions ORDER BY scheduled_at DESC`
   ).all()
   return json({ sessions: results })
 }
