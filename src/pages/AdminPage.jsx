@@ -133,6 +133,14 @@ function SessionsTab({ token }) {
                   <p style={{ fontFamily:F.display, fontSize:14.5, fontWeight:700, color:'var(--fg-100)', marginBottom:2 }}>{s.title}</p>
                   {s.guest_name && <p style={{ fontFamily:F.body, fontSize:12, color:'var(--fg-55)' }}>with {s.guest_name}</p>}
                   {s.scheduled_at && <p style={{ fontFamily:F.body, fontSize:11, color:'var(--fg-4)', marginTop:2 }}>{new Date(s.scheduled_at).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}</p>}
+                  {(s.recording_key || s.recording_url) && (
+                    <p style={{ fontFamily:F.body, fontSize:11, marginTop:4 }}>
+                      <a href={s.recording_key ? `${API}/armchair/recordings/${s.recording_key}` : s.recording_url} download={`armchair-${s.id}-recording${s.recording_key_mp4?'':'.webm'}`} style={{ color:C.gold, fontWeight:600, textDecoration:'none' }}>⬇ Download recording</a>
+                      {s.recording_key_mp4
+                        ? <a href={`${API}/armchair/recordings/${s.recording_key_mp4}`} download={`armchair-${s.id}-recording.mp4`} style={{ color:C.gold, fontWeight:600, textDecoration:'none', marginLeft:10 }}>⬇ Download (iPhone-compatible)</a>
+                        : <span style={{ color:'#DC2626', marginLeft:10 }}>⚠ No iPhone-compatible version yet — open the session to upload one</span>}
+                    </p>
+                  )}
                 </div>
                 <div style={{ display:'flex', gap:7, alignItems:'center', flexWrap:'wrap' }}>
                   {s.status === 'scheduled' && <Btn variant="primary" onClick={()=>updateStatus(s.id,'live')}>🔴 Go Live</Btn>}
