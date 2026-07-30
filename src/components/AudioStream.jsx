@@ -34,6 +34,11 @@ export function HostBroadcaster({ sessionId, token, zoomLink, onEnd }) {
   const roomRef = useRef(null)
   const recorderRef = useRef(null)
   const chunksRef = useRef([])
+  // Second, parallel recorder capturing a WebKit-playable format (mp4/aac)
+  // whenever the browser supports it, so iOS Safari/Firefox have a native
+  // fallback instead of only ever getting webm/opus.
+  const mp4RecorderRef = useRef(null)
+  const mp4ChunksRef = useRef([])
   const micStreamRef = useRef(null)
 
   const startBroadcast = async () => {
@@ -83,6 +88,7 @@ export function HostBroadcaster({ sessionId, token, zoomLink, onEnd }) {
       try {
         const micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
         micStreamRef.current = micStream
+
         const recorder = new MediaRecorder(micStream, { mimeType: 'audio/webm;codecs=opus' })
         recorderRef.current = recorder
         recorder.ondataavailable = e => {
@@ -92,6 +98,23 @@ export function HostBroadcaster({ sessionId, token, zoomLink, onEnd }) {
           }
         }
         recorder.start(5000)
+
+        // Best-effort second recording in a WebKit-playable container. Not
+        // every browser supports recording straight to mp4, so this is
+        // feature-detected — if unsupported, we simply fall back to the
+        // webm-only behaviour we already had (no regression either way).
+        if (typeof MediaRecorder.isTypeSupported === 'function' && MediaRecorder.isTypeSupported('audio/mp4')) {
+          try {
+            const mp4Recorder = new MediaRecorder(micStream, { mimeType: 'audio/mp4' })
+            mp4RecorderRef.current = mp4Recorder
+            mp4Recorder.ondataavailable = e => {
+              if (e.data.size > 0) mp4ChunksRef.current.push(e.data)
+            }
+            mp4Recorder.start(5000)
+          } catch (mp4Err) {
+            console.warn('MP4 local recording unavailable:', mp4Err.message)
+          }
+        }
       } catch (recErr) {
         console.warn('Local recording unavailable:', recErr.message)
       }
@@ -107,12 +130,19 @@ export function HostBroadcaster({ sessionId, token, zoomLink, onEnd }) {
     setStatus('saving')
     setMsg('Ending session and saving recording…')
 
-    // Stop recorder cleanly
-    await new Promise(resolve => {
-      if (!recorderRef.current || recorderRef.current.state === 'inactive') { resolve(); return }
-      recorderRef.current.onstop = resolve
-      recorderRef.current.stop()
-    })
+    // Stop both recorders cleanly
+    await Promise.all([
+      new Promise(resolve => {
+        if (!recorderRef.current || recorderRef.current.state === 'inactive') { resolve(); return }
+        recorderRef.current.onstop = resolve
+        recorderRef.current.stop()
+      }),
+      new Promise(resolve => {
+        if (!mp4RecorderRef.current || mp4RecorderRef.current.state === 'inactive') { resolve(); return }
+        mp4RecorderRef.current.onstop = resolve
+        mp4RecorderRef.current.stop()
+      })
+    ])
     await new Promise(r => setTimeout(r, 400))
 
     // Disconnect LiveKit and stop mic
@@ -132,8 +162,9 @@ export function HostBroadcaster({ sessionId, token, zoomLink, onEnd }) {
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
 
-      // Upload to R2
+      // Upload primary (webm) recording to R2
       setMsg('⏫ Uploading to site library…')
+      let webmOk = false
       try {
         const res = await fetch(`${API}/armchair/recordings/upload?session_id=${sessionId}`, {
           method: 'POST',
@@ -141,6 +172,7 @@ export function HostBroadcaster({ sessionId, token, zoomLink, onEnd }) {
           body: blob
         })
         const data = await res.json()
+        webmOk = !!data.ok
         setMsg(data.ok
           ? '✅ Session ended. Recording saved to library and downloaded to your computer.'
           : `⚠️ Library upload failed (${data.error}) — file downloaded to your computer.`)
@@ -152,235 +184,6 @@ export function HostBroadcaster({ sessionId, token, zoomLink, onEnd }) {
           body: JSON.stringify({ session_id: sessionId, status: 'ended' })
         })
       }
-    } else {
-      setMsg('Session ended. No audio was captured (microphone may not have been enabled).')
-      await fetch(`${API}/armchair/manage`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ session_id: sessionId, status: 'ended' })
-      })
-    }
 
-    setStatus('ended')
-    onEnd?.()
-  }
-
-  useEffect(() => () => {
-    recorderRef.current?.state !== 'inactive' && recorderRef.current?.stop()
-    micStreamRef.current?.getTracks().forEach(t => t.stop())
-    roomRef.current?.disconnect()
-  }, [])
-
-  return (
-    <div style={{ background: status === 'broadcasting' ? '#FEF2F2' : C.parchment, borderRadius: 12, padding: '18px 20px', marginBottom: 16, border: `1px solid ${status === 'broadcasting' ? '#FECACA' : '#D4C9AE'}` }}>
-      <p style={{ fontFamily: F.body, fontSize: 12, fontWeight: 700, color: C.navy, marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-        🎙 Host Broadcast Controls
-      </p>
-
-      {msg && (
-        <p style={{ fontFamily: F.body, fontSize: 13, marginBottom: 12, color: msg.startsWith('❌') ? '#DC2626' : msg.startsWith('✅') ? '#15803D' : '#5a6472' }}>
-          {msg}
-        </p>
-      )}
-
-      {status === 'idle' && (
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <Btn variant="primary" onClick={startBroadcast}>🎙 Start Live Audio</Btn>
-          {zoomLink && (
-            <a href={zoomLink} target="_blank" rel="noreferrer">
-              <Btn variant="outline">📹 Open Zoom / Video</Btn>
-            </a>
-          )}
-        </div>
-      )}
-
-      {status === 'connecting' && (
-        <p style={{ fontFamily: F.body, fontSize: 13, color: '#5a6472' }}>Connecting to broadcast room…</p>
-      )}
-
-      {status === 'broadcasting' && (
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-            <span className="pulse-dot" style={{ width: 10, height: 10, borderRadius: '50%', background: '#EF4444', display: 'inline-block' }}/>
-            <span style={{ fontFamily: F.body, fontSize: 13.5, fontWeight: 600, color: '#DC2626' }}>
-              LIVE — {listenerCount} listener{listenerCount !== 1 ? 's' : ''} connected
-            </span>
-          </div>
-          <p style={{ fontFamily: F.body, fontSize: 12, color: '#5a6472', marginBottom: 12 }}>
-            Recording: {(recordingSize / 1024).toFixed(0)} KB captured
-          </p>
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <Btn variant="outline" onClick={endBroadcast}>⏹ End Session & Save Recording</Btn>
-            {zoomLink && (
-              <a href={zoomLink} target="_blank" rel="noreferrer">
-                <Btn variant="ghost">📹 Also open Zoom</Btn>
-              </a>
-            )}
-          </div>
-        </div>
-      )}
-
-      {(status === 'saving' || status === 'ended') && (
-        <p style={{ fontFamily: F.body, fontSize: 13, color: status === 'ended' ? '#15803D' : '#5a6472' }}>{msg}</p>
-      )}
-
-      <style>{`
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-        .pulse-dot { animation: pulse 1.2s infinite }
-      `}</style>
-    </div>
-  )
-}
-
-// ── Listener Receiver ─────────────────────────────────────────
-
-export function ListenerReceiver({ sessionId, zoomLink }) {
-  const [status, setStatus] = useState('idle')
-  const [errorMsg, setErrorMsg] = useState('')
-  const roomRef = useRef(null)
-
-  const connect = async () => {
-    setStatus('connecting')
-    setErrorMsg('')
-
-    if (roomRef.current) {
-      await roomRef.current.disconnect()
-      roomRef.current = null
-    }
-
-    try {
-      // Get token (no auth — listeners don't need to be logged in)
-      const res = await fetch(`${API}/armchair/livekit-token?session_id=${sessionId}`)
-      const data = await res.json()
-
-      if (!data.token) throw new Error(data.error || 'Could not get session token')
-      if (!data.wsUrl || data.wsUrl.includes('your-project')) {
-        throw new Error('Live audio not configured. Please use the Zoom link instead.')
-      }
-
-      const LK = await loadLiveKit()
-      const room = new LK.Room()
-      roomRef.current = room
-
-      // Handle incoming audio
-      room.on(LK.RoomEvent.TrackSubscribed, (track) => {
-        if (track.kind === LK.Track.Kind.Audio) {
-          const el = track.attach()
-          el.autoplay = true
-          document.body.appendChild(el)
-          el.play().catch(() => {})
-          setStatus('connected')
-        }
-      })
-
-      room.on(LK.RoomEvent.TrackUnsubscribed, (track) => {
-        track.detach().forEach(el => el.remove())
-      })
-
-      room.on(LK.RoomEvent.Disconnected, () => {
-        setStatus('idle')
-      })
-
-      room.on(LK.RoomEvent.ParticipantDisconnected, participant => {
-        if (participant.identity?.startsWith('host-')) {
-          setStatus('idle')
-          setErrorMsg('The host has ended the broadcast.')
-        }
-      })
-
-      await room.connect(data.wsUrl, data.token)
-
-      // Wait up to 15s for host audio track
-      let waited = 0
-      const check = setInterval(() => {
-        waited += 500
-        // Check if any remote participant has an audio track
-        const hasAudio = [...room.remoteParticipants.values()].some(p =>
-          [...p.trackPublications.values()].some(pub =>
-            pub.kind === LK.Track.Kind.Audio && pub.isSubscribed && pub.track
-          )
-        )
-        if (hasAudio) {
-          clearInterval(check)
-          setStatus('connected')
-        } else if (waited >= 15000) {
-          clearInterval(check)
-          setErrorMsg('Connected to room but no audio from host yet. Wait a moment and retry, or ensure the host has clicked "Start Live Audio".')
-          setStatus('failed')
-        }
-      }, 500)
-
-    } catch (e) {
-      console.error('Listener error:', e)
-      setErrorMsg(e.message || 'Connection failed — please retry.')
-      setStatus('failed')
-    }
-  }
-
-  const disconnect = async () => {
-    await roomRef.current?.disconnect()
-    roomRef.current = null
-    setStatus('idle')
-    setErrorMsg('')
-  }
-
-  useEffect(() => () => { roomRef.current?.disconnect() }, [])
-
-  return (
-    <div style={{ background: C.mist, borderRadius: 10, padding: '14px 16px', marginBottom: 16 }}>
-
-      {status === 'idle' && (
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-          <Btn variant="primary" onClick={connect}>🎧 Connect to Live Audio</Btn>
-          {zoomLink && (
-            <a href={zoomLink} target="_blank" rel="noreferrer">
-              <Btn variant="outline">📹 Join Video Instead</Btn>
-            </a>
-          )}
-          <span style={{ fontFamily: F.body, fontSize: 12.5, color: '#5a6472' }}>
-            Click to hear the live conversation
-          </span>
-        </div>
-      )}
-
-      {status === 'connecting' && (
-        <p style={{ fontFamily: F.body, fontSize: 13, color: '#5a6472' }}>
-          Connecting to live room…
-        </p>
-      )}
-
-      {status === 'connected' && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-          <span className="pulse-dot" style={{ width: 8, height: 8, borderRadius: '50%', background: '#15803D', display: 'inline-block' }}/>
-          <span style={{ fontFamily: F.body, fontSize: 13, color: '#15803D', fontWeight: 600 }}>
-            🎧 Connected — listening live
-          </span>
-          <button onClick={disconnect} style={{ background: 'none', border: 'none', color: '#5a6472', fontSize: 12, cursor: 'pointer', fontFamily: F.body }}>
-            Disconnect
-          </button>
-        </div>
-      )}
-
-      {status === 'failed' && (
-        <div>
-          <p style={{ fontFamily: F.body, fontSize: 13, color: '#DC2626', marginBottom: 10 }}>
-            {errorMsg || 'Connection failed.'}
-          </p>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <Btn variant="outline" onClick={connect}>Retry</Btn>
-            {zoomLink && (
-              <a href={zoomLink} target="_blank" rel="noreferrer">
-                <Btn variant="ghost">📹 Try Video Instead</Btn>
-              </a>
-            )}
-          </div>
-        </div>
-      )}
-
-      <style>{`
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-        .pulse-dot { animation: pulse 1.2s infinite }
-      `}</style>
-    </div>
-  )
-}
+      // Upload secondary (mp4) recording, if we managed to capture one —
+      // this is what makes playback
