@@ -35,8 +35,6 @@ async function makeToken() {
   return [...crypto.getRandomValues(new Uint8Array(32))].map(b=>b.toString(16).padStart(2,'0')).join('')
 }
 
-const ADMIN_USERS = ['eki']
-
 export async function onRequestGet({ env }) {
   const now = new Date().toISOString()
   const live = await env.DB.prepare(`SELECT s.*, u.display_name as host_name FROM armchair_sessions s JOIN users u ON s.host_id = u.id WHERE s.status = 'live' ORDER BY s.scheduled_at ASC LIMIT 1`).first()

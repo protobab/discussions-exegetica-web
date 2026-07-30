@@ -35,8 +35,6 @@ async function makeToken() {
   return [...crypto.getRandomValues(new Uint8Array(32))].map(b=>b.toString(16).padStart(2,'0')).join('')
 }
 
-const ADMIN_USERS = ['eki']
-
 export async function onRequestGet({ env, request }) {
   const url = new URL(request.url)
   const category = url.searchParams.get('category')

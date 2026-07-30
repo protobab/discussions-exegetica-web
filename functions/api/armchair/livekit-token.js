@@ -35,8 +35,6 @@ async function makeToken() {
   return [...crypto.getRandomValues(new Uint8Array(32))].map(b=>b.toString(16).padStart(2,'0')).join('')
 }
 
-const ADMIN_USERS = ['eki']
-
 // Uses LiveKit's JWT format — no external SDK needed, pure Web Crypto
 
 
@@ -51,7 +49,7 @@ export async function onRequestGet({ env, request }) {
   }
 
   // Determine identity and permissions
-  const isHost = session && ADMIN_USERS.includes(session.username)
+  const isHost = session && (session.is_admin || session.is_moderator)
   const identity = session
     ? (isHost ? `host-${session.username}` : `listener-${session.user_id}-${Date.now()}`)
     : `guest-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`

@@ -13,8 +13,23 @@ async function makeCode() {
   crypto.getRandomValues(arr)
   return Array.from(arr).map(b => b.toString(16).padStart(2,'0')).join('')
 }
-const ADMIN_USERS = ['eki']
 
+// Downloads a Pixabay-hosted image and re-hosts it permanently in our own R2 bucket,
+// so the site no longer depends on Pixabay's CDN URLs staying valid forever.
+async function rehostCoverImage(url, env) {
+  if (!url || !url.includes('pixabay.com') || !env.RECORDINGS) return url || ''
+  try {
+    const res = await fetch(url)
+    if (!res.ok) return url
+    const contentType = res.headers.get('content-type') || 'image/jpeg'
+    const ext = contentType.includes('png') ? 'png' : contentType.includes('webp') ? 'webp' : 'jpg'
+    const key = `covers/${crypto.randomUUID()}.${ext}`
+    await env.RECORDINGS.put(key, await res.arrayBuffer(), { httpMetadata: { contentType } })
+    return `/api/media/${key.replace('covers/', '')}`
+  } catch {
+    return url
+  }
+}
 // GET — list groups (excludes private groups unless member or admin)
 export async function onRequestGet({ env, request }) {
   const session = await getSession(request, env)
@@ -34,7 +49,7 @@ export async function onRequestGet({ env, request }) {
 
   try {
     let groups
-    if (session && ADMIN_USERS.includes(session.username)) {
+    if (session && (session.is_admin || session.is_moderator)) {
       // Admin sees ALL groups including private
       const { results } = await env.DB.prepare(`
         SELECT g.id, g.name, g.description, g.book_focus, g.cover_image,
@@ -87,12 +102,13 @@ export async function onRequestPost({ env, request }) {
 
   try {
     const inviteCode = await makeCode()
+    const hostedCover = await rehostCoverImage(cover_image, env)
     const r = await env.DB.prepare(`
       INSERT INTO study_groups (name, description, book_focus, cover_image, owner_id, max_members, approval_required, is_private, invite_code)
       VALUES (?,?,?,?,?,?,?,?,?)
     `).bind(
       name.trim(), description?.trim()||'', book_focus?.trim()||'',
-      cover_image||'', session.user_id,
+      hostedCover, session.user_id,
       parseInt(max_members)||0,
       approval_required ? 1 : 0,
       is_private ? 1 : 0,

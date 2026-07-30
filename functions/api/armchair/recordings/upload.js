@@ -35,11 +35,9 @@ async function makeToken() {
   return [...crypto.getRandomValues(new Uint8Array(32))].map(b=>b.toString(16).padStart(2,'0')).join('')
 }
 
-const ADMIN_USERS = ['eki']
-
 export async function onRequestPost({ env, request }) {
   const session = await getSession(request, env)
-  if (!session || !ADMIN_USERS.includes(session.username)) {
+  if (!session || !(session.is_admin || session.is_moderator)) {
     return json({ error: 'Unauthorised' }, 401)
   }
 
@@ -47,11 +45,11 @@ export async function onRequestPost({ env, request }) {
   const session_id = url.searchParams.get('session_id')
   if (!session_id) return json({ error: 'session_id required' }, 400)
 
-  // Check R2 binding exists
+  // Check R2 binding exists — if this fires, the RECORDINGS binding isn't attached
+  // to this environment in the Cloudflare Pages dashboard (Settings → Functions → R2 bucket bindings).
   if (!env.RECORDINGS) {
-    // R2 not available — just mark session ended and return error
     await env.DB.prepare(`UPDATE armchair_sessions SET status = 'ended' WHERE id = ?`).bind(session_id).run()
-    return json({ error: 'R2 storage not configured — recording not saved to site, but your local download should be available.' }, 503)
+    return json({ error: 'Recording storage (R2) is not connected to this environment. Check Settings → Functions → R2 bucket bindings in the Cloudflare Pages dashboard — the recording was not saved, but your local download should still be available.' }, 503)
   }
 
   try {
@@ -61,18 +59,23 @@ export async function onRequestPost({ env, request }) {
       return json({ error: 'No audio data received' }, 400)
     }
 
-    const key = `recordings/session-${session_id}-${Date.now()}.webm`
+    // Store the DB key WITHOUT the "recordings/" prefix — the prefix is added only
+    // when writing to R2 below. This means the frontend and the playback endpoint
+    // never need to add/strip prefixes themselves, removing an entire class of
+    // key-mismatch bugs.
+    const bareKey = `session-${session_id}-${Date.now()}.webm`
+    const r2Key = `recordings/${bareKey}`
 
-    await env.RECORDINGS.put(key, audioData, {
+    await env.RECORDINGS.put(r2Key, audioData, {
       httpMetadata: { contentType: 'audio/webm' },
       customMetadata: { session_id: String(session_id) }
     })
 
     await env.DB.prepare(
       `UPDATE armchair_sessions SET recording_key = ?, status = 'ended' WHERE id = ?`
-    ).bind(key, session_id).run()
+    ).bind(bareKey, session_id).run()
 
-    return json({ ok: true, key })
+    return json({ ok: true, key: bareKey })
   } catch (e) {
     // Still mark ended even if R2 fails
     try {

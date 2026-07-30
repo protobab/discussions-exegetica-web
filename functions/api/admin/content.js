@@ -14,12 +14,10 @@ function json(data, status = 200) {
   })
 }
 
-const ADMIN_USERS = ['eki']
-
 // GET — list content for review
 export async function onRequestGet({ env, request }) {
   const session = await getSession(request, env)
-  if (!session || !ADMIN_USERS.includes(session.username)) return json({ error: 'Unauthorised' }, 401)
+  if (!session || !session.is_admin) return json({ error: 'Unauthorised' }, 401)
 
   const url = new URL(request.url)
   const type = url.searchParams.get('type') || 'threads'
@@ -90,7 +88,7 @@ export async function onRequestGet({ env, request }) {
 // DELETE — remove content
 export async function onRequestDelete({ env, request }) {
   const session = await getSession(request, env)
-  if (!session || !ADMIN_USERS.includes(session.username)) return json({ error: 'Unauthorised' }, 401)
+  if (!session || !session.is_admin) return json({ error: 'Unauthorised' }, 401)
 
   const { type, id } = await request.json()
   if (!type || !id) return json({ error: 'type and id required' }, 400)

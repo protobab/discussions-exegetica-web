@@ -8,7 +8,6 @@ async function getSession(request, env) {
   try { return JSON.parse(await env.SESSIONS.get(`s:${token}`)) } catch { return null }
 }
 
-const ADMIN_USERS = ['eki']
 const KV_KEY = 'music_mode'
 
 export async function onRequestGet({ env }) {
@@ -26,7 +25,7 @@ export async function onRequestGet({ env }) {
 
 export async function onRequestPost({ env, request }) {
   const session = await getSession(request, env)
-  if (!session || !ADMIN_USERS.includes(session.username)) {
+  if (!session || !session.is_admin) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
   }
   const { mode } = await request.json()

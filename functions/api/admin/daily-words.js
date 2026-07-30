@@ -35,11 +35,9 @@ async function makeToken() {
   return [...crypto.getRandomValues(new Uint8Array(32))].map(b=>b.toString(16).padStart(2,'0')).join('')
 }
 
-const ADMIN_USERS = ['eki']
-
 export async function onRequestGet({ env, request }) {
   const session = await getSession(request, env)
-  if (!session || !ADMIN_USERS.includes(session.username)) return json({ error: 'Unauthorised' }, 401)
+  if (!session || !session.is_admin) return json({ error: 'Unauthorised' }, 401)
   const today = new Date().toISOString().split('T')[0]
   const { results } = await env.DB.prepare(`SELECT verse_ref, verse_text, theme, posted_date FROM daily_words WHERE posted_date >= ? ORDER BY posted_date ASC LIMIT 60`).bind(today).all()
   return json({ words: results })
@@ -47,7 +45,7 @@ export async function onRequestGet({ env, request }) {
 
 export async function onRequestPost({ env, request }) {
   const session = await getSession(request, env)
-  if (!session || !ADMIN_USERS.includes(session.username)) return json({ error: 'Unauthorised' }, 401)
+  if (!session || !session.is_admin) return json({ error: 'Unauthorised' }, 401)
   const { verse_ref, verse_text, theme, posted_date } = await request.json()
   if (!verse_ref || !verse_text || !posted_date) return json({ error: 'Reference, text and date required' }, 400)
   try {

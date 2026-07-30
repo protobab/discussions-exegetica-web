@@ -35,11 +35,9 @@ async function makeToken() {
   return [...crypto.getRandomValues(new Uint8Array(32))].map(b=>b.toString(16).padStart(2,'0')).join('')
 }
 
-const ADMIN_USERS = ['eki']
-
 export async function onRequestGet({ env, request }) {
   const s = await getSession(request, env)
-  if (!s || !ADMIN_USERS.includes(s.username)) return json({ error: 'Unauthorised' }, 401)
+  if (!s || !(s.is_admin || s.is_moderator)) return json({ error: 'Unauthorised' }, 401)
   const { results } = await env.DB.prepare(`
     SELECT m.id, m.body, m.flag_count, m.is_hidden, m.created_at,
            u.username, u.display_name, se.title as session_title
@@ -51,7 +49,7 @@ export async function onRequestGet({ env, request }) {
 
 export async function onRequestPost({ env, request }) {
   const s = await getSession(request, env)
-  if (!s || !ADMIN_USERS.includes(s.username)) return json({ error: 'Unauthorised' }, 401)
+  if (!s || !(s.is_admin || s.is_moderator)) return json({ error: 'Unauthorised' }, 401)
   const { message_id, action } = await request.json()
   if (action === 'restore') await env.DB.prepare(`UPDATE armchair_messages SET is_hidden = 0, flag_count = 0 WHERE id = ?`).bind(message_id).run()
   else if (action === 'remove') await env.DB.prepare(`UPDATE armchair_messages SET is_hidden = 1 WHERE id = ?`).bind(message_id).run()

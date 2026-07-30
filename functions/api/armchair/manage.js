@@ -35,18 +35,35 @@ async function makeToken() {
   return [...crypto.getRandomValues(new Uint8Array(32))].map(b=>b.toString(16).padStart(2,'0')).join('')
 }
 
-const ADMIN_USERS = ['eki']
-
 async function adminSession(request, env) {
   const s = await getSession(request, env)
-  return s && ADMIN_USERS.includes(s.username) ? s : null
+  return s && s.is_admin ? s : null
+}
+
+// Downloads a Pixabay-hosted image and re-hosts it permanently in our own R2 bucket,
+// so the site no longer depends on Pixabay's CDN URLs staying valid forever.
+// Any non-Pixabay URL (or empty value) passes through unchanged.
+async function rehostCoverImage(url, env) {
+  if (!url || !url.includes('pixabay.com') || !env.RECORDINGS) return url || ''
+  try {
+    const res = await fetch(url)
+    if (!res.ok) return url
+    const contentType = res.headers.get('content-type') || 'image/jpeg'
+    const ext = contentType.includes('png') ? 'png' : contentType.includes('webp') ? 'webp' : 'jpg'
+    const key = `covers/${crypto.randomUUID()}.${ext}`
+    await env.RECORDINGS.put(key, await res.arrayBuffer(), { httpMetadata: { contentType } })
+    return `/api/media/${key.replace('covers/', '')}`
+  } catch {
+    // If re-hosting fails for any reason, fall back to the original URL rather than losing the image entirely
+    return url
+  }
 }
 
 // GET: list all sessions for admin
 export async function onRequestGet({ env, request }) {
   if (!(await adminSession(request, env))) return json({ error: 'Unauthorised' }, 401)
   const { results } = await env.DB.prepare(
-    `SELECT id, title, guest_name, status, scheduled_at, cover_image, recording_url, zoom_link FROM armchair_sessions ORDER BY scheduled_at DESC`
+    `SELECT id, title, guest_name, status, scheduled_at, cover_image, recording_url, recording_key, zoom_link FROM armchair_sessions ORDER BY scheduled_at DESC`
   ).all()
   return json({ sessions: results })
 }
@@ -62,7 +79,8 @@ export async function onRequestPost({ env, request }) {
   if (type === 'post') {
     const { title, excerpt, body: content, cover_image } = body
     if (!title?.trim() || !content?.trim()) return json({ error: 'Title and content required' }, 400)
-    const r = await env.DB.prepare(`INSERT INTO armchair_posts (title, excerpt, body, cover_image, author_id) VALUES (?,?,?,?,?)`).bind(title.trim(), excerpt?.trim()||'', content.trim(), cover_image?.trim()||'', admin.user_id).run()
+    const hostedCover = await rehostCoverImage(cover_image?.trim(), env)
+    const r = await env.DB.prepare(`INSERT INTO armchair_posts (title, excerpt, body, cover_image, author_id) VALUES (?,?,?,?,?)`).bind(title.trim(), excerpt?.trim()||'', content.trim(), hostedCover, admin.user_id).run()
     return json({ id: r.meta.last_row_id }, 201)
   }
 
@@ -70,7 +88,8 @@ export async function onRequestPost({ env, request }) {
     const { title, description, guest_name, guest_bio, cover_image, scheduled_at, zoom_link } = body
     if (!title?.trim() || !scheduled_at) return json({ error: 'Title and date required' }, 400)
     const room_id = 'room_' + crypto.randomUUID().replace(/-/g,'').slice(0,10)
-    const r = await env.DB.prepare(`INSERT INTO armchair_sessions (title, description, guest_name, guest_bio, cover_image, scheduled_at, room_id, zoom_link, host_id) VALUES (?,?,?,?,?,?,?,?,?)`).bind(title.trim(), description?.trim()||'', guest_name?.trim()||'', guest_bio?.trim()||'', cover_image?.trim()||'', scheduled_at, room_id, zoom_link?.trim()||'', admin.user_id).run()
+    const hostedCover = await rehostCoverImage(cover_image?.trim(), env)
+    const r = await env.DB.prepare(`INSERT INTO armchair_sessions (title, description, guest_name, guest_bio, cover_image, scheduled_at, room_id, zoom_link, host_id) VALUES (?,?,?,?,?,?,?,?,?)`).bind(title.trim(), description?.trim()||'', guest_name?.trim()||'', guest_bio?.trim()||'', hostedCover, scheduled_at, room_id, zoom_link?.trim()||'', admin.user_id).run()
     return json({ id: r.meta.last_row_id, room_id }, 201)
   }
 
@@ -94,8 +113,28 @@ export async function onRequestOptions() {
 export async function onRequestPatch({ env, request }) {
   const admin = await adminSession(request, env)
   if (!admin) return json({ error: 'Unauthorised' }, 401)
-  const { id, title, description, guest_name, guest_bio, scheduled_at, zoom_link, cover_image } = await request.json()
+  const url = new URL(request.url)
+  const type = url.searchParams.get('type')
+  const payload = await request.json()
+
+  if (type === 'post') {
+    const { id, title, excerpt, body, cover_image } = payload
+    if (!id) return json({ error: 'Post id required' }, 400)
+    const hostedCover = cover_image ? await rehostCoverImage(cover_image, env) : null
+    await env.DB.prepare(`
+      UPDATE armchair_posts SET
+        title = COALESCE(?, title),
+        excerpt = COALESCE(?, excerpt),
+        body = COALESCE(?, body),
+        cover_image = COALESCE(?, cover_image)
+      WHERE id = ?
+    `).bind(title||null, excerpt||null, body||null, hostedCover, id).run()
+    return json({ ok: true })
+  }
+
+  const { id, title, description, guest_name, guest_bio, scheduled_at, zoom_link, cover_image } = payload
   if (!id) return json({ error: 'Session id required' }, 400)
+  const hostedCover = cover_image ? await rehostCoverImage(cover_image, env) : null
   await env.DB.prepare(`
     UPDATE armchair_sessions SET
       title = COALESCE(?, title),
@@ -106,7 +145,7 @@ export async function onRequestPatch({ env, request }) {
       zoom_link = COALESCE(?, zoom_link),
       cover_image = COALESCE(?, cover_image)
     WHERE id = ?
-  `).bind(title||null, description||null, guest_name||null, guest_bio||null, scheduled_at||null, zoom_link||null, cover_image||null, id).run()
+  `).bind(title||null, description||null, guest_name||null, guest_bio||null, scheduled_at||null, zoom_link||null, hostedCover, id).run()
   return json({ ok: true })
 }
 

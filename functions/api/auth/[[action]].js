@@ -35,8 +35,6 @@ async function makeToken() {
   return [...crypto.getRandomValues(new Uint8Array(32))].map(b=>b.toString(16).padStart(2,'0')).join('')
 }
 
-const ADMIN_USERS = ['eki']
-
 export async function onRequestPost({ env, request, params }) {
   const action = params.action?.[0]
   if (action === 'register') return register(env, request)
@@ -63,7 +61,7 @@ async function register(env, request) {
     ).bind(username.toLowerCase().trim(), email.toLowerCase().trim(), hash, display_name.trim(), avatar_color).run()
     const newUserId = r.meta.last_row_id
     const token = await makeToken()
-    const userData = { user_id: newUserId, username: username.toLowerCase().trim(), display_name: display_name.trim(), badge: 'Seeker', avatar_color, is_admin: 0 }
+    const userData = { user_id: newUserId, username: username.toLowerCase().trim(), display_name: display_name.trim(), badge: 'Seeker', avatar_color, is_admin: 0, is_moderator: 0 }
     await env.SESSIONS.put(`s:${token}`, JSON.stringify(userData), { expirationTtl: 60*60*24*30 })
     return json({ token, user: { id: newUserId, ...userData } }, 201)
   } catch (e) {
@@ -76,11 +74,11 @@ async function login(env, request) {
   const { email, password } = await request.json()
   if (!email || !password) return json({ error: 'Email and password required' }, 400)
   const user = await env.DB.prepare(
-    `SELECT id, username, display_name, password_hash, badge, avatar_color, is_admin FROM users WHERE email = ?`
+    `SELECT id, username, display_name, password_hash, badge, avatar_color, is_admin, is_moderator FROM users WHERE email = ?`
   ).bind(email.toLowerCase().trim()).first()
   if (!user || !(await verifyPassword(password, user.password_hash))) return json({ error: 'Invalid email or password' }, 401)
   const token = await makeToken()
-  const userData = { user_id: user.id, username: user.username, display_name: user.display_name, badge: user.badge, avatar_color: user.avatar_color, is_admin: user.is_admin }
+  const userData = { user_id: user.id, username: user.username, display_name: user.display_name, badge: user.badge, avatar_color: user.avatar_color, is_admin: user.is_admin, is_moderator: user.is_moderator }
   await env.SESSIONS.put(`s:${token}`, JSON.stringify(userData), { expirationTtl: 60*60*24*30 })
   return json({ token, user: { id: user.id, ...userData } })
 }

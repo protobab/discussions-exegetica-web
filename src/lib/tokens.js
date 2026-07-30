@@ -41,4 +41,3 @@ export const BADGE = {
 }
 
 export const API = '/api'
-export const ADMIN_USERS = ['eki']

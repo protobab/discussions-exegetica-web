@@ -14,15 +14,13 @@ function json(data, status = 200) {
   })
 }
 
-const ADMIN_USERS = ['eki']
-
 export async function onRequestPost({ env, request }) {
   const cronSecret = request.headers.get('X-Cron-Secret')
   const isValidCron = cronSecret && cronSecret === env.CRON_SECRET
 
   if (!isValidCron) {
     const session = await getSession(request, env)
-    if (!session || !ADMIN_USERS.includes(session.username)) return json({ error: 'Unauthorised' }, 401)
+    if (!session || !session.is_admin) return json({ error: 'Unauthorised' }, 401)
   }
 
   if (!env.SENDGRID_API_KEY && !env.RESEND_API_KEY) {
@@ -91,7 +89,7 @@ export async function onRequestPost({ env, request }) {
 
 export async function onRequestGet({ env, request }) {
   const session = await getSession(request, env)
-  if (!session || !ADMIN_USERS.includes(session.username)) return json({ error: 'Unauthorised' }, 401)
+  if (!session || !session.is_admin) return json({ error: 'Unauthorised' }, 401)
 
   const subscriberCount = await env.DB.prepare(`SELECT COUNT(*) as n FROM users WHERE email_replies = 1`).first()
   const hasEmail = !!(env.RESEND_API_KEY)

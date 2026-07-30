@@ -19,8 +19,6 @@ function json(data, status = 200) {
   })
 }
 
-const ADMIN_USERS = ['eki']
-
 // ── Topic pools — rotated weekly to keep content fresh ───────
 
 const TOPIC_POOLS = {
@@ -115,7 +113,7 @@ export async function onRequestPost({ env, request }) {
 
   if (!isValidCron) {
     const session = await getSession(request, env)
-    if (!session || !ADMIN_USERS.includes(session.username)) {
+    if (!session || !session.is_admin) {
       return json({ error: 'Unauthorised' }, 401)
     }
   }
@@ -135,7 +133,7 @@ export async function onRequestPost({ env, request }) {
 export async function onRequestGet({ env, request }) {
   // GET returns status — how many auto-threads have been created
   const session = await getSession(request, env)
-  if (!session || !ADMIN_USERS.includes(session.username)) {
+  if (!session || !session.is_admin) {
     return json({ error: 'Unauthorised' }, 401)
   }
   const result = await env.DB.prepare(

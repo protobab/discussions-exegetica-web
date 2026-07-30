@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { C, F, API, ADMIN_USERS } from '../lib/tokens.js'
+import { C, F, API } from '../lib/tokens.js'
 import { Card, Avatar, BadgeTag, Btn, Spinner } from '../components/ui.jsx'
 import { useAuth } from '../lib/auth.jsx'
 import { usePageTitle } from '../lib/usePageTitle.js'
@@ -18,6 +18,7 @@ export default function ArmchairSessionPage() {
   const [text, setText] = useState('')
   const [asQ, setAsQ] = useState(false)
   const [posting, setPosting] = useState(false)
+  const [recordingError, setRecordingError] = useState('')
   const scrollRef = useRef(null)
 
   usePageTitle(session?.title)
@@ -63,7 +64,7 @@ export default function ArmchairSessionPage() {
 
   const isLive = session.status === 'live'
   const isEnded = session.status === 'ended'
-  const isHost = user && ADMIN_USERS.includes(user.username)
+  const isHost = user && (user.is_admin || user.is_moderator)
 
   return (
     <div style={{ maxWidth:820, margin:'0 auto', padding:'32px 20px 60px' }}>
@@ -158,12 +159,31 @@ export default function ArmchairSessionPage() {
                 controls
                 controlsList="nodownload"
                 preload="metadata"
+                onError={async () => {
+                  // Try to fetch the recording URL directly to surface the actual server error
+                  // on the page itself, rather than leaving a silently broken player.
+                  const src = session.recording_key ? `${API}/armchair/recordings/${session.recording_key}` : session.recording_url
+                  try {
+                    const r = await fetch(src)
+                    if (!r.ok) {
+                      const body = await r.json().catch(() => null)
+                      setRecordingError(body?.error || `Recording failed to load (HTTP ${r.status}).`)
+                    }
+                  } catch {
+                    setRecordingError('Recording failed to load — could not reach the server.')
+                  }
+                }}
                 style={{ width:'100%', maxWidth:480, height:36, display:'block', borderRadius:6 }}
               >
                 {session.recording_url && <source src={session.recording_url} type="audio/webm"/>}
-                {session.recording_key && <source src={`${API}/armchair/recordings/${session.recording_key.replace('recordings/','')}`} type="audio/webm"/>}
+                {session.recording_key && <source src={`${API}/armchair/recordings/${session.recording_key}`} type="audio/webm"/>}
                 Your browser does not support audio playback.
               </audio>
+              {recordingError && (
+                <p style={{ fontFamily:F.body, fontSize:12, color:C.red, marginTop:8, fontWeight:600 }}>
+                  ⚠ {recordingError}
+                </p>
+              )}
               <p style={{ fontFamily:F.body, fontSize:11, color:'var(--fg-35)', marginTop:6 }}>
                 Having trouble playing? Try Chrome or Safari. Firefox may require WebM codec support.
               </p>

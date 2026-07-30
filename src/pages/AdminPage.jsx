@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { C, F, API, ADMIN_USERS } from '../lib/tokens.js'
+import { C, F, API } from '../lib/tokens.js'
 import { Logo, Btn, StatusMsg, Field, TextArea } from '../components/ui.jsx'
 import { useAuth } from '../lib/auth.jsx'
 import { usePageTitle } from '../lib/usePageTitle.js'
@@ -10,7 +10,8 @@ export default function AdminPage() {
   usePageTitle('Admin')
   const { user, token } = useAuth()
   const [tab, setTab] = useState('sessions')
-  const isAdmin = user && ADMIN_USERS.includes(user.username)
+  const isAdmin = user && !!user.is_admin
+  const isModerator = user && !!user.is_moderator
 
   if (!user) return <Center>Please sign in to access this page.</Center>
   if (!isAdmin) return <Center>You do not have permission to view this page.</Center>
@@ -811,12 +812,12 @@ function UsersTab({ token }) {
 
   useEffect(load, [page])
 
-  const action = async (userId, act) => {
+  const action = async (userId, act, value) => {
     setMsg('')
     const res = await fetch('/api/admin/users', {
       method:'POST',
       headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
-      body: JSON.stringify({ user_id:userId, action:act })
+      body: JSON.stringify({ user_id:userId, action:act, value })
     })
     const data = await res.json()
     if (data.ok) { setMsg(`✅ Done`); load() }
@@ -865,6 +866,16 @@ function UsersTab({ token }) {
                   {u.status||'active'}
                 </span>
                 {u.badge && <span style={{ fontFamily:F.body, fontSize:11, color:C.gold, background:'rgba(201,168,76,0.12)', borderRadius:6, padding:'2px 8px' }}>{u.badge}</span>}
+                {!!u.is_admin && <span style={{ fontFamily:F.body, fontSize:11, fontWeight:600, color:'#a78bfa', background:'rgba(167,139,250,0.12)', borderRadius:6, padding:'2px 8px' }}>Admin</span>}
+                {!u.is_admin && !!u.is_moderator && <span style={{ fontFamily:F.body, fontSize:11, fontWeight:600, color:'#60a5fa', background:'rgba(96,165,250,0.12)', borderRadius:6, padding:'2px 8px' }}>Moderator</span>}
+                <button onClick={()=>action(u.id, 'set_admin', !u.is_admin)}
+                  style={{ background:'none', border:'1px solid rgba(167,139,250,0.4)', borderRadius:6, color:'#a78bfa', fontFamily:F.body, fontSize:11.5, cursor:'pointer', padding:'3px 10px' }}>
+                  {u.is_admin ? 'Remove Admin' : 'Make Admin'}
+                </button>
+                <button onClick={()=>action(u.id, 'set_moderator', !u.is_moderator)}
+                  style={{ background:'none', border:'1px solid rgba(96,165,250,0.4)', borderRadius:6, color:'#60a5fa', fontFamily:F.body, fontSize:11.5, cursor:'pointer', padding:'3px 10px' }}>
+                  {u.is_moderator ? 'Remove Moderator' : 'Make Moderator'}
+                </button>
                 <button onClick={()=>action(u.id, u.status==='suspended'?'unsuspend':'suspend')}
                   style={{ background:'none', border:'1px solid rgba(255,193,7,0.4)', borderRadius:6, color:'#fbbf24', fontFamily:F.body, fontSize:11.5, cursor:'pointer', padding:'3px 10px' }}>
                   {u.status==='suspended'?'Unsuspend':'Suspend'}

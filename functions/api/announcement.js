@@ -8,8 +8,6 @@ async function getSession(request, env) {
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'public, max-age=300' } })
 }
-const ADMIN_USERS = ['eki']
-
 // GET — return current active announcement
 export async function onRequestGet({ env }) {
   try {
@@ -22,7 +20,7 @@ export async function onRequestGet({ env }) {
 // POST — create/update announcement
 export async function onRequestPost({ env, request }) {
   const session = await getSession(request, env)
-  if (!session || !ADMIN_USERS.includes(session.username)) return json({ error: 'Unauthorised' }, 401)
+  if (!session || !session.is_admin) return json({ error: 'Unauthorised' }, 401)
   const { text, type, expires_hours } = await request.json()
   if (!text?.trim()) return json({ error: 'Announcement text required' }, 400)
   const announcement = {
@@ -39,7 +37,7 @@ export async function onRequestPost({ env, request }) {
 // DELETE — remove announcement
 export async function onRequestDelete({ env, request }) {
   const session = await getSession(request, env)
-  if (!session || !ADMIN_USERS.includes(session.username)) return json({ error: 'Unauthorised' }, 401)
+  if (!session || !session.is_admin) return json({ error: 'Unauthorised' }, 401)
   await env.SESSIONS.delete('site:announcement')
   return json({ ok: true })
 }

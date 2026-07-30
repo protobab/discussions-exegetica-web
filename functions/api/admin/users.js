@@ -13,12 +13,10 @@ function json(data, status = 200) {
   })
 }
 
-const ADMIN_USERS = ['eki']
-
 // GET — list users with search and pagination
 export async function onRequestGet({ env, request }) {
   const session = await getSession(request, env)
-  if (!session || !ADMIN_USERS.includes(session.username)) {
+  if (!session || !session.is_admin) {
     return json({ error: 'Unauthorized' }, 401)
   }
 
@@ -33,7 +31,7 @@ export async function onRequestGet({ env, request }) {
     if (search) {
       const { results } = await env.DB.prepare(`
         SELECT u.id, u.username, u.display_name, u.email, u.avatar_color,
-               u.badge, u.created_at, u.status,
+               u.badge, u.created_at, u.status, u.is_admin, u.is_moderator,
                COUNT(t.id) as post_count
         FROM users u
         LEFT JOIN threads t ON t.author_id = u.id
@@ -46,7 +44,7 @@ export async function onRequestGet({ env, request }) {
     } else {
       const { results } = await env.DB.prepare(`
         SELECT u.id, u.username, u.display_name, u.email, u.avatar_color,
-               u.badge, u.created_at, u.status,
+               u.badge, u.created_at, u.status, u.is_admin, u.is_moderator,
                COUNT(t.id) as post_count
         FROM users u
         LEFT JOIN threads t ON t.author_id = u.id
@@ -62,14 +60,14 @@ export async function onRequestGet({ env, request }) {
   }
 }
 
-// POST — suspend, unsuspend, delete, set badge
+// POST — suspend, unsuspend, delete, set badge, set admin, set moderator
 export async function onRequestPost({ env, request }) {
   const session = await getSession(request, env)
-  if (!session || !ADMIN_USERS.includes(session.username)) {
+  if (!session || !session.is_admin) {
     return json({ error: 'Unauthorized' }, 401)
   }
 
-  const { user_id, action, badge } = await request.json()
+  const { user_id, action, badge, value } = await request.json()
   if (!user_id || !action) return json({ error: 'Missing fields' }, 400)
 
   try {
@@ -96,6 +94,18 @@ export async function onRequestPost({ env, request }) {
     }
     if (action === 'set_badge') {
       await env.DB.prepare(`UPDATE users SET badge = ? WHERE id = ?`).bind(badge || null, user_id).run()
+      return json({ ok: true })
+    }
+    if (action === 'set_admin') {
+      // Safety: don't let an admin remove their own admin status (avoids accidental lockout)
+      if (Number(user_id) === Number(session.user_id) && !value) {
+        return json({ error: "You can't remove your own admin status." }, 400)
+      }
+      await env.DB.prepare(`UPDATE users SET is_admin = ? WHERE id = ?`).bind(value ? 1 : 0, user_id).run()
+      return json({ ok: true })
+    }
+    if (action === 'set_moderator') {
+      await env.DB.prepare(`UPDATE users SET is_moderator = ? WHERE id = ?`).bind(value ? 1 : 0, user_id).run()
       return json({ ok: true })
     }
     return json({ error: 'Unknown action' }, 400)
