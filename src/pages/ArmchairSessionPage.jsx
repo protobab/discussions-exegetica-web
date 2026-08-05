@@ -221,7 +221,7 @@ export default function ArmchairSessionPage() {
               {/* HOST-ONLY: direct download link, bypasses the player's no-download restriction */}
               {isHost && (session.recording_key || session.recording_url) && (
                 <p style={{ fontFamily:F.body, fontSize:12, marginTop:10 }}>
-                  
+                  <a
                     href={session.recording_key ? `${API}/armchair/recordings/${session.recording_key}` : session.recording_url}
                     download={`armchair-${id}-recording.webm`}
                     style={{ color:C.gold, fontWeight:600, textDecoration:'none' }}
