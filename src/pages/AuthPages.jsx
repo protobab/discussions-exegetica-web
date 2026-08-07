@@ -90,7 +90,8 @@ export function LoginPage() {
       {error && <div style={{ background:'#FEF2F2', border:'1px solid #FECACA', borderRadius:8, padding:'9px 13px', fontFamily:F.body, fontSize:13, color:'#DC2626', marginBottom:14 }}>{error}</div>}
       <Field label="Email" type="email" value={form.email} onChange={set('email')} placeholder="you@example.com"/>
       <Field label="Password" type="password" value={form.password} onChange={set('password')} placeholder="Your password"/>
-      <Btn variant="gold" onClick={submit} disabled={loading} style={{ width:'100%', padding:'12px', fontSize:15, marginTop:6 }}>{loading?'Signing in…':'Sign in'}</Btn>
+      <p style={{ textAlign:'right', marginTop:-8, marginBottom:14 }}><Link to="/forgot-password" style={{ color:C.gold, fontFamily:F.body, fontSize:12.5 }}>Forgot password?</Link></p>
+      <Btn variant="gold" onClick={submit} disabled={loading} style={{ width:'100%', padding:'12px', fontSize:15 }}>{loading?'Signing in…':'Sign in'}</Btn>
       <p style={{ fontFamily:F.body, fontSize:13, color:'var(--fg-6)', textAlign:'center', marginTop:14 }}>New here? <Link to="/register" style={{ color:C.gold, fontWeight:600 }}>Join free</Link></p>
     </AuthShell>
   )

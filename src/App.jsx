@@ -5,6 +5,8 @@ import HomePage from './pages/HomePage.jsx'
 import { ForumPage, ThreadPage, NewThreadPage } from './pages/ForumPages.jsx'
 import { GroupsPage, GroupDetailPage, GroupJoinPage } from './pages/GroupPages.jsx'
 import { RegisterPage, LoginPage, ForgotPasswordPage, ChangePasswordPage } from './pages/AuthPages.jsx'
+import AboutPage from './pages/AboutPage.jsx'
+import TestimoniesPage from './pages/TestimoniesPage.jsx'
 import DailyWordPage from './pages/DailyWordPage.jsx'
 import ArmchairPage from './pages/ArmchairPage.jsx'
 import ArmchairSessionPage from './pages/ArmchairSessionPage.jsx'
@@ -42,6 +44,8 @@ export default function App() {
             <Route path="profile/:username" element={<ProfilePage />} />
             <Route path="join/:code" element={<JoinPage />} />
             <Route path="contact" element={<ContactPage />} />
+            <Route path="about" element={<AboutPage />} />
+            <Route path="testimonies" element={<TestimoniesPage />} />
             <Route path="privacy" element={<PrivacyPolicyPage />} />
             <Route path="terms" element={<TermsOfUsePage />} />
             <Route path="salvation" element={<PrayerOfSalvationPage />} />

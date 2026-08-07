@@ -23,7 +23,7 @@ export default function AdminPage() {
         <h1 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:'var(--fg-100)' }}>Admin Panel</h1>
       </div>
       <div style={{ display:'flex', gap:7, marginBottom:26, flexWrap:'wrap' }}>
-        {[['sessions','Live Sessions'],['posts','Blog Posts'],['daily','Daily Word'],['auto','Auto Content'],['digest','Email Digest'],['announce','Announcements'],['content','Content Manager'],['moderation','Moderation'],['music','🎵 Music'],['users','👥 Users']].map(([k,l])=>(
+        {[['sessions','Live Sessions'],['posts','Blog Posts'],['daily','Daily Word'],['auto','Auto Content'],['digest','Email Digest'],['announce','Announcements'],['testimonies','🎬 Testimonies'],['content','Content Manager'],['moderation','Moderation'],['music','🎵 Music'],['users','👥 Users']].map(([k,l])=>(
           <button key={k} onClick={()=>setTab(k)} style={{ background:tab===k?C.gold:'var(--fg-08)', color:tab===k?C.navy:'var(--fg-75)', border:`1.5px solid ${tab===k?C.gold:'var(--fg-15)'}`, borderRadius:8, padding:'8px 16px', fontFamily:F.body, fontSize:13, fontWeight:600, cursor:'pointer' }}>{l}</button>
         ))}
       </div>
@@ -35,6 +35,7 @@ export default function AdminPage() {
       {tab === 'auto'        && <AutoContentTab token={token}/>}
       {tab === 'digest'      && <DigestTab token={token}/>}
       {tab === 'announce'    && <AnnouncementTab token={token}/>}
+      {tab === 'testimonies' && <TestimoniesTab token={token}/>}
       {tab === 'content'     && <ContentManagerTab token={token}/>}
       {tab === 'moderation'  && <ModerationTab token={token}/>}
     </div>
@@ -523,7 +524,111 @@ function AnnouncementTab({ token }) {
   )
 }
 
-// ── Email Digest ──────────────────────────────────────────────
+// ── Testimonies ──────────────────────────────────────────────
+
+function TestimoniesTab({ token }) {
+  const [items, setItems] = useState([])
+  const [editing, setEditing] = useState(null) // null = not editing, {} = new, {...} = existing
+  const [msg, setMsg] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const load = () => {
+    fetch(`${API}/testimonies?admin=1`, { headers:{ Authorization:`Bearer ${token}` } })
+      .then(r=>r.json()).then(d=>setItems(d.testimonies||[])).catch(()=>{})
+  }
+  useEffect(load, [])
+
+  const startNew = () => setEditing({ name:'', location:'', video_url:'', story:'', published:1 })
+
+  const save = async () => {
+    if (!editing.name?.trim() || !editing.story?.trim()) return setMsg('❌ Name and story are required')
+    setLoading(true); setMsg('')
+    const isNew = !editing.id
+    const res = await fetch(`${API}/testimonies`, {
+      method: isNew ? 'POST' : 'PUT',
+      headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+      body: JSON.stringify(editing)
+    })
+    const data = await res.json()
+    if (data.ok !== false && res.ok) { setMsg('✅ Saved'); setEditing(null); load() }
+    else setMsg(`❌ ${data.error||'Save failed'}`)
+    setLoading(false)
+  }
+
+  const remove = async (id) => {
+    if (!confirm('Delete this testimony?')) return
+    await fetch(`${API}/testimonies?id=${id}`, { method:'DELETE', headers:{ Authorization:`Bearer ${token}` } })
+    load()
+  }
+
+  const togglePublished = async (t) => {
+    await fetch(`${API}/testimonies`, {
+      method:'PUT', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+      body: JSON.stringify({ ...t, published: t.published ? 0 : 1 })
+    })
+    load()
+  }
+
+  return (
+    <Panel>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
+        <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'var(--fg-100)' }}>Testimonies</h2>
+        {!editing && <Btn variant="gold" onClick={startNew} style={{ padding:'7px 14px', fontSize:13 }}>+ Add Testimony</Btn>}
+      </div>
+      <p style={{ fontFamily:F.body, fontSize:13.5, color:'var(--fg-6)', marginBottom:20 }}>Video (YouTube/Vimeo link or direct video file) is optional — story text alone still publishes.</p>
+      <StatusMsg msg={msg}/>
+
+      {editing && (
+        <div style={{ background:'var(--fg-06)', border:`1px solid ${C.gold}55`, borderRadius:10, padding:16, marginBottom:20, display:'grid', gap:12 }}>
+          <div>
+            <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'var(--fg-100)', display:'block', marginBottom:6 }}>Name *</label>
+            <input value={editing.name} onChange={e=>setEditing(v=>({...v,name:e.target.value}))} placeholder="e.g. Chidinma E." style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:14, outline:'none', background:'var(--fg-08)', color:'var(--fg-100)', colorScheme:'dark' }}/>
+          </div>
+          <div>
+            <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'var(--fg-100)', display:'block', marginBottom:6 }}>Location (optional)</label>
+            <input value={editing.location} onChange={e=>setEditing(v=>({...v,location:e.target.value}))} placeholder="e.g. Lagos, Nigeria" style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:14, outline:'none', background:'var(--fg-08)', color:'var(--fg-100)', colorScheme:'dark' }}/>
+          </div>
+          <div>
+            <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'var(--fg-100)', display:'block', marginBottom:6 }}>Video URL (optional — YouTube, Vimeo, or direct .mp4 link)</label>
+            <input value={editing.video_url} onChange={e=>setEditing(v=>({...v,video_url:e.target.value}))} placeholder="https://youtube.com/watch?v=..." style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'9px 12px', fontFamily:F.body, fontSize:14, outline:'none', background:'var(--fg-08)', color:'var(--fg-100)', colorScheme:'dark' }}/>
+          </div>
+          <div>
+            <label style={{ fontFamily:F.body, fontSize:12.5, fontWeight:600, color:'var(--fg-100)', display:'block', marginBottom:6 }}>Story *</label>
+            <textarea value={editing.story} onChange={e=>setEditing(v=>({...v,story:e.target.value}))} rows={4} placeholder="What happened, in their own words..." style={{ width:'100%', border:'1px solid rgba(201,168,76,0.25)', borderRadius:8, padding:'10px 13px', fontFamily:F.body, fontSize:14, outline:'none', resize:'vertical', boxSizing:'border-box', background:'var(--fg-08)', color:'var(--fg-100)', colorScheme:'dark' }}/>
+          </div>
+          <label style={{ display:'flex', alignItems:'center', gap:8, fontFamily:F.body, fontSize:13, color:'var(--fg-8)' }}>
+            <input type="checkbox" checked={!!editing.published} onChange={e=>setEditing(v=>({...v,published:e.target.checked?1:0}))}/>
+            Published (visible on the public Testimonies page)
+          </label>
+          <div style={{ display:'flex', gap:8 }}>
+            <Btn variant="gold" onClick={save} disabled={loading}>{loading?'Saving…':'Save'}</Btn>
+            <Btn variant="outline" onClick={()=>{setEditing(null); setMsg('')}}>Cancel</Btn>
+          </div>
+        </div>
+      )}
+
+      <div style={{ display:'grid', gap:10 }}>
+        {items.map(t => (
+          <div key={t.id} style={{ background:'var(--fg-04)', border:'1px solid var(--fg-1)', borderRadius:10, padding:14, display:'flex', justifyContent:'space-between', gap:12, alignItems:'flex-start' }}>
+            <div style={{ flex:1, minWidth:0 }}>
+              <p style={{ fontFamily:F.body, fontSize:14, fontWeight:700, color:'var(--fg-100)' }}>
+                {t.name}{t.location?` · ${t.location}`:''} {!t.published && <span style={{ color:'#DC2626', fontSize:11, fontWeight:600 }}>(unpublished)</span>}
+              </p>
+              <p style={{ fontFamily:F.body, fontSize:12.5, color:'var(--fg-5)', marginTop:4, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{t.story}</p>
+              {t.video_url && <p style={{ fontFamily:F.body, fontSize:11.5, color:C.gold, marginTop:4 }}>🎬 has video</p>}
+            </div>
+            <div style={{ display:'flex', gap:6, flexShrink:0 }}>
+              <button onClick={()=>togglePublished(t)} style={{ background:'none', border:'1px solid var(--fg-2)', borderRadius:6, color:'var(--fg-7)', fontFamily:F.body, fontSize:11.5, cursor:'pointer', padding:'4px 9px' }}>{t.published?'Unpublish':'Publish'}</button>
+              <button onClick={()=>setEditing(t)} style={{ background:'none', border:'1px solid var(--fg-2)', borderRadius:6, color:'var(--fg-7)', fontFamily:F.body, fontSize:11.5, cursor:'pointer', padding:'4px 9px' }}>Edit</button>
+              <button onClick={()=>remove(t.id)} style={{ background:'none', border:'1px solid #FECACA', borderRadius:6, color:'#DC2626', fontFamily:F.body, fontSize:11.5, cursor:'pointer', padding:'4px 9px' }}>Delete</button>
+            </div>
+          </div>
+        ))}
+        {items.length === 0 && !editing && <p style={{ fontFamily:F.body, fontSize:13.5, color:C.muted, textAlign:'center', padding:'20px 0' }}>No testimonies yet — add the first one.</p>}
+      </div>
+    </Panel>
+  )
+}
 
 function DigestTab({ token }) {
   const [info, setInfo] = useState(null)
