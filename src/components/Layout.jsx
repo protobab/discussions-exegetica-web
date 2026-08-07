@@ -15,6 +15,7 @@ const NAV_ITEMS = [
   { label: 'Armchair',   path: '/armchair',    icon: '🎙️' },
   { label: 'Daily Word', path: '/daily-word',  icon: '✦' },
   { label: 'About',      path: '/about',       icon: 'ℹ️' },
+  { label: 'Testimonies',path: '/testimonies',  icon: '🎬' },
 ]
 
 export default function Layout() {
