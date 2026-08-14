@@ -37,20 +37,32 @@ export async function onRequestPost({ env, request }) {
   if (!(await adminSession(request, env))) return json({ error: 'Unauthorised' }, 401)
   const { name, location, video_url, story, published } = await request.json().catch(() => ({}))
   if (!name?.trim() || !story?.trim()) return json({ error: 'Name and story are required' }, 400)
+  const status = published ? 'published' : 'draft'
   const r = await env.DB.prepare(
-    `INSERT INTO testimonies (name, location, video_url, story, published) VALUES (?,?,?,?,?)`
-  ).bind(name.trim(), location?.trim() || '', video_url?.trim() || '', story.trim(), published ? 1 : 0).run()
+    `INSERT INTO testimonies (name, location, video_url, story, published, status) VALUES (?,?,?,?,?,?)`
+  ).bind(name.trim(), location?.trim() || '', video_url?.trim() || '', story.trim(), published ? 1 : 0, status).run()
   return json({ ok: true, id: r.meta.last_row_id }, 201)
 }
 
-// PUT /api/testimonies — admin: update (expects id in body)
+// PUT /api/testimonies — admin: update (expects id in body). Also accepts
+// a bare { id, status } for quick approve/reject actions on pending items.
 export async function onRequestPut({ env, request }) {
   if (!(await adminSession(request, env))) return json({ error: 'Unauthorised' }, 401)
-  const { id, name, location, video_url, story, published } = await request.json().catch(() => ({}))
+  const body = await request.json().catch(() => ({}))
+  const { id, name, location, video_url, story, published, status } = body
   if (!id) return json({ error: 'id required' }, 400)
+
+  // Quick approve/reject: only status (and derived published flag) provided.
+  if (status && name === undefined) {
+    const pub = status === 'published' ? 1 : 0
+    await env.DB.prepare(`UPDATE testimonies SET status=?, published=? WHERE id=?`).bind(status, pub, id).run()
+    return json({ ok: true })
+  }
+
+  const resolvedStatus = status || (published ? 'published' : 'draft')
   await env.DB.prepare(
-    `UPDATE testimonies SET name=?, location=?, video_url=?, story=?, published=? WHERE id=?`
-  ).bind(name?.trim() || '', location?.trim() || '', video_url?.trim() || '', story?.trim() || '', published ? 1 : 0, id).run()
+    `UPDATE testimonies SET name=?, location=?, video_url=?, story=?, published=?, status=? WHERE id=?`
+  ).bind(name?.trim() || '', location?.trim() || '', video_url?.trim() || '', story?.trim() || '', published ? 1 : 0, resolvedStatus, id).run()
   return json({ ok: true })
 }
 

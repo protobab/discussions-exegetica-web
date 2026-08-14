@@ -531,12 +531,35 @@ function TestimoniesTab({ token }) {
   const [editing, setEditing] = useState(null) // null = not editing, {} = new, {...} = existing
   const [msg, setMsg] = useState('')
   const [loading, setLoading] = useState(false)
+  const [curating, setCurating] = useState(false)
 
   const load = () => {
     fetch(`${API}/testimonies?admin=1`, { headers:{ Authorization:`Bearer ${token}` } })
       .then(r=>r.json()).then(d=>setItems(d.testimonies||[])).catch(()=>{})
   }
   useEffect(load, [])
+
+  const pending = items.filter(t => t.status === 'pending')
+  const rest = items.filter(t => t.status !== 'pending' && t.status !== 'rejected')
+
+  const discoverNow = async () => {
+    setCurating(true); setMsg('')
+    try {
+      const res = await fetch(`${API}/admin/curate-testimonies`, { method:'POST', headers:{ Authorization:`Bearer ${token}` } })
+      const data = await res.json()
+      if (data.ok) { setMsg(`✅ Found ${data.found}, added ${data.added} new for review`); load() }
+      else setMsg(`❌ ${data.error}`)
+    } catch (e) { setMsg(`❌ ${e.message}`) }
+    setCurating(false)
+  }
+
+  const decide = async (id, status) => {
+    await fetch(`${API}/testimonies`, {
+      method:'PUT', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
+      body: JSON.stringify({ id, status })
+    })
+    load()
+  }
 
   const startNew = () => setEditing({ name:'', location:'', video_url:'', story:'', published:1 })
 
@@ -573,10 +596,32 @@ function TestimoniesTab({ token }) {
     <Panel>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
         <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'var(--fg-100)' }}>Testimonies</h2>
-        {!editing && <Btn variant="gold" onClick={startNew} style={{ padding:'7px 14px', fontSize:13 }}>+ Add Testimony</Btn>}
+        <div style={{ display:'flex', gap:8 }}>
+          <Btn variant="outline" onClick={discoverNow} disabled={curating} style={{ padding:'7px 14px', fontSize:13 }}>{curating ? '🔍 Searching…' : '🔍 Discover New Testimonies'}</Btn>
+          {!editing && <Btn variant="gold" onClick={startNew} style={{ padding:'7px 14px', fontSize:13 }}>+ Add Testimony</Btn>}
+        </div>
       </div>
-      <p style={{ fontFamily:F.body, fontSize:13.5, color:'var(--fg-6)', marginBottom:20 }}>Video (YouTube/Vimeo link or direct video file) is optional — story text alone still publishes.</p>
+      <p style={{ fontFamily:F.body, fontSize:13.5, color:'var(--fg-6)', marginBottom:20 }}>Video (YouTube/Vimeo link or direct video file) is optional — story text alone still publishes. "Discover" searches YouTube for candidate testimony videos and queues them below for your review — nothing goes live until you approve it.</p>
       <StatusMsg msg={msg}/>
+
+      {pending.length > 0 && (
+        <div style={{ marginBottom:24 }}>
+          <h3 style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:C.gold, marginBottom:10, textTransform:'uppercase', letterSpacing:'0.05em' }}>⏳ Pending Review ({pending.length})</h3>
+          <div style={{ display:'grid', gap:10 }}>
+            {pending.map(t => (
+              <div key={t.id} style={{ background:'rgba(201,168,76,0.08)', border:`1px solid ${C.gold}55`, borderRadius:10, padding:14 }}>
+                <p style={{ fontFamily:F.body, fontSize:14, fontWeight:700, color:'var(--fg-100)', marginBottom:4 }}>{t.name}</p>
+                <p style={{ fontFamily:F.body, fontSize:12.5, color:'var(--fg-6)', marginBottom:8, lineHeight:1.5 }}>{t.story?.slice(0,180)}{t.story?.length>180?'…':''}</p>
+                {t.video_url && <a href={t.video_url} target="_blank" rel="noreferrer" style={{ fontFamily:F.body, fontSize:12, color:C.gold, display:'inline-block', marginBottom:10 }}>▶ Watch on YouTube →</a>}
+                <div style={{ display:'flex', gap:8 }}>
+                  <button onClick={()=>decide(t.id,'published')} style={{ background:C.gold, color:'#0a0f1e', border:'none', borderRadius:6, fontFamily:F.body, fontSize:12, fontWeight:700, cursor:'pointer', padding:'6px 12px' }}>✅ Approve & Publish</button>
+                  <button onClick={()=>decide(t.id,'rejected')} style={{ background:'none', border:'1px solid #FECACA', borderRadius:6, color:'#DC2626', fontFamily:F.body, fontSize:12, cursor:'pointer', padding:'6px 12px' }}>✕ Reject</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {editing && (
         <div style={{ background:'var(--fg-06)', border:`1px solid ${C.gold}55`, borderRadius:10, padding:16, marginBottom:20, display:'grid', gap:12 }}>
@@ -607,8 +652,9 @@ function TestimoniesTab({ token }) {
         </div>
       )}
 
+      <h3 style={{ fontFamily:F.body, fontSize:13, fontWeight:700, color:'var(--fg-100)', marginBottom:10 }}>All Testimonies</h3>
       <div style={{ display:'grid', gap:10 }}>
-        {items.map(t => (
+        {rest.map(t => (
           <div key={t.id} style={{ background:'var(--fg-04)', border:'1px solid var(--fg-1)', borderRadius:10, padding:14, display:'flex', justifyContent:'space-between', gap:12, alignItems:'flex-start' }}>
             <div style={{ flex:1, minWidth:0 }}>
               <p style={{ fontFamily:F.body, fontSize:14, fontWeight:700, color:'var(--fg-100)' }}>
@@ -624,7 +670,7 @@ function TestimoniesTab({ token }) {
             </div>
           </div>
         ))}
-        {items.length === 0 && !editing && <p style={{ fontFamily:F.body, fontSize:13.5, color:C.muted, textAlign:'center', padding:'20px 0' }}>No testimonies yet — add the first one.</p>}
+        {rest.length === 0 && !editing && <p style={{ fontFamily:F.body, fontSize:13.5, color:C.muted, textAlign:'center', padding:'20px 0' }}>No testimonies yet — add one, or click Discover.</p>}
       </div>
     </Panel>
   )
