@@ -23,7 +23,7 @@ export default function AdminPage() {
         <h1 style={{ fontFamily:F.display, fontSize:22, fontWeight:700, color:'var(--fg-100)' }}>Admin Panel</h1>
       </div>
       <div style={{ display:'flex', gap:7, marginBottom:26, flexWrap:'wrap' }}>
-        {[['sessions','Live Sessions'],['posts','Blog Posts'],['daily','Daily Word'],['auto','Auto Content'],['digest','Email Digest'],['announce','Announcements'],['testimonies','🎬 Testimonies'],['content','Content Manager'],['moderation','Moderation'],['music','🎵 Music'],['users','👥 Users']].map(([k,l])=>(
+        {[['sessions','Live Sessions'],['posts','Blog Posts'],['daily','Daily Word'],['auto','Auto Content'],['digest','Email Digest'],['announce','Announcements'],['testimonies','🎬 Testimonies'],['content','Content Manager'],['moderation','Moderation'],['music','📖 Bible Audio'],['users','👥 Users']].map(([k,l])=>(
           <button key={k} onClick={()=>setTab(k)} style={{ background:tab===k?C.gold:'var(--fg-08)', color:tab===k?C.navy:'var(--fg-75)', border:`1.5px solid ${tab===k?C.gold:'var(--fg-15)'}`, borderRadius:8, padding:'8px 16px', fontFamily:F.body, fontSize:13, fontWeight:600, cursor:'pointer' }}>{l}</button>
         ))}
       </div>
@@ -850,56 +850,57 @@ function Panel({ children }) {
 
 // ── Music Settings ────────────────────────────────────────────
 function MusicTab({ token }) {
-  const [mode, setMode] = useState('local')
+  const [reader, setReader] = useState('souer')
   const [loading, setLoading] = useState(true)
   const [msg, setMsg] = useState('')
 
   useEffect(() => {
     fetch('/api/music-mode').then(r=>r.json())
-      .then(d=>{ setMode(d.mode); setLoading(false) })
+      .then(d=>{ setReader(d.reader || 'souer'); setLoading(false) })
       .catch(()=>setLoading(false))
   }, [])
 
-  const save = async (newMode) => {
+  const save = async (newReader) => {
     setMsg('')
     const res = await fetch('/api/music-mode', {
       method:'POST',
       headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
-      body: JSON.stringify({ mode: newMode })
+      body: JSON.stringify({ reader: newReader })
     })
     const data = await res.json()
-    if (data.ok) { setMode(newMode); setMsg('✅ Updated — takes effect on next page load for visitors.') }
-    else setMsg(`❌ ${data.error}`)
+    if (data.ok) { setReader(newReader); setMsg('\u2705 Updated \u2014 takes effect on next page load for visitors.') }
+    else setMsg(`\u274c ${data.error}`)
   }
 
-  if (loading) return <Panel><p style={{ fontFamily:F.body, color:'var(--fg-5)' }}>Loading…</p></Panel>
+  if (loading) return <Panel><p style={{ fontFamily:F.body, color:'var(--fg-5)' }}>Loading\u2026</p></Panel>
 
   return (
     <Panel>
-      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'var(--fg-100)', marginBottom:6 }}>🎵 Ambient Music</h2>
+      <h2 style={{ fontFamily:F.display, fontSize:18, fontWeight:700, color:'var(--fg-100)', marginBottom:6 }}>\ud83d\udcd6 Audio Bible Player</h2>
       <p style={{ fontFamily:F.body, fontSize:13.5, color:'var(--fg-55)', marginBottom:24, lineHeight:1.6 }}>
-        Choose what plays in the sitewide ambient player.
+        The sitewide player streams the Berean Standard Bible (public domain) continuously from Genesis through Revelation, via the free, no-key Free Use Bible API. Choose which narrator reads it.
       </p>
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:20 }}>
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:16, marginBottom:20 }}>
         {[
-          { id:'local', title:'Your Uploaded Files', desc:'Plays track1.mp3, track2.mp3, track3.mp3 from public/ambient/. Reliable and fully under your control.' },
-          { id:'jamendo', title:'Jamendo Streaming', desc:'Streams ambient instrumental tracks from Jamendo. Variety changes automatically. May occasionally include non-worship tracks.' },
+          { id:'souer', title:'Souer', desc:'Plain narration, no background music.' },
+          { id:'hays', title:'Hays', desc:'Alternate narrator voice.' },
+          { id:'gilbert', title:'Gilbert', desc:'Alternate narrator voice.' },
         ].map(opt => (
           <div key={opt.id} onClick={()=>save(opt.id)} style={{
-            background: mode===opt.id ? 'rgba(201,168,76,0.12)' : 'var(--fg-05)',
-            border:`2px solid ${mode===opt.id ? C.gold : 'var(--fg-1)'}`,
+            background: reader===opt.id ? 'rgba(201,168,76,0.12)' : 'var(--fg-05)',
+            border:`2px solid ${reader===opt.id ? C.gold : 'var(--fg-1)'}`,
             borderRadius:14, padding:'20px 18px', cursor:'pointer', transition:'all 0.2s',
           }}>
-            <p style={{ fontFamily:F.display, fontSize:15, fontWeight:700, color:mode===opt.id?C.gold:'var(--fg-100)', marginBottom:8 }}>
-              {mode===opt.id ? '✅ ' : ''}{opt.title}
+            <p style={{ fontFamily:F.display, fontSize:15, fontWeight:700, color:reader===opt.id?C.gold:'var(--fg-100)', marginBottom:8 }}>
+              {reader===opt.id ? '\u2705 ' : ''}{opt.title}
             </p>
             <p style={{ fontFamily:F.body, fontSize:13, color:'var(--fg-5)', lineHeight:1.6, margin:0 }}>{opt.desc}</p>
           </div>
         ))}
       </div>
-      {msg && <p style={{ fontFamily:F.body, fontSize:13, color:msg.startsWith('✅')?'#4ade80':'#f87171' }}>{msg}</p>}
+      {msg && <p style={{ fontFamily:F.body, fontSize:13, color:msg.startsWith('\u2705')?'#4ade80':'#f87171' }}>{msg}</p>}
       <p style={{ fontFamily:F.body, fontSize:11.5, color:'var(--fg-3)', marginTop:16, lineHeight:1.7 }}>
-        To update your uploaded tracks: GitHub → public/ambient/ → replace track1.mp3, track2.mp3, track3.mp3 with your chosen instrumental worship files.
+        Source: bible.helloao.org (Free Use Bible API) \u2014 Berean Standard Bible, public domain since 2023. No hosting or files needed on our end.
       </p>
     </Panel>
   )

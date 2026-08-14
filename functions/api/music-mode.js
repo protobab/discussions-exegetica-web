@@ -1,6 +1,6 @@
 // functions/api/music-mode.js
-// GET — returns current music mode (local or jamendo)
-// POST — admin sets music mode
+// GET — returns current Bible audio reader/narrator
+// POST — admin sets the reader
 
 async function getSession(request, env) {
   const token = request.headers.get('Authorization')?.replace('Bearer ', '')
@@ -8,16 +8,17 @@ async function getSession(request, env) {
   try { return JSON.parse(await env.SESSIONS.get(`s:${token}`)) } catch { return null }
 }
 
-const KV_KEY = 'music_mode'
+const KV_KEY = 'bible_reader'
+const VALID_READERS = ['souer', 'hays', 'gilbert']
 
 export async function onRequestGet({ env }) {
   try {
-    const mode = await env.SESSIONS.get(KV_KEY) || 'local'
-    return new Response(JSON.stringify({ mode }), {
+    const reader = await env.SESSIONS.get(KV_KEY) || 'souer'
+    return new Response(JSON.stringify({ reader }), {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     })
   } catch {
-    return new Response(JSON.stringify({ mode: 'local' }), {
+    return new Response(JSON.stringify({ reader: 'souer' }), {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     })
   }
@@ -28,12 +29,12 @@ export async function onRequestPost({ env, request }) {
   if (!session || !session.is_admin) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
   }
-  const { mode } = await request.json()
-  if (!['local', 'jamendo'].includes(mode)) {
-    return new Response(JSON.stringify({ error: 'Invalid mode' }), { status: 400 })
+  const { reader } = await request.json()
+  if (!VALID_READERS.includes(reader)) {
+    return new Response(JSON.stringify({ error: 'Invalid reader' }), { status: 400 })
   }
-  await env.SESSIONS.put(KV_KEY, mode)
-  return new Response(JSON.stringify({ ok: true, mode }), {
+  await env.SESSIONS.put(KV_KEY, reader)
+  return new Response(JSON.stringify({ ok: true, reader }), {
     headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
   })
 }
