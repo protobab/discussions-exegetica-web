@@ -7,6 +7,7 @@ import { useAuth } from '../lib/auth.jsx'
 import { useStreak } from '../lib/useStreak.js'
 import { IMAGES } from '../lib/images.js'
 import TourModal from '../components/TourModal.jsx'
+import TreasureChest from '../components/TreasureChest.jsx'
 
 // Word-by-word verse reveal
 function RevealText({ text }) {
@@ -55,6 +56,8 @@ export default function HomePage() {
 
   return (
     <div style={{ background: 'var(--bg-page)', minHeight: '100vh' }}>
+
+      <TreasureChest />
 
       {/* MEDITATE OVERLAY */}
       {meditate && dailyWord && (

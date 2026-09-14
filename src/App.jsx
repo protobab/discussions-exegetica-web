@@ -7,6 +7,7 @@ import { GroupsPage, GroupDetailPage, GroupJoinPage } from './pages/GroupPages.j
 import { RegisterPage, LoginPage, ForgotPasswordPage, ChangePasswordPage } from './pages/AuthPages.jsx'
 import AboutPage from './pages/AboutPage.jsx'
 import TestimoniesPage from './pages/TestimoniesPage.jsx'
+import RichesOfChrist from './pages/RichesOfChrist.jsx'
 import DailyWordPage from './pages/DailyWordPage.jsx'
 import ArmchairPage from './pages/ArmchairPage.jsx'
 import ArmchairSessionPage from './pages/ArmchairSessionPage.jsx'
@@ -46,6 +47,7 @@ export default function App() {
             <Route path="contact" element={<ContactPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="testimonies" element={<TestimoniesPage />} />
+            <Route path="riches-of-christ" element={<RichesOfChrist />} />
             <Route path="privacy" element={<PrivacyPolicyPage />} />
             <Route path="terms" element={<TermsOfUsePage />} />
             <Route path="salvation" element={<PrayerOfSalvationPage />} />

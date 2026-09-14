@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { label: 'Daily Word', path: '/daily-word',  icon: '✦' },
   { label: 'About',      path: '/about',       icon: 'ℹ️' },
   { label: 'Testimonies',path: '/testimonies',  icon: '🎬' },
+  { label: 'Riches',     path: '/riches-of-christ', icon: '💎' },
 ]
 
 export default function Layout() {
@@ -236,7 +237,7 @@ export default function Layout() {
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
             {[['Forum','/forum'],['Armchair','/armchair'],['Bible','/bible'],
               ['Groups','/groups'],['Daily Word','/daily-word'],
-              ['About','/about'],['Testimonies','/testimonies'],
+              ['About','/about'],['Testimonies','/testimonies'],['Riches of Christ','/riches-of-christ'],
               ['Prayer of Salvation','/salvation'],['Contact','/contact'],
               ['Privacy Policy','/privacy'],['Terms of Use','/terms']].map(([l,t]) => (
               <Link key={l} to={t} style={{ color: 'var(--fg-35)', fontSize: 12 }}>{l}</Link>
