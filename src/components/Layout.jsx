@@ -338,7 +338,7 @@ export default function Layout() {
         )}
       </nav>
 
-      <AmbientPlayer/>
+      {location.pathname !== '/riches-of-christ' && <AmbientPlayer/>}
     </div>
   )
 }
